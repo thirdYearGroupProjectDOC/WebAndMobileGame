@@ -10,5 +10,3 @@ Running app like this:
 ```
 DEBUG=myapp npm start
 ```
-
-
