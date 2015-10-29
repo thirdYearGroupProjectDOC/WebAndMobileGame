@@ -5,7 +5,7 @@ var router = express.Router();
 router.get('/',
    function(req, res){
      req.logout();
-     res.redirect('/');
+     res.redirect('/about');
 });
 
 

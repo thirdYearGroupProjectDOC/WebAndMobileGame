@@ -9,7 +9,7 @@ var passport = require('passport');
 var LocalStrategy = require('passport-local');
 
 
-var routes = require('./routes/index');
+
 var game = require('./routes/game');
 var login = require('./routes/login');
 var logout = require('./routes/logout');
