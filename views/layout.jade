@@ -14,8 +14,27 @@ html(lang='en')
     body
         style.
           body {
-            padding: 80px 50px 50px;
             background-color: #f1c233;
+          }
+          .title-text {
+            font-weight: 600;
+            color: #ff9a03;
+          }
+          a:hover.title-text {
+            color: #d68000;
+            cursor: pointer;
+            text-decoration: none;
+          }
+          .footer-container {
+            background-color: #ff9a03;
+            border-width: 0;
+            width: 100%;
+            padding: 20px 50px;
+            position: fixed;
+            bottom: 0;
+          }
+          .body-content {
+            padding: 80px 50px 50px;
           }
         NAVBAR
         style.
@@ -119,8 +138,9 @@ html(lang='en')
                               | Sign Up
                             a.button(style="margin-top: 25px;")
                               | Sign In
-        block content
-        .container
+        .body-content
+          block content
+        .footer-container
           footer
               p
                   | © Some Project @ Imperial College London 2015

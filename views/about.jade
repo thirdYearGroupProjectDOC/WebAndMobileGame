@@ -1,5 +1,69 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+        style.
+          .about-container {
+            width: 700px;
+            margin: 20px auto;
+          }
+          .about-box {
+            color: #000;
+            background-color: white;
+            border-color: #d77900;
+            font-size: 14px;
+            font-weight: 400;
+            border-radius: 20px;
+            padding: 6px 12px;
+            display: inline-block;
+            margin-bottom: 0px;
+            line-height: 1.42857;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: middle;
+            -moz-user-select: none;
+            background-image: none;
+            border: 1px solid transparent;
+            margin-top: 10px;
+          }
+          .picture-box {
+            display: inline-block;
+          }
+        .about-container
+           .about-box(style="width: 350px;")
+             p 
+               .title-text
+                 | Game Name
+             p XX is a fun and interactive web based game
+             p designed to teach you fundamental
+             p programming. The original board-like game
+             p named 'Labyrinth' is an initiative by
+             p TuringLab. It was formed by four Imperial
+             p College Graduates intending to teach
+             p children to code based on the national
+             p curriculum in computing, maths and science.
+             p 
+               a.title-text
+                 | > More about TuringLab
+           .picture-box
+             img(src="images/lake.png", width="50px")
+           .picture-box
+             img(src="images/lake.png", width="50px")
+           .picture-box
+             img(src="images/lake.png", width="50px")
+           .about-box(style="width: 200px")
+             p  
+               a.title-text
+                 | Developers
+             p Yukai Zhang
+             p Jaehee Kong
+             p Jinyi Shan
+             p Zhuofan Zhang
+             p Jiahao Lin
+             p Yujun Tan
+             p  
+               a.title-text
+                 | Contact Us
+             p group_email@ic.ac.uk
+
+
+
