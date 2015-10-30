@@ -14,40 +14,99 @@ html(lang='en')
     body
         style.
           body {
-            padding: 80px 0 0 50px;
             background-color: #f1c233;
+          }
+          .title-text {
+            font-weight: 600;
+            color: #ff9a03;
+          }
+          a:hover.title-text {
+            color: #d68000;
+            cursor: pointer;
+            text-decoration: none;
+          }
+          .footer-container {
+            background-color: #ff9a03;
+            border-width: 0;
+            width: 100%;
+            padding: 20px 50px;
+            position: fixed;
+            bottom: 0;
+          }
+          .body-content {
+            padding: 80px 50px 50px;
           }
         NAVBAR
         style.
+          .container {
+            width: 100%;
+            margin-left: 0;
+          }
           .navbar.navbar-inverse.navbar-fixed-top {
             background-color: #ff9a03;
             border-width: 0;
-            height: 80px;
           }
           .navbar-wrapper .container {
-            margin-top: 14px;
             width: 100%;
-            margin-left: 35px;
+            padding-top: 0;
           }
           .navbar-wrapper .navbar {
             border-radius: 0;
           }
           .navbar-inverse .navbar-nav > li > a {
-              color: white;
+            padding-top: 30px;
+            height: 80px;
+            color: white;
           }
           .navbar-inverse .navbar-nav > li > a:hover {
-              font-size: 16px;
+            padding-top: 30px;
+            height: 80px;
+            background-color: #d68000;
+          }
+          a.button {
+            color: #FFF;
+            background-color: #d68000;
+            border-color: #d77900;
+            text-transform: uppercase;
+            font-size: 14px;
+            font-weight: 400;
+            border-radius: 4px;
+            padding: 6px 12px;
+            display: inline-block;
+            margin-bottom: 0px;
+            line-height: 1.42857;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: middle;
+            cursor: pointer;
+            -moz-user-select: none;
+            background-image: none;
+            border: 1px solid transparent;
+            margin-top: 10px;
+            float: right;
+          }
+          a:hover.button {
+            background-color: #a06002;
+            border-color: #a06002;
+            text-decoration: none;
+          }
+          a.navbar-brand {
+            padding-top: 0;
+          }
+          .navbar-collapse.collapse .nav.navbar-nav > .open > a {
+            background-color: #d68000;
           }
         .navbar-wrapper
             .container
                 .navbar.navbar-inverse.navbar-fixed-top
-                    .container
-                        .navbar-header
+                    .container(style="height: 80px;")
+                        .navbar-header(style="padding-top: 15px")
                             button.navbar-toggle(type='button', data-toggle='collapse', data-target='.navbar-collapse')
                                 span.icon-bar
                                 span.icon-bar
                                 span.icon-bar
-                            a.navbar-brand(href='/') Our Project Name
+                            a.navbar-brand(href='/home')
+                              img(src="images/tmp.png", width="50px")
                         .navbar-collapse.collapse
                             ul.nav.navbar-nav
                                 li
@@ -75,8 +134,13 @@ html(lang='en')
                             //            h9 Welcome, #{firstname}!&nbsp;&nbsp;
                             //            button(type="submit", class="btn btn-danger btn-sm").
                             //                Log out
-        block content
-        .container
+                            a.button(style="margin-left: 10px; margin-top: 25px;")
+                              | Sign Up
+                            a.button(style="margin-top: 25px;")
+                              | Sign In
+        .body-content
+          block content
+        .footer-container
           footer
               p
                   | © Some Project @ Imperial College London 2015
