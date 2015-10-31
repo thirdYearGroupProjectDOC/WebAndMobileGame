@@ -1,12 +1,23 @@
 var express = require('express');
+var expressSession = require('express-session');
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var passport = require('passport');
+var LocalStrategy = require('passport-local');
 
-var routes = require('./routes/index');
+
+
+var game = require('./routes/game');
+var login = require('./routes/login');
+var logout = require('./routes/logout');
+
+var routes = require('./routes/welcome');
 var users = require('./routes/users');
+var about = require('./routes/about');
+var home = require('./routes/home');
 
 var app = express();
 
@@ -16,6 +27,11 @@ app.set('view engine', 'jade');
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+app.use(expressSession({secret: 'secret', resave: false,
+  saveUninitialized: false}));
+
+app.use(passport.initialize());
+app.use(passport.session())
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -23,7 +39,41 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
-app.use('/users', users);
+app.use('/game', game);
+app.use('/login', login);
+app.use('/logout', logout);
+app.use('/about', about);
+app.use('/home', home);
+
+passport.use(new LocalStrategy(
+  function(username, password, done) {
+
+    users.findByUsername({ username: username }, function (err, user) {
+      if (err) { return done(err); }
+      if (!user) {
+        return done(null, false);
+      }
+      if (user.password != password) {
+        return done(null, false);
+      }
+      return done(null, user);
+    });
+  }
+));
+
+passport.serializeUser(function(user, done) {
+    done(null, user.id);
+});
+
+passport.deserializeUser(function(id, cb) {
+   users.findById(id, function (err, user) {
+     if (err) { return cb(err); }
+     cb(null, user);
+   });
+});
+
+
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
