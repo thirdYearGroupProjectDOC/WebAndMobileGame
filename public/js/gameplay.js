@@ -1,19 +1,147 @@
-var renderer = new PIXI.CanvasRenderer(window.innerWidth, window.innerHeight);
-
+var renderer = PIXI.autoDetectRenderer(800, 600,{backgroundColor : 0x1099bb});
 document.body.appendChild(renderer.view);
 
-var stage = new PIXI.Stage;
+// size of the actuall game size
+var road_size = 5;
+// tile size , depends on screen later
+var tile_size = 80;
+// where the first road begin
+var zero_x = 80;
+var zero_y = 60;
 
-var zombieTexture = PIXI.Texture.fromImage('zombie.png');
-var zombie = new PIXI.Sprite(zombieTexture);
+var selections_x = 600;
+var selections_y = 50;
 
-zombie.position.x = window.innerWidth / 2 - 150;
-zombie.position.y = window.innerHeight / 2 - 150;
+// create the root of the scene graph
+var stage = new PIXI.Container();
+// map base, put all tiles into one container
+var MAP = new PIXI.Container();
 
-stage.addChild(zombie);
+stage.addChild(MAP);
+// create background
+for (var j = 0; j < road_size; j++) {
+    for (var i = 0; i < road_size; i++) {
+        var bg = PIXI.Sprite.fromImage('assets/background.png');
+        bg.x = tile_size * i;
+        bg.y = tile_size * j;
+        bg.height = tile_size;
+        bg.width = tile_size;
+        MAP.addChild(bg);
+    };
+};
 
-function draw() {
+/*var selections = ['assets/spt_monster.png','assets/spt_road_corner.png','assets/spt_tree.png',
+  'assets/spt_road_end.png','assets/spt_road_straight.png','assets/spt_road_t.png']
+for( var i = 0; i < selections.length; i ++){
+  createMapParts(selections_x, selections_y+i*100, selections[i]);
+}*/
+
+// create road part from image, can be dragged to fit on map,
+// dir defines where it points to that leads to another road,
+// 0 is north, 1 is east, 2 is south, 3 is west, -1 is hell :)
+var road_monster = createMapParts(selections_x,selections_y,'assets/spt_monster.png');
+road_monster.dir = [-1];
+var road_corner = createMapParts(selections_x,selections_y+100,'assets/spt_road_corner.png');
+road_corner.dir = [0,3];
+var road_end = createMapParts(selections_x,selections_y+200,'assets/spt_road_end.png');
+road_end.dir = [2];
+var road_straight = createMapParts(selections_x,selections_y+300,'assets/spt_road_straight.png');
+road_straight.dir = [0,2];
+var road_t = createMapParts(selections_x,selections_y+400,'assets/spt_road_t.png');
+road_t.dir = [1,2,3];
+var road_tree = createMapParts(selections_x,selections_y+500,'assets/spt_tree.png'); 
+road_tree.dir = [];
+
+
+
+MAP.x = zero_x;
+MAP.y = zero_y;
+animate();
+function animate(){
+  requestAnimationFrame(animate);
   renderer.render(stage);
-  requestAnimationFrame(draw);
 }
-draw();
+
+function onDragStart(event){
+    // store a reference to the data
+    // the reason for this is because of multitouch
+    // we want to track the movement of this particular touch
+    this.data = event.data;
+    this.alpha = 0.8;
+    this.dragging = true;
+}
+
+function onDragEnd(){
+    this.alpha = 1;
+
+    this.dragging = false;
+
+    // set the interaction data to null
+    this.data = null;
+    if(this.dragged != true){
+        this.rotation+=Math.PI/2;
+        turn_dir(this.dir);
+        
+    }
+
+    this.dragged = false;
+}
+
+function onDragMove(){
+    if (this.dragging)
+    {
+        this.dragged = true;
+        var newPosition = this.data.getLocalPosition(this.parent);
+        // enter tiling region ( MAP )
+        if(this.position.x > zero_x && this.position.x < zero_x+road_size*tile_size &&
+          this.position.y > zero_y && this.position.y < zero_y+road_size*tile_size){
+
+          this.position.x = newPosition.x - newPosition.x%tile_size+tile_size/2;
+          this.position.y = newPosition.y - newPosition.y%tile_size+tile_size/4;
+
+        // put it to where mouse is
+        }else{
+
+          this.position.x = newPosition.x;
+          this.position.y = newPosition.y;
+        }
+    
+    }
+}
+
+function createMapParts(x,y,img){
+  var tex_troad_straigh = PIXI.Texture.fromImage(img);
+  var part = new PIXI.Sprite(tex_troad_straigh);
+
+  part.interactive = true;
+  part.buttonMode = true;
+  part.anchor.set(0.5);
+  part.width = tile_size;
+  part.height = tile_size;
+  part.position.x = x;
+  part.position.y = y;
+  part.dragged = false;
+  part
+    // events for drag start
+    .on('mousedown', onDragStart)
+    .on('touchstart', onDragStart)
+    // events for drag end
+    .on('mouseup', onDragEnd)
+    .on('mouseupoutside', onDragEnd)
+    .on('touchend', onDragEnd)
+    .on('touchendoutside', onDragEnd)
+    // events for drag move
+    .on('mousemove', onDragMove)
+    .on('touchmove', onDragMove);
+  stage.addChild(part);
+  return part;
+}
+
+
+// used for turning road
+function turn_dir(dir){
+  for(var i = 0; i < dir.length; i++){
+    dir[i] ++;
+    dir[i] %= 4;
+  }
+}
