@@ -7,4 +7,8 @@ router.get('/', function(req, res, next) {
   res.render('welcome', { title: 'Welcome' });
 });
 
+function toggleSignin() {
+  alert('button click called');
+}
+
 module.exports = router;
