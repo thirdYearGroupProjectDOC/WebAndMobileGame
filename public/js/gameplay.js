@@ -2,7 +2,12 @@ var renderer = PIXI.autoDetectRenderer(800, 600,{backgroundColor : 0x1099bb});
 document.body.appendChild(renderer.view);
 
 // size of the actuall game size
-var road_size = 5;
+var map_size = 5;
+var map = [];
+for(var i = 0; i<map_size*map_size; i++){
+    map[i] = null;
+}
+
 // tile size , depends on screen later
 var tile_size = 80;
 // where the first road begin
@@ -15,26 +20,21 @@ var selections_y = 50;
 // create the root of the scene graph
 var stage = new PIXI.Container();
 // map base, put all tiles into one container
-var MAP = new PIXI.Container();
+var MAP_STAGE = new PIXI.Container();
 
-stage.addChild(MAP);
+stage.addChild(MAP_STAGE);
 // create background
-for (var j = 0; j < road_size; j++) {
-    for (var i = 0; i < road_size; i++) {
+for (var j = 0; j < map_size; j++) {
+    for (var i = 0; i < map_size; i++) {
         var bg = PIXI.Sprite.fromImage('assets/background.png');
         bg.x = tile_size * i;
         bg.y = tile_size * j;
         bg.height = tile_size;
         bg.width = tile_size;
-        MAP.addChild(bg);
+        MAP_STAGE.addChild(bg);
     };
 };
 
-/*var selections = ['assets/spt_monster.png','assets/spt_road_corner.png','assets/spt_tree.png',
-  'assets/spt_road_end.png','assets/spt_road_straight.png','assets/spt_road_t.png']
-for( var i = 0; i < selections.length; i ++){
-  createMapParts(selections_x, selections_y+i*100, selections[i]);
-}*/
 
 // create road part from image, can be dragged to fit on map,
 // dir defines where it points to that leads to another road,
@@ -52,12 +52,11 @@ road_t.dir = [1,2,3];
 var road_tree = createMapParts(selections_x,selections_y+500,'assets/spt_tree.png'); 
 road_tree.dir = [];
 
-
-
-MAP.x = zero_x;
-MAP.y = zero_y;
+MAP_STAGE.x = zero_x;
+MAP_STAGE.y = zero_y;
 animate();
 function animate(){
+  show_msg(map);
   requestAnimationFrame(animate);
   renderer.render(stage);
 }
@@ -69,6 +68,9 @@ function onDragStart(event){
     this.data = event.data;
     this.alpha = 0.8;
     this.dragging = true;
+    if(check_in_map(this.pos_x,this.pos_y)){
+        map[this.pos_y*map_size+this.pos_x] = null;
+    }
 }
 
 function onDragEnd(){
@@ -81,10 +83,14 @@ function onDragEnd(){
     if(this.dragged != true){
         this.rotation+=Math.PI/2;
         turn_dir(this.dir);
-        
     }
-
+    this.pos_x = Math.floor(this.position.x / tile_size) - 1;
+    this.pos_y = Math.floor(this.position.y / tile_size) - 1;
     this.dragged = false;
+    if(check_in_map(this.pos_x,this.pos_y)){
+        map[this.pos_y*map_size+this.pos_x] = this.dir;
+    }
+        
 }
 
 function onDragMove(){
@@ -93,8 +99,8 @@ function onDragMove(){
         this.dragged = true;
         var newPosition = this.data.getLocalPosition(this.parent);
         // enter tiling region ( MAP )
-        if(this.position.x > zero_x && this.position.x < zero_x+road_size*tile_size &&
-          this.position.y > zero_y && this.position.y < zero_y+road_size*tile_size){
+        if(this.position.x > zero_x && this.position.x < zero_x+map_size*tile_size &&
+          this.position.y > zero_y && this.position.y < zero_y+map_size*tile_size){
 
           this.position.x = newPosition.x - newPosition.x%tile_size+tile_size/2;
           this.position.y = newPosition.y - newPosition.y%tile_size+tile_size/4;
@@ -120,7 +126,12 @@ function createMapParts(x,y,img){
   part.height = tile_size;
   part.position.x = x;
   part.position.y = y;
+  // to distinguish between turning road and dragging road 
   part.dragged = false;
+  // position on map
+  part.pos_x = -1;
+  part.pos_y = -1;
+
   part
     // events for drag start
     .on('mousedown', onDragStart)
@@ -144,4 +155,19 @@ function turn_dir(dir){
     dir[i] ++;
     dir[i] %= 4;
   }
+}
+
+// used for printing message on screen
+function show_msg(msg){
+    var spinningText = new PIXI.Text(msg, { font: 'bold 60px Arial', fill: '#cc00ff', align: 'center', stroke: '#FFFFFF', strokeThickness: 6 });
+
+    // setting the anchor point to 0.5 will center align the text... great for spinning!
+    spinningText.anchor.set(0.5);
+    spinningText.position.x = 310;
+    spinningText.position.y = 200;
+    stage.addChild(spinningText);
+}
+
+function check_in_map(x,y){
+    return x>=0 && x<map_size && y >=0 && y<map_size;
 }
