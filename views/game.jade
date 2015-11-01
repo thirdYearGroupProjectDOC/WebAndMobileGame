@@ -11,23 +11,117 @@ block content
   canvas(id="gamecanvas", width="640px", height="480px")
   script(type="text/javascript").
 
-    var renderer = new PIXI.CanvasRenderer(window.innerWidth, window.innerHeight);
-
+    var renderer = PIXI.autoDetectRenderer(800, 600,{backgroundColor : 0x1099bb});
     document.body.appendChild(renderer.view);
 
-    var stage = new PIXI.Stage;
+    // size of the actuall game size
+    var road_size = 5;
+    // tile size , depends on screen later
+    var tile_size = 80;
+    // where the first road begin
+    var zero_x = 80;
+    var zero_y = 60;
 
-    var zombieTexture = PIXI.Texture.fromImage('zombie.png');
-    var zombie = new PIXI.Sprite(zombieTexture);
+    var selections_x = 600;
+    var selections_y = 50;
 
-    zombie.position.x = window.innerWidth / 2 - 150;
-    zombie.position.y = window.innerHeight / 2 - 150;
+    // create the root of the scene graph
+    var stage = new PIXI.Container();
+    // map base, put all tiles into one container
+    var MAP = new PIXI.Container();
 
-    stage.addChild(zombie);
+    stage.addChild(MAP);
+    // create background
+    for (var j = 0; j < road_size; j++) {
+        for (var i = 0; i < road_size; i++) {
+            var bg = PIXI.Sprite.fromImage('assets/background.png');
+            bg.x = tile_size * i;
+            bg.y = tile_size * j;
+            bg.height = tile_size;
+            bg.width = tile_size;
+            MAP.addChild(bg);
+        };
+    };
 
-    function draw() {
-      renderer.render(stage);
-      requestAnimationFrame(draw);
+    var selections = ['assets/spt_monster.png','assets/spt_road_corner.png','assets/spt_tree.png',
+      'assets/spt_road_end.png','assets/spt_road_straight.png','assets/spt_road_t.png']
+    for( var i = 0; i < selections.length; i ++){
+      createMapParts(selections_x, selections_y+i*100, selections[i]);
     }
-    draw();
 
+    // in case we need references
+    /*var road_monster = createMapParts(selections_x,selections_y,'assets/spt_monster.png');
+    var road_corner = createMapParts(selections_x,80,'assets/spt_road_corner.png');
+    var road_end = createMapParts(50,150,'assets/spt_sroad_end.png');
+    var road_straight = createMapParts(50,250,'assets/spt_road_straight.png');
+    var road_t = createMapParts(100,50,'assets/spt_road_t.png');
+    var road_tree = createMapParts(100,150,'assets/spt_tree.png');*/
+
+    MAP.x = zero_x;
+    MAP.y = zero_y;
+    animate();
+    function animate(){
+      requestAnimationFrame(animate);
+      renderer.render(stage);
+    }
+
+    function onDragStart(event){
+        // store a reference to the data
+        // the reason for this is because of multitouch
+        // we want to track the movement of this particular touch
+        this.data = event.data;
+        this.alpha = 0.8;
+        this.dragging = true;
+    }
+
+    function onDragEnd(){
+        this.alpha = 1;
+
+        this.dragging = false;
+
+        // set the interaction data to null
+        this.data = null;
+    }
+
+    function onDragMove(){
+        if (this.dragging)
+        {
+            var newPosition = this.data.getLocalPosition(this.parent);
+            if(this.position.x > zero_x && this.position.x < zero_x+road_size*tile_size &&
+               this.position.y > zero_y && this.position.y < zero_y+road_size*tile_size){
+              this.position.x = newPosition.x - newPosition.x%tile_size+tile_size/2;
+              this.position.y = newPosition.y - newPosition.y%tile_size+tile_size/4;
+
+            }else{
+              this.position.x = newPosition.x;
+              this.position.y = newPosition.y;
+            }
+            
+        }
+    }
+
+    function createMapParts(x,y,img){
+      var tex_troad_straigh = PIXI.Texture.fromImage(img);
+      var part = new PIXI.Sprite(tex_troad_straigh);
+
+      part.interactive = true;
+      part.buttonMode = true;
+      part.anchor.set(0.5);
+      part.width = tile_size;
+      part.height = tile_size;
+      part.position.x = x;
+      part.position.y = y;
+      part
+        // events for drag start
+        .on('mousedown', onDragStart)
+        .on('touchstart', onDragStart)
+        // events for drag end
+        .on('mouseup', onDragEnd)
+        .on('mouseupoutside', onDragEnd)
+        .on('touchend', onDragEnd)
+        .on('touchendoutside', onDragEnd)
+        // events for drag move
+        .on('mousemove', onDragMove)
+        .on('touchmove', onDragMove);
+      stage.addChild(part);
+    }
