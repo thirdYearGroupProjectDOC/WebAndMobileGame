@@ -1,14 +1,13 @@
 extends layout
 
 block content
-    div.welcomebox
-        // Filtered inline output
-        p.
-          Welcome, #{user.displayName}
-    p
-        a(class='button', href='/logout') Log out
-  h1= title
-  p Welcome to #{title}
+  div.welcomebox
+      // Filtered inline output
+      p.
+        Welcome, #{user.displayName}
+  p
+      a(class='button', href='/logout') Log out
+ 
   canvas(id="gamecanvas", width="640px", height="480px")
   script(type="text/javascript").
 
