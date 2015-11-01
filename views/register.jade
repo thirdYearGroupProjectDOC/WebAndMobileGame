@@ -1,0 +1,13 @@
+extends layout
+
+block content
+  form(class="form-signin", role="form", method="post", action="/register")
+    if errormsg
+      div(class="alert alert-danger")
+        p #{errormsg}
+    input(type="text", class="form-control", placeholder="Display name", name ="displayName", required, autofocus)
+    input(type="text", class="form-control", placeholder="Username", name="username", required)
+    input(type="password", class="form-control", placeholder="Password", name="password", pattern="\\S{4}\\S*",required)
+    input(type="password", class="form-control", placeholder="Confirm password", name="password2", required)
+    button(type="submit") Sign up
+    button(href="/home", data-dismiss="modal") Cancel
