@@ -35,6 +35,8 @@ for (var j = 0; j < map_size; j++) {
     };
 };
 
+//var player = createmapParts(selections_x,selections_y,'assets/spt_boy.png');
+
 
 // create road part from image, can be dragged to fit on map,
 // dir defines where it points to that leads to another road,
@@ -54,6 +56,12 @@ road_tree.dir = [];
 
 MAP_STAGE.x = zero_x;
 MAP_STAGE.y = zero_y;
+
+// create start button
+
+
+
+
 animate();
 function animate(){
   show_msg(map);
@@ -61,6 +69,7 @@ function animate(){
   renderer.render(stage);
 }
 
+// for Map Parts only
 function onDragStart(event){
     // store a reference to the data
     // the reason for this is because of multitouch
@@ -73,6 +82,7 @@ function onDragStart(event){
     }
 }
 
+// for Map Parts only
 function onDragEnd(){
     this.alpha = 1;
 
@@ -93,6 +103,7 @@ function onDragEnd(){
         
 }
 
+// for Map Parts only
 function onDragMove(){
     if (this.dragging)
     {
@@ -115,6 +126,7 @@ function onDragMove(){
     }
 }
 
+// for Map Parts only
 function createMapParts(x,y,img){
   var tex_troad_straigh = PIXI.Texture.fromImage(img);
   var part = new PIXI.Sprite(tex_troad_straigh);
@@ -168,6 +180,73 @@ function show_msg(msg){
     stage.addChild(spinningText);
 }
 
+// checking for relative position om game map
 function check_in_map(x,y){
     return x>=0 && x<map_size && y >=0 && y<map_size;
+}
+
+function createStartButton(x,y,img){
+var start_tex = PIXI.Texture.fromImage(img);
+var start_button = new PIXI.Sprite(start_tex);
+start_button.width = tile_size*2;
+start_button.height = tile_size;
+start_button.buttonMode = true;
+start_button.anchor.set(0.5);
+start_button.position.x = x;
+start_button.position.y = y;
+// make the button interactive...
+start_button.interactive = true;
+start_button
+    // set the mousedown and touchstart callback...
+    .on('mousedown', onButtonDown)
+    .on('touchstart', onButtonDown)
+
+    // set the mouseup and touchend callback...
+    .on('mouseup', onButtonUp)
+    .on('touchend', onButtonUp)
+    .on('mouseupoutside', onButtonUp)
+    .on('touchendoutside', onButtonUp)
+
+    // set the mouseover callback...
+    .on('mouseover', onButtonOver)
+
+    // set the mouseout callback...
+    .on('mouseout', onButtonOut)
+    
+start_button.tap = null;
+start_button.click = null;
+// add it to the stage
+stage.addChild(start_button);
+}
+
+function onButtonDown()
+{
+    this.isdown = true;
+    
+    this.alpha = 0.5;
+}
+
+function onButtonUp()
+{
+    this.isdown = false;
+    if (this.isOver){
+    }
+    else{
+    }
+}
+
+function onButtonOver()
+{
+    this.isOver = true;
+    if (this.isdown){
+        return;
+    }
+}
+
+function onButtonOut()
+{
+    this.isOver = false;
+    if (this.isdown){
+        return;
+    }
 }
