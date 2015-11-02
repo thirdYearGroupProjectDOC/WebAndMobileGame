@@ -14,7 +14,7 @@ var tile_size = 80;
 var zero_x = 80;
 var zero_y = 60;
 
-var selections_x = 600;
+var selections_x = 580;
 var selections_y = 50;
 
 // create the root of the scene graph
