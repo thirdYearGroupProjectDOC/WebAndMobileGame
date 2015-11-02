@@ -34,8 +34,8 @@ for (var j = 0; j < map_size; j++) {
         MAP_STAGE.addChild(bg);
     };
 };
-
-//var player = createmapParts(selections_x,selections_y,'assets/spt_boy.png');
+MAP_STAGE.x = zero_x;
+MAP_STAGE.y = zero_y;
 
 
 // create road part from image, can be dragged to fit on map,
@@ -54,17 +54,24 @@ road_t.dir = [1,2,3];
 var road_tree = createMapParts(selections_x,selections_y+500,'assets/spt_tree.png'); 
 road_tree.dir = [];
 
-MAP_STAGE.x = zero_x;
-MAP_STAGE.y = zero_y;
 
 // create start button
+start_button = createStartButton(180,550,'assets/spt_inst_start.png');
 
+var player_tex = PIXI.Texture.fromImage('assets/spt_boy.png');
+var player = new PIXI.Sprite(player_tex);
+player.x = zero_x;
+player.y = zero_y;
+player.width = tile_size;
+player.height = tile_size;
+player.pos_x = 0;
+player.pos_y = 0;
 
-
+stage.addChild(player);
 
 animate();
 function animate(){
-  show_msg(map);
+  //show_msg(map);
   requestAnimationFrame(animate);
   renderer.render(stage);
 }
@@ -186,44 +193,45 @@ function check_in_map(x,y){
 }
 
 function createStartButton(x,y,img){
-var start_tex = PIXI.Texture.fromImage(img);
-var start_button = new PIXI.Sprite(start_tex);
-start_button.width = tile_size*2;
-start_button.height = tile_size;
-start_button.buttonMode = true;
-start_button.anchor.set(0.5);
-start_button.position.x = x;
-start_button.position.y = y;
-// make the button interactive...
-start_button.interactive = true;
-start_button
-    // set the mousedown and touchstart callback...
-    .on('mousedown', onButtonDown)
-    .on('touchstart', onButtonDown)
+  var start_tex = PIXI.Texture.fromImage(img);
+  var start_button = new PIXI.Sprite(start_tex);
+  start_button.width = tile_size*2;
+  start_button.height = tile_size;
+  start_button.buttonMode = true;
+  start_button.anchor.set(0.5);
+  start_button.position.x = x;
+  start_button.position.y = y;
+  // make the button interactive...
+  start_button.interactive = true;
+  start_button
+      // set the mousedown and touchstart callback...
+      .on('mousedown', onButtonDown)
+      .on('touchstart', onButtonDown)
 
-    // set the mouseup and touchend callback...
-    .on('mouseup', onButtonUp)
-    .on('touchend', onButtonUp)
-    .on('mouseupoutside', onButtonUp)
-    .on('touchendoutside', onButtonUp)
+      // set the mouseup and touchend callback...
+      .on('mouseup', onButtonUp)
+      .on('touchend', onButtonUp)
+      .on('mouseupoutside', onButtonUp)
+      .on('touchendoutside', onButtonUp)
 
-    // set the mouseover callback...
-    .on('mouseover', onButtonOver)
+      // set the mouseover callback...
+      .on('mouseover', onButtonOver)
 
-    // set the mouseout callback...
-    .on('mouseout', onButtonOut)
-    
-start_button.tap = null;
-start_button.click = null;
-// add it to the stage
-stage.addChild(start_button);
+      // set the mouseout callback...
+      .on('mouseout', onButtonOut)
+      
+  start_button.tap = null;
+  start_button.click = null;
+  // add it to the stage
+  stage.addChild(start_button);
+  return start_button;
 }
 
 function onButtonDown()
 {
     this.isdown = true;
-    
-    this.alpha = 0.5;
+    player_move(1);
+    this.alpha = 1;
 }
 
 function onButtonUp()
@@ -249,4 +257,27 @@ function onButtonOut()
     if (this.isdown){
         return;
     }
+}
+
+function player_move(dir){
+  switch(dir) {
+    case 0:
+        player.y -= tile_size;
+        player.pos_y -= 1;
+        break;
+    case 1:
+        player.x += tile_size;
+        player.pos_x += 1;
+        break;
+    case 2:
+        player.y += tile_size;
+        player.pos_y += 1;
+        break;
+    case 3:
+        player.x -= tile_size;
+        player.pos_x -= 1;
+        break;
+    default:
+        //
+  }
 }
