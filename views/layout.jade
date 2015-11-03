@@ -8,6 +8,8 @@ html(lang='en')
         //if lt IE 9
         script(src='/js/html5shiv.js')
         script(src='/js/respond.min.js')
+        script(type='text/javascript', src ="js/pixi.js")
+        script(type='text/javascript', src ="js/gameplay.js")
         // Custom styles for this template
         link(href='/css/carousel.css', rel='stylesheet')
         block header
@@ -15,6 +17,7 @@ html(lang='en')
         style.
           body {
             background-color: #f1c233;
+            padding-bottom: 0;
           }
           .title-text {
             font-weight: 600;
@@ -30,8 +33,7 @@ html(lang='en')
             border-width: 0;
             width: 100%;
             padding: 20px 50px;
-            position: fixed;
-            bottom: 0;
+            margin-top: 50px;
           }
           .body-content {
             padding: 80px 50px 50px;
@@ -111,43 +113,40 @@ html(lang='en')
                             ul.nav.navbar-nav
                                 li
                                     a(href='/about') About
-                                li.dropdown
-                                    a.dropdown-toggle(href='#', data-toggle='dropdown')
-                                        | My Account
-                                    ul.dropdown-menu
-                                        li
-                                            a(href='/') View Profile
-                                        li.divider
-                                        li
-                                            a(href='/') Edit Profile
-                            //if !firstname
-                            //    form(class="navbar-form navbar-right", role="form", action="/", method="post")
-                            //        div(class="form-group")
-                            //            input(type="text", placeholder="Email", class="form-control", name="username")
-                            //        div(class="form-group")
-                            //            input(type="password", placeholder="Password", class="form-control", name="password")
-                            //        button(type="submit", class="btn btn-success btn-sm").
-                            //            Sign in
-                            //else
-                            //    form(class="navbar-form navbar-right navbar-text", action="/logout", method="post")
-                            //        div(class="form-group", align = "right")
-                            //            h9 Welcome, #{firstname}!&nbsp;&nbsp;
-                            //            button(type="submit", class="btn btn-danger btn-sm").
-                            //                Log out
-                            a.button(style="margin-left: 10px; margin-top: 25px;")
-                              | Sign Up
-                            a.button(style="margin-top: 25px;")
-                              | Sign In
+                                li
+                                    a(href='/game') Play
+                                if displayName
+                                    li.dropdown
+                                        a.dropdown-toggle(href='#', data-toggle='dropdown')
+                                            | My Account
+                                        ul.dropdown-menu
+                                            li
+                                                a(href='/') View Profile
+                                            li.divider
+                                            li
+                                                a(href='/') Edit Profile
+                            if !displayName
+                                a.button(style="margin-left: 10px; margin-top: 25px;", href='register')
+                                  | Sign Up
+                                a.button(style="margin-top: 25px;",href='login')
+                                  | Sign In
+                            else
+                                a.button(style="margin-top: 25px;",href='logout')
+                                  | Log out
+                                .welcome-message(style="display: inline-block; margin-top: 30px; margin-right: 20px; float: right")
+                                  | Welcome, #{displayName}
+                            
         .body-content
           block content
+    footer
         .footer-container
-          footer
-              p
-                  | © Some Project @ Imperial College London 2015
-                  | ·
-                  a(href='/about') Group 4
+            p
+            | © Some Project @ Imperial College London 2015
+            | ·
+            a(href='/about') Group 4
 
         // Placed at the end of the document so the pages load faster
         script(src='/js/jquery.js')
         script(src='/js/bootstrap.min.js')
         script(src='/js/holder.js')
+
