@@ -21,25 +21,26 @@ router.post('/', function(req, res) {
                   console.log(user);
                   if (user) {
                      res.render('register', { errormsg: 'This username already exists. Try something else :D' });
-                     return;
+                     return ;
                   }
+                   users.UserDetails.create({
+                              username: req.param('username'),
+                              password: req.param('password'),
+                              displayName: req.param('displayName')
+                            }).then(function(user) {
+                              console.log(user);
+                              console.log("User id generated is " + user.id);
+                              req.login(user, function(err){
+                              if (err) { return next(err);}
+                                  return res.redirect('/game');
+                              });
+
+                            });
         });
 
 
 
-          users.UserDetails.create({
-            username: req.param('username'),
-            password: req.param('password'),
-            displayName: req.param('displayName')
-          }).then(function(user) {
-            console.log(user);
-            console.log("User id generated is " + user.id);
-            req.login(user, function(err){
-            if (err) { return next(err);}
-                return res.redirect('/game');
-            });
 
-          });
 
 
 
