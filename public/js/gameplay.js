@@ -162,7 +162,7 @@ function createMapParts(x,y,img){
     .on('touchendoutside', onDragEnd)
     // events for drag move
     .on('mousemove', onDragMove)
-    .on('touchmove', onDragMove);
+    .on('touchmove', onDragMove);//haha
   stage.addChild(part);
   return part;
 }
