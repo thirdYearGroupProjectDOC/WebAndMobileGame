@@ -15,25 +15,36 @@ router.post('/', function(req, res) {
       res.render('register', { errormsg: 'Password and confirm password did not match. Try it again :D' });
       return;
     }
-    users.UserDetails.findOne({ where: {username: req.param('username')} }).then(function(user) {
-      if (user != null) {
-        res.render('register', { errormsg: 'This username already exists. Try something else :D' });
-        return;
-      }
-      console.log(users.UserDetails.schema);
-      users.UserDetails.create({
-          username: req.param('username'),
-          password: req.param('password'),
-          displayName: req.param('displayName')
-      }).then(function(user) {
-          console.log("User id generated is " + user.id);
-          req.login(user, function(err){
+    process.nextTick(function() {
+        users.UserDetails.findOne({username : req.param
+        ('username')}, function(err, user){
+                  console.log(user);
+                  if (user) {
+                     res.render('register', { errormsg: 'This username already exists. Try something else :D' });
+                     return;
+                  }
+        });
+
+
+
+          users.UserDetails.create({
+            username: req.param('username'),
+            password: req.param('password'),
+            displayName: req.param('displayName')
+          }).then(function(user) {
+            console.log(user);
+            console.log("User id generated is " + user.id);
+            req.login(user, function(err){
             if (err) { return next(err);}
-            return res.redirect('/game');
+                return res.redirect('/game');
+            });
+
           });
 
-      });
-    })
+
+
+    });
+
 });
 
 
