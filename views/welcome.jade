@@ -3,5 +3,279 @@ html
   head
     title= title
     link(rel='stylesheet', href='/stylesheets/style.css')
+    link(href='/css/carousel.css', rel='stylesheet')
+    script.
+      function defaultSetting() {
+        document.getElementById('signup_toggle').focus();
+      }
   body
-    block content
+    style.
+      body {
+        padding: 80px 0 0 50px;
+        background-color: #ff9a03;
+        overflow-x: hidden;
+      }
+      section {
+        width: 80%;
+        height: 700px;
+        margin: auto;
+        padding: 30px;
+      }
+      .logo_pic img {
+        width: 40%;
+        height: 50%;
+        /*border: 3px solid green;*/
+        border-radius: 50%;
+        float: left;
+      }
+      .right-panel {
+        float: right;
+        width: 50%;
+        /*border: 3px solid green;*/
+        height: 80%;
+      }
+      .toggle-buttons {
+        margin-left: auto;
+        margin-right: auto;
+        text-align:center;
+      }
+      .toggle {
+        width: 30%;
+        height: 10%;
+        background-color: #FFFACD;
+        font-size: 20px;
+      }
+      .toggle#signin_toggle {
+        -webkit-border-top-left-radius: 50px;
+        -moz-border-radius-topleft: 50px;
+        border-top-left-radius: 50px;
+      }
+      .toggle#signup_toggle {
+
+        background-color: #FFE4B5;
+        -webkit-border-top-right-radius: 50px;
+        -moz-border-radius-topright: 50px;
+        border-top-right-radius: 50px;
+      }
+      .toggle#signin_toggle:hover,
+      .toggle#signin_toggle:active,
+      .toggle#signin_toggle:focus,
+      .toggle#signup_toggle:hover,
+      .toggle#signup_toggle:active,
+      .toggle#signup_toggle:focus {
+        background-color: #FFDEAD;
+      }
+
+      .card-container {
+        background-color: #F7F7F7;
+        /* just in case there no content*/
+        padding: 20px 25px 30px;
+        margin: 0 auto 25px;
+        margin-top: 50px;
+        /* shadows and rounded borders */
+        -moz-border-radius: 2px;
+        -webkit-border-radius: 2px;
+        border-radius: 40px;
+        -moz-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+        -webkit-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+        box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+        width: 60%;
+        height: 50%;
+      }
+      #sign_in_board {
+        display: none;
+      }
+      #sign_up_board {
+        display: block;
+      }
+      .profile-img-card {
+        width: 100px;
+        height: 100px;
+        margin: 20px auto 10px;
+        display: block;
+        -moz-border-radius: 50%;
+        -webkit-border-radius: 50%;
+        border-radius: 50%;
+      }
+      .profile-name-card {
+        font-size: 16px;
+        font-weight: bold;
+        text-align: center;
+        margin: 10px 0 0;
+        min-height: 1em;
+      }
+      .reauth-userID {
+        display: block;
+        color: #404040;
+        line-height: 2;
+        margin-bottom: 10px;
+        font-size: 14px;
+        text-align: center;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        -moz-box-sizing: border-box;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+      }
+      .form-signup #userID,
+      .form-signup #password,
+      .form-signin #userID,
+      .form-signin #password {
+        direction: ltr;
+        height: 44px;
+        font-size: 16px;
+      }
+      .register,
+      .login {
+        font-weight: 700;
+        height: 36px;
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        user-select: none;
+        cursor: default;
+      }
+      .form-signup input[type=password],
+      .form-signup input[type=text],
+      .form-signup button,
+      .form-signin input[type=password],
+      .form-signin input[type=text],
+      .form-signin button {
+        width: 90%;
+        display: block;
+        margin-bottom: 10px;
+        margin-left:10px;
+        z-index: 1;
+        position: relative;
+        -moz-box-sizing: border-box;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+      }
+      .remember-me,
+      .forgot-password {
+        margin-left: 10px;
+      }
+      .register,
+      .login {
+        /*background-color: #4d90fe; */
+        background-color: rgb(104, 145, 162);
+        /* background-color: linear-gradient(rgb(104, 145, 162), rgb(12, 97, 33));*/
+        padding: 0px;
+        font-weight: 700;
+        font-size: 14px;
+        height: 36px;
+        -moz-border-radius: 3px;
+        -webkit-border-radius: 3px;
+        border-radius: 3px;
+        border: none;
+        -o-transition: all 0.218s;
+        -moz-transition: all 0.218s;
+        -webkit-transition: all 0.218s;
+        transition: all 0.218s;
+      }
+      .register:hover,
+      .register:active,
+      .register:focus,
+      .login:hover,
+      .login:active,
+      .login:focus {
+        background-color: #339999;
+      }
+      .forgot-password {
+        color: rgb(104, 145, 162);
+      }
+      .forgot-password:hover,
+      .forgot-password:active,
+      .forgot-password:focus {
+        color: rgb(12, 97, 33);
+      }
+      .form-signup .form-control:focus,
+      .form-signin .form-control:focus {
+        border-color: rgb(123, 411, 362);
+        outline: 0;
+        -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgb(104, 145, 162);
+        box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgb(104, 145, 162);
+      }
+      .jump_to_home {
+        margin-left:auto;
+        margin-right:auto;
+        text-align: center;
+      }
+      .gotoHome {
+        width: 40%;
+        font-size: 20px;
+        background-color: rgb(104, 145, 162);
+        border: 2px #399 solid;
+        border-radius: 20px
+      }
+      .bottom_bar {
+        background-color: #F1C233;
+        position: fixed;
+        z-index: 100;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+      }
+      p#copyright {
+        margin-top: 0px;
+        margin-left:20px;
+      }
+      a.group-link {
+        padding-left: 13px;
+      }
+    .logo_pic
+      img(src="http://canineplanet.net/wp-content/uploads/2014/08/cute-dog-2014-08-22.jpg")
+    .right-panel
+      .toggle-buttons
+        button.toggle#signin_toggle(data-action="bea", onclick="toggleSignin()") Sign In
+        script.
+          function toggleSignin() {
+            document.getElementById("sign_in_board").style.display = 'block';
+            document.getElementById("signin_toggle").style.backgroundColor = '#FFE4B5';
+            document.getElementById("sign_up_board").style.display = 'none';
+            document.getElementById("signup_toggle").style.backgroundColor = '#FFFACD';
+          }
+        button.toggle#signup_toggle(data-action="bea", onclick="toggleSignup()") Sign Up
+        script.
+          function toggleSignup() {
+            document.getElementById("sign_up_board").style.display = 'block';
+            document.getElementById("signup_toggle").style.backgroundColor = '#FFE4B5';
+            document.getElementById("sign_in_board").style.display = 'none';
+            document.getElementById("signin_toggle").style.backgroundColor = '#FFFACD';
+          }
+      .card-container#sign_in_board
+        img.profile-img-card(src="//ssl.gstatic.com/accounts/ui/avatar_2x.png")
+        p.profile-name-card#profile-name
+        form.form-signin
+          span.reauth-userID
+          input#userID.form-control(type='text', placeholder='User Name', required autofocus)
+          input#password.form-control(type='password', placeholder='Password', required)
+          div.remember-me#checkbox
+            label
+              input(type='checkbox', name='remember-me')
+              | Remember me
+          button.login(type='submit') Sign in
+          a.forgot-password(href='#') Forgot your password?
+      .card-container#sign_up_board
+        p.profile-name-card#profile-name
+        form.form-signup
+          span.reauth-userID
+          input#userID.form-control(type='text', placeholder='User Name', required autofocus)
+          input#password.form-control(type='password', placeholder='New Password', required)
+          input#password.form-control(type='password', placeholder='Confirm Password', required)
+          div.remember-me#checkbox
+            label
+              input(type='checkbox', name='remember-me')
+              | Remember me
+          button.register(type='submit') Register
+      .jump_to_home
+        button.gotoHome(data-action="bea",onclick="redirect()") Jump To Homepage
+        script.
+          function redirect() {
+            window.location.href = '/home'
+          }
+    .bottom_bar
+      p#copyright
+        |© Some Project @ Imperial College London 2015.
+        a.group-link(href='/about') Group 4
+    
