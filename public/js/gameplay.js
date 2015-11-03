@@ -259,25 +259,35 @@ function onButtonOut()
     }
 }
 
+/* @dir is the direction player moves, 0 notrh and clockwise inc
+*  first check whether the road player stands on has this dir
+*  then check boundries  
+*/
 function player_move(dir){
-  switch(dir) {
-    case 0:
-        player.y -= tile_size;
-        player.pos_y -= 1;
-        break;
-    case 1:
-        player.x += tile_size;
-        player.pos_x += 1;
-        break;
-    case 2:
-        player.y += tile_size;
-        player.pos_y += 1;
-        break;
-    case 3:
-        player.x -= tile_size;
-        player.pos_x -= 1;
-        break;
-    default:
-        //
+  if(map[player.pos_x+player.pos_y*map_size].indexOf(dir)!=-1){
+	  switch(dir) {
+		case 0:
+		    if(player.pos_y == 0) break;
+            player.y -= tile_size;
+		    player.pos_y -= 1;
+		    break;
+		case 1:
+            if(player.pos_x == map_size-1) break;
+		    player.x += tile_size;
+		    player.pos_x += 1;
+		    break;
+		case 2:
+            if(player.pos_y == map_size-1) break;
+		    player.y += tile_size;
+		    player.pos_y += 1;
+		    break;
+		case 3:
+            if(player.pos_x ==0 ) break;
+		    player.x -= tile_size;
+		    player.pos_x -= 1;
+		    break;
+		default:
+		    //
+	  }
   }
 }
