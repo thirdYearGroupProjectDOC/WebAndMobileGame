@@ -1,14 +1,19 @@
 # WebAndMobileGame
 Web and Mobile Game for kids: Labyrinth (TuringLab)
 
-use npm to install dependencies
+1. Install npm dependencies:
 ```
 npm install
 ```
 
-Running app like this:
+2. Compile javascripts and run mongoDB (This app requires mongoDB to be installed):
+```
+node app.js
+```
+
+3. Running app:
 ```
 DEBUG=myapp npm start
 ```
-To play the game, go to localhost:3000/game
-login in with Yujun, passwd: secret
+
+To start the website navigation, go to localhost:8080/home
