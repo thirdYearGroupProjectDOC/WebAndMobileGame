@@ -7,15 +7,15 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var passport = require('passport');
 var LocalStrategy = require('passport-local');
+var mongoose = require('mongoose');
 
-
+var users = require('./models/user');
 
 var game = require('./routes/game');
 var login = require('./routes/login');
 var logout = require('./routes/logout');
-
 var routes = require('./routes/welcome');
-var users = require('./routes/users');
+var register = require('./routes/register');
 var about = require('./routes/about');
 var home = require('./routes/home');
 
@@ -46,29 +46,38 @@ app.use('/login', login);
 app.use('/logout', logout);
 app.use('/about', about);
 app.use('/home', home);
+app.use('/register', register);
 
-passport.use(new LocalStrategy(
-  function(username, password, done) {
+mongoose.connect('mongodb://localhost/initLabDatabase');
 
-    users.findByUsername({ username: username }, function (err, user) {
-      if (err) { return done(err); }
+passport.use(new LocalStrategy(function(username, password, done) {
+  process.nextTick(function() {
+    users.UserDetails.findOne({
+      'username': username,
+    }, function(err, user) {
+      if (err) {
+        return done(err);
+      }
+
       if (!user) {
         return done(null, false);
       }
+
       if (user.password != password) {
         return done(null, false);
       }
+
       return done(null, user);
     });
-  }
-));
+  });
+}));
 
 passport.serializeUser(function(user, done) {
     done(null, user.id);
 });
 
 passport.deserializeUser(function(id, cb) {
-   users.findById(id, function (err, user) {
+   users.UserDetails.findById(id, function (err, user) {
      if (err) { return cb(err); }
      cb(null, user);
    });
