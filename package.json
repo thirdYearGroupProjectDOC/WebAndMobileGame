@@ -20,7 +20,7 @@
     "pg": "^4.4.3",
     "pg-hstore": "^2.3.2",
     "postgresql": "0.0.1",
-    "sequelize": "^1.7.11",
+    "sequelize": "^3.3.1",
     "serve-favicon": "~2.3.0",
     "static-favicon": "~1.0.0",
     "transformers": "~3.1.0",
