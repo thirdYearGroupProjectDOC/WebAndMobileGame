@@ -19,6 +19,8 @@ var users = require('./routes/users');
 var about = require('./routes/about');
 var home = require('./routes/home');
 
+var game = require('./routes/game');
+
 var app = express();
 
 // view engine setup
@@ -71,8 +73,6 @@ passport.deserializeUser(function(id, cb) {
      cb(null, user);
    });
 });
-
-
 
 
 // catch 404 and forward to error handler
