@@ -29,7 +29,6 @@ router.post('/', function(req, res) {
           console.log("User id generated is " + user.id);
           req.login(user, function(err){
             if (err) { return next(err);}
-            window.alert("You're successfully registered as " + user.username);
             return res.redirect('/home');
           });
 
