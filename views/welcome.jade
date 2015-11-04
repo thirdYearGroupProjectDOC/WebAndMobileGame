@@ -11,9 +11,13 @@ html
   body
     style.
       body {
-        padding: 80px 0 0 50px;
+        padding: 0;
+        margin-left: 0;
         background-color: #ff9a03;
         overflow-x: hidden;
+      }
+      .body-content {
+        padding: 80px;
       }
       section {
         width: 80%;
@@ -21,18 +25,25 @@ html
         margin: auto;
         padding: 30px;
       }
+      .footer-container {
+        background-color: #d68000;
+        border-width: 0;
+        width: 100%;
+        padding: 20px 50px;
+        margin-top: 50px;
+        float: left;
+      }
       .logo_pic img {
         width: 40%;
-        height: 50%;
-        /*border: 3px solid green;*/
         border-radius: 50%;
         float: left;
+        margin-top: 5%;
       }
       .right-panel {
         float: right;
-        width: 50%;
+        width: 320px;
         /*border: 3px solid green;*/
-        height: 80%;
+        height: 500px;
       }
       .toggle-buttons {
         margin-left: auto;
@@ -40,19 +51,22 @@ html
         text-align:center;
       }
       .toggle {
-        width: 30%;
-        height: 10%;
-        background-color: #FFFACD;
+        width: 132px;
+        height: 42px;
+        background-color: #d68000;
+        border-color: #d77900;
         font-size: 20px;
       }
       .toggle#signin_toggle {
+        border-radius: 0;
         -webkit-border-top-left-radius: 50px;
         -moz-border-radius-topleft: 50px;
         border-top-left-radius: 50px;
       }
       .toggle#signup_toggle {
-
-        background-color: #FFE4B5;
+        border-radius: 0;
+        background-color: #a06002;
+        border-color: #a06002;
         -webkit-border-top-right-radius: 50px;
         -moz-border-radius-topright: 50px;
         border-top-right-radius: 50px;
@@ -63,7 +77,8 @@ html
       .toggle#signup_toggle:hover,
       .toggle#signup_toggle:active,
       .toggle#signup_toggle:focus {
-        background-color: #FFDEAD;
+        background-color: #a06002;
+        border-color: #a06002;
       }
 
       .card-container {
@@ -71,15 +86,15 @@ html
         /* just in case there no content*/
         padding: 20px 25px 30px;
         margin: 0 auto 25px;
-        margin-top: 50px;
+        margin-top: 0;
         /* shadows and rounded borders */
         -moz-border-radius: 2px;
         -webkit-border-radius: 2px;
-        border-radius: 40px;
+        border-radius: 30px;
         -moz-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
         -webkit-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
         box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
-        width: 60%;
+        width: 270px;
         height: 50%;
       }
       #sign_in_board {
@@ -135,13 +150,39 @@ html
         user-select: none;
         cursor: default;
       }
+      button {
+        color: #FFF;
+        background-color: #d68000;
+        border-color: #d77900;
+        text-transform: uppercase;
+        font-size: 14px;
+        font-weight: 400;
+        border-radius: 4px;
+        padding: 6px 12px;
+        display: inline-block;
+        margin-bottom: 0px;
+        line-height: 1.42857;
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: middle;
+        cursor: pointer;
+        -moz-user-select: none;
+        background-image: none;
+        border: 1px solid transparent;
+        margin-top: 10px;
+      }
+      button:hover {
+        background-color: #a06002;
+        border-color: #a06002;
+        text-decoration: none;
+      }
       .form-signup input[type=password],
       .form-signup input[type=text],
       .form-signup button,
       .form-signin input[type=password],
       .form-signin input[type=text],
       .form-signin button {
-        width: 90%;
+        width: 250px;
         display: block;
         margin-bottom: 10px;
         margin-left:10px;
@@ -201,21 +242,6 @@ html
         margin-right:auto;
         text-align: center;
       }
-      .gotoHome {
-        width: 40%;
-        font-size: 20px;
-        background-color: rgb(104, 145, 162);
-        border: 2px #399 solid;
-        border-radius: 20px
-      }
-      .bottom_bar {
-        background-color: #F1C233;
-        position: fixed;
-        z-index: 100;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-      }
       p#copyright {
         margin-top: 0px;
         margin-left:20px;
@@ -223,59 +249,57 @@ html
       a.group-link {
         padding-left: 13px;
       }
-    .logo_pic
-      img(src="http://canineplanet.net/wp-content/uploads/2014/08/cute-dog-2014-08-22.jpg")
-    .right-panel
-      .toggle-buttons
-        button.toggle#signin_toggle(data-action="bea", onclick="toggleSignin()") Sign In
-        script.
-          function toggleSignin() {
-            document.getElementById("sign_in_board").style.display = 'block';
-            document.getElementById("signin_toggle").style.backgroundColor = '#FFE4B5';
-            document.getElementById("sign_up_board").style.display = 'none';
-            document.getElementById("signup_toggle").style.backgroundColor = '#FFFACD';
-          }
-        button.toggle#signup_toggle(data-action="bea", onclick="toggleSignup()") Sign Up
-        script.
-          function toggleSignup() {
-            document.getElementById("sign_up_board").style.display = 'block';
-            document.getElementById("signup_toggle").style.backgroundColor = '#FFE4B5';
-            document.getElementById("sign_in_board").style.display = 'none';
-            document.getElementById("signin_toggle").style.backgroundColor = '#FFFACD';
-          }
-      .card-container#sign_in_board
-        img.profile-img-card(src="//ssl.gstatic.com/accounts/ui/avatar_2x.png")
-        p.profile-name-card#profile-name
-        form.form-signin
-          span.reauth-userID
-          input#userID.form-control(type='text', placeholder='User Name', required autofocus)
-          input#password.form-control(type='password', placeholder='Password', required)
-          div.remember-me#checkbox
-            label
-              input(type='checkbox', name='remember-me')
-              | Remember me
-          button.login(type='submit') Sign in
-          a.forgot-password(href='#') Forgot your password?
-      .card-container#sign_up_board
-        p.profile-name-card#profile-name
-        form.form-signup
-          span.reauth-userID
-          input#userID.form-control(type='text', placeholder='User Name', required autofocus)
-          input#password.form-control(type='password', placeholder='New Password', required)
-          input#password.form-control(type='password', placeholder='Confirm Password', required)
-          div.remember-me#checkbox
-            label
-              input(type='checkbox', name='remember-me')
-              | Remember me
-          button.register(type='submit') Register
-      .jump_to_home
-        button.gotoHome(data-action="bea",onclick="redirect()") Jump To Homepage
-        script.
-          function redirect() {
-            window.location.href = '/home'
-          }
-    .bottom_bar
-      p#copyright
-        |© Some Project @ Imperial College London 2015.
-        a.group-link(href='/about') Group 4
+    .body-content
+      .logo_pic
+        img(src="http://canineplanet.net/wp-content/uploads/2014/08/cute-dog-2014-08-22.jpg")
+      .right-panel
+        .toggle-buttons
+          button.toggle#signin_toggle(data-action="bea", onclick="toggleSignin()") Sign In
+          script.
+            function toggleSignin() {
+              document.getElementById("sign_in_board").style.display = 'block';
+              document.getElementById("signin_toggle").style.backgroundColor = '#a06002';
+              document.getElementById("sign_up_board").style.display = 'none';
+              document.getElementById("signup_toggle").style.backgroundColor = '#d68000';
+            }
+          button.toggle#signup_toggle(data-action="bea", onclick="toggleSignup()") Sign Up
+          script.
+            function toggleSignup() {
+              document.getElementById("sign_up_board").style.display = 'block';
+              document.getElementById("signup_toggle").style.backgroundColor = '#a06002';
+              document.getElementById("sign_in_board").style.display = 'none';
+              document.getElementById("signin_toggle").style.backgroundColor = '#d68000';
+            }
+        .card-container#sign_in_board
+          img.profile-img-card(src="//ssl.gstatic.com/accounts/ui/avatar_2x.png")
+          form(class="form-signin", name="login", action="/login", method="post")
+            input(type="text", class="form-control", name="username", placeholder="Username")
+            input(type="password", class="form-control", name="password", placeholder="password")
+            div(style="margin: 0 auto; display: table;")
+              button(type="submit", class='button', style="float:initial; width: 80px") Log In
+        .card-container#sign_up_board
+          p.profile-name-card#profile-name
+          form(class="form-signin", role="form", method="post", action="/register")
+            if errormsg
+              div(class="alert alert-danger")
+                p #{errormsg}
+            input(type="text", class="form-control", placeholder="Display name", name ="displayName", required, autofocus)
+            input(type="text", class="form-control", placeholder="Username", name="username", required)
+            input(type="password", class="form-control", placeholder="Password (More than 4 characters)", name="password", pattern="\\S{4}\\S*",required)
+            input(type="password", class="form-control", placeholder="Confirm password", name="password2", required)
+            div(style="margin: 0 auto; display: table; width: 200px")
+              button(type="submit", class='button', style="float:initial; margin-left: 10px; display: table-column; width: 80px") Sign up
+              button(href="/home", data-dismiss="modal", class='button', style="float:initial; margin-left: 10px; display: table-column; width: 80px") Cancel
+        .jump_to_home
+          button(data-action="bea",onclick="redirect()") Jump To Homepage
+          script.
+            function redirect() {
+              window.location.href = '/home'
+            }
+  footer
+    .footer-container
+        p
+        | © Some Project @ Imperial College London 2015
+        | ·
+        a(href='/about') Group 4
     
