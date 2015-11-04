@@ -1,3 +1,6 @@
+function toTilePos(n){
+  return Math.floor(n / tile_size);
+}
 // for Map Parts only
 function onDragStart(event){
     // store a reference to the data
@@ -22,8 +25,8 @@ function onDragEnd(){
         this.rotation+=Math.PI/2;
         this.dir=turn_dir(this.dir);
     }
-    this.pos_x = Math.floor(this.position.x / tile_size) - 1;
-    this.pos_y = Math.floor(this.position.y / tile_size) - 1;
+    this.pos_x = toTilePos(this.x);
+    this.pos_y = toTilePos(this.y);
     this.dragged = false;
     if(check_in_map(this.pos_x,this.pos_y)){
         map[this.pos_y*map_size+this.pos_x] = this.dir;
@@ -42,17 +45,22 @@ function onDragMove(){
         this.dragged = true;
         var newPosition = this.data.getLocalPosition(this.parent);
         // enter tiling region ( MAP )
-        if(this.position.x > zero_x && this.position.x < zero_x+map_size*tile_size &&
-          this.position.y > zero_y && this.position.y < zero_y+map_size*tile_size){
+        if(this.x > 0 && this.x < map_size*tile_size &&
+          this.y > 0 && this.y < map_size*tile_size){
 
-          this.position.x = newPosition.x - newPosition.x%tile_size+tile_size/2;
-          this.position.y = newPosition.y - newPosition.y%tile_size+tile_size/4;
+          this.x = newPosition.x - newPosition.x%tile_size + tile_size/2;
+          this.y = newPosition.y - newPosition.y%tile_size + tile_size/2;
+          index = toTilePos(this.x)+toTilePos(this.y)*map_size;
+          if(map[index]!=null){
+            this.x+= tile_size;
+            this.y+= tile_size;
+          }
 
         // put it to where mouse is
         }else{
 
-          this.position.x = newPosition.x;
-          this.position.y = newPosition.y;
+          this.x = newPosition.x;
+          this.y = newPosition.y;
         }
     
     }
@@ -97,6 +105,6 @@ function createMapParts(x,y,img, dir, counts){
     // events for drag move
     .on('mousemove', onDragMove)
     .on('touchmove', onDragMove);//haha
-  stage.addChild(part);
+  MAP_STAGE.addChild(part);
   return part;
 }

@@ -14,8 +14,8 @@ var tile_size = 80;
 var zero_x = 80;
 var zero_y = 60;
 
-var selections_x = 600;
-var selections_y = 50;
+var selections_x = 500;
+var selections_y = 0;
 
 // create the root of the scene graph
 var stage = new PIXI.Container();
@@ -43,11 +43,11 @@ dir_dict = {'monster':[-1], 'corner':[0,3], 'end':[2], 'straight':[0,2], 't':[1,
 // dir defines where it points to that leads to another road,
 // 0 is north, 1 is east, 2 is south, 3 is west, -1 is hell :)
 var road_monster = createMapParts(selections_x,selections_y,'assets/spt_monster.png',dir_dict['monster'],0);
-var road_corner = createMapParts(selections_x,selections_y+100,'assets/spt_road_corner.png',dir_dict['corner'],1);
-var road_end = createMapParts(selections_x,selections_y+200,'assets/spt_road_end.png',dir_dict['end'],0);
-var road_straight = createMapParts(selections_x,selections_y+300,'assets/spt_road_straight.png',dir_dict['straight'],0);
-var road_t = createMapParts(selections_x,selections_y+400,'assets/spt_road_t.png',dir_dict['t'],0);
-var road_tree = createMapParts(selections_x,selections_y+500,'assets/spt_tree.png',dir_dict['tree'],0); 
+var road_corner = createMapParts(selections_x,selections_y+tile_size*1.5,'assets/spt_road_corner.png',dir_dict['corner'],1);
+var road_end = createMapParts(selections_x,selections_y+tile_size*3,'assets/spt_road_end.png',dir_dict['end'],0);
+var road_straight = createMapParts(selections_x,selections_y+tile_size*4.5,'assets/spt_road_straight.png',dir_dict['straight'],0);
+var road_t = createMapParts(selections_x,selections_y+tile_size*6,'assets/spt_road_t.png',dir_dict['t'],0);
+var road_tree = createMapParts(selections_x,selections_y+tile_size*7.5,'assets/spt_tree.png',dir_dict['tree'],0); 
 
 
 // create start button
@@ -65,10 +65,11 @@ player.pos_y = 0;
 stage.addChild(player);
 
 animate();
+
 function animate(){
-  show_msg(map);
-  requestAnimationFrame(animate);
-  renderer.render(stage);
+  //show_msg(map);
+    requestAnimationFrame(animate);
+    renderer.render(stage);
 }
 
 // used for turning road
@@ -104,30 +105,24 @@ function check_in_map(x,y){
 *  then check boundries  
 */
 function player_move(dir){
-  if(map[player.pos_x+player.pos_y*map_size].indexOf(dir)!=-1){
-	  switch(dir) {
-		case 0:
-		    if(player.pos_y == 0) break;
-        player.y -= tile_size;
-		    player.pos_y -= 1;
-		    break;
-		case 1:
-            if(player.pos_x == map_size-1) break;
-		    player.x += tile_size;
-		    player.pos_x += 1;
-		    break;
-		case 2:
-            if(player.pos_y == map_size-1) break;
-		    player.y += tile_size;
-		    player.pos_y += 1;
-		    break;
-		case 3:
-            if(player.pos_x ==0 ) break;
-		    player.x -= tile_size;
-		    player.pos_x -= 1;
-		    break;
-		default:
-		    //
-	  }
+
+  // get direction!
+  var xmov = (2-dir)*dir%2;
+  var ymov = (dir-1)*(1-dir%2);
+  
+  var cur = player.pos_y*map_size+player.pos_x;
+  var dst = (player.pos_y+ymov)*map_size + player.pos_x+xmov;
+
+  var op = (dir+2)%4;
+
+  if(dst<map_size*map_size && map[cur].indexOf(dir)!=-1
+    && map[dst].indexOf(op)!=-1){
+    player.x += xmov*tile_size;
+    player.y += ymov*tile_size;
+    player.pos_x += xmov;
+    player.pos_y += ymov;
+  }else{
+    show_msg(map[dst]);
   }
+
 }
