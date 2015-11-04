@@ -37,6 +37,8 @@ for (var j = 0; j < map_size; j++) {
 MAP_STAGE.x = zero_x;
 MAP_STAGE.y = zero_y;
 
+// setting directions of road pieces according to image's default direction
+// for detail and usage see the comments below
 dir_dict = {'monster':[-1], 'corner':[0,3], 'end':[2], 'straight':[0,2], 't':[1,2,3], 'tree':[]};
 
 // create road part from image, can be dragged to fit on map,
@@ -55,14 +57,14 @@ start_button = createStartButton(180,550,'assets/spt_inst_start.png');
 
 var player_tex = PIXI.Texture.fromImage('assets/spt_boy.png');
 var player = new PIXI.Sprite(player_tex);
-player.x = zero_x;
-player.y = zero_y;
+player.x = 0;
+player.y = 0;
 player.width = tile_size;
 player.height = tile_size;
 player.pos_x = 0;
 player.pos_y = 0;
 
-stage.addChild(player);
+MAP_STAGE.addChild(player);
 
 animate();
 
@@ -113,6 +115,7 @@ function player_move(dir){
   var cur = player.pos_y*map_size+player.pos_x;
   var dst = (player.pos_y+ymov)*map_size + player.pos_x+xmov;
 
+  //opsite direction
   var op = (dir+2)%4;
 
   if(dst<map_size*map_size && map[cur].indexOf(dir)!=-1
@@ -121,8 +124,6 @@ function player_move(dir){
     player.y += ymov*tile_size;
     player.pos_x += xmov;
     player.pos_y += ymov;
-  }else{
-    show_msg(map[dst]);
   }
 
 }

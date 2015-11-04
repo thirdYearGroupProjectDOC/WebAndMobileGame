@@ -1,6 +1,7 @@
 function toTilePos(n){
   return Math.floor(n / tile_size);
 }
+
 // for Map Parts only
 function onDragStart(event){
     // store a reference to the data
@@ -40,7 +41,8 @@ function onDragMove(){
     {
       	if(this.counts>0){
       	  this.counts--;
-      	  createMapParts(this.ox, this.oy, this.img, this.odir, 0);
+      	  a = createMapParts(this.ox, this.oy, this.img, this.odir, 0);
+          MAP_STAGE.swapChildren(a,player);
       	} 
         this.dragged = true;
         var newPosition = this.data.getLocalPosition(this.parent);
@@ -106,5 +108,6 @@ function createMapParts(x,y,img, dir, counts){
     .on('mousemove', onDragMove)
     .on('touchmove', onDragMove);//haha
   MAP_STAGE.addChild(part);
+  
   return part;
 }
