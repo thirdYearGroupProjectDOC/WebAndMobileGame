@@ -18,8 +18,9 @@ var routes = require('./routes/welcome');
 var register = require('./routes/register');
 var about = require('./routes/about');
 var home = require('./routes/home');
-
-var game = require('./routes/game');
+var profile_view = require('./routes/profile-view');
+var profile_edit = require('./routes/profile-edit');
+var delete_account = require('./routes/delete-account');
 
 var app = express();
 
@@ -47,6 +48,9 @@ app.use('/logout', logout);
 app.use('/about', about);
 app.use('/home', home);
 app.use('/register', register);
+app.use('/profile-view', profile_view);
+app.use('/profile-edit', profile_edit);
+app.use('/delete-account', delete_account);
 
 mongoose.connect('mongodb://localhost/initLabDatabase');
 
