@@ -57,12 +57,20 @@ start_button = createStartButton(180,550,'assets/spt_inst_start.png');
 
 var player_tex = PIXI.Texture.fromImage('assets/spt_boy.png');
 var player = new PIXI.Sprite(player_tex);
+// position and size
 player.x = 0;
 player.y = 0;
 player.width = tile_size;
 player.height = tile_size;
+
+// position on map, only descrete numbers
 player.pos_x = 0;
 player.pos_y = 0;
+
+// used in main loop for moving on canvas
+player.xmov = 0;
+player.ymov = 0;
+player.speed = tile_size/5;
 
 MAP_STAGE.addChild(player);
 
@@ -70,6 +78,11 @@ animate();
 
 function animate(){
   //show_msg(map);
+    player.x += player.speed*Math.sign(player.xmov);
+    player.y += player.speed*Math.sign(player.ymov);
+    player.xmov = Math.sign(player.xmov) * (Math.abs(player.xmov)-player.speed);
+    player.ymov = Math.sign(player.ymov) * (Math.abs(player.ymov)-player.speed);
+
     requestAnimationFrame(animate);
     renderer.render(stage);
 }
@@ -120,10 +133,13 @@ function player_move(dir){
 
   if(dst<map_size*map_size && map[cur].indexOf(dir)!=-1
     && map[dst].indexOf(op)!=-1){
-    player.x += xmov*tile_size;
-    player.y += ymov*tile_size;
+
+    player.xmov = xmov*tile_size;
+    player.ymov = ymov*tile_size;
+
     player.pos_x += xmov;
     player.pos_y += ymov;
+
   }
 
 }
