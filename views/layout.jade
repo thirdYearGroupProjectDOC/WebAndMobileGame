@@ -121,10 +121,13 @@ html(lang='en')
                                             | My Account
                                         ul.dropdown-menu
                                             li
-                                                a(href='/') View Profile
+                                                a(href='/profile-view') View Profile
                                             li.divider
                                             li
-                                                a(href='/') Edit Profile
+                                                a(href='/profile-edit') Edit Profile
+                                            li.divider
+                                            li
+                                                a(href='/delete-account') Delete Account
                             if !displayName
                                 a.button(style="margin-left: 10px; margin-top: 25px;", href='register')
                                   | Sign Up
