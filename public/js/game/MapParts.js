@@ -14,14 +14,13 @@ function onDragStart(event){
 // for Map Parts only
 function onDragEnd(){
     this.alpha = 1;
-
     this.dragging = false;
 
     // set the interaction data to null
     this.data = null;
     if(this.dragged != true){
         this.rotation+=Math.PI/2;
-        turn_dir(this.dir);
+        this.dir=turn_dir(this.dir);
     }
     this.pos_x = Math.floor(this.position.x / tile_size) - 1;
     this.pos_y = Math.floor(this.position.y / tile_size) - 1;
@@ -36,6 +35,10 @@ function onDragEnd(){
 function onDragMove(){
     if (this.dragging)
     {
+      	if(this.counts>0){
+      	  this.counts--;
+      	  createMapParts(this.ox, this.oy, this.img, this.odir, 0);
+      	} 
         this.dragged = true;
         var newPosition = this.data.getLocalPosition(this.parent);
         // enter tiling region ( MAP )
@@ -59,6 +62,13 @@ function onDragMove(){
 function createMapParts(x,y,img, dir, counts){
   var tex_troad_straigh = PIXI.Texture.fromImage(img);
   var part = new PIXI.Sprite(tex_troad_straigh);
+ 
+  // these variables are only used for creating 
+  // another road
+  part.img = img;
+  part.ox = x;
+  part.oy = y;
+  part.odir = dir;
 
   part.interactive = true;
   part.buttonMode = true;

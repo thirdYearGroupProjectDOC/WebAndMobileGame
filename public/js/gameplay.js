@@ -43,7 +43,7 @@ dir_dict = {'monster':[-1], 'corner':[0,3], 'end':[2], 'straight':[0,2], 't':[1,
 // dir defines where it points to that leads to another road,
 // 0 is north, 1 is east, 2 is south, 3 is west, -1 is hell :)
 var road_monster = createMapParts(selections_x,selections_y,'assets/spt_monster.png',dir_dict['monster'],0);
-var road_corner = createMapParts(selections_x,selections_y+100,'assets/spt_road_corner.png',dir_dict['corner'],0);
+var road_corner = createMapParts(selections_x,selections_y+100,'assets/spt_road_corner.png',dir_dict['corner'],1);
 var road_end = createMapParts(selections_x,selections_y+200,'assets/spt_road_end.png',dir_dict['end'],0);
 var road_straight = createMapParts(selections_x,selections_y+300,'assets/spt_road_straight.png',dir_dict['straight'],0);
 var road_t = createMapParts(selections_x,selections_y+400,'assets/spt_road_t.png',dir_dict['t'],0);
@@ -66,19 +66,21 @@ stage.addChild(player);
 
 animate();
 function animate(){
-  //show_msg(map);
+  show_msg(map);
   requestAnimationFrame(animate);
   renderer.render(stage);
 }
 
 // used for turning road
 function turn_dir(dir){
+  res = [];
   for(var i = 0; i < dir.length; i++){
     if(dir[i]>=0){
-      dir[i] ++;
-      dir[i] %= 4;
+      res[i] = dir[i]+1;
+      res[i] %= 4;
     }
   }
+  return res;
 }
 
 // used for printing message on screen
@@ -106,7 +108,7 @@ function player_move(dir){
 	  switch(dir) {
 		case 0:
 		    if(player.pos_y == 0) break;
-            player.y -= tile_size;
+        player.y -= tile_size;
 		    player.pos_y -= 1;
 		    break;
 		case 1:
