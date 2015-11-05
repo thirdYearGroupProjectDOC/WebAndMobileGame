@@ -1,5 +1,3 @@
-
-
 var express = require('express');
 var router = express.Router();
 var passport = require('passport');
@@ -22,20 +20,18 @@ router.post('/', function(req, res) {
                 return ;
             }
             users.UserDetails.create({
-            username: req.param('username'),
-            password: req.param('password'),
-            displayName: req.param('displayName')
+              username: req.param('username'),
+              password: req.param('password'),
+              displayName: req.param('displayName')
             }).then(function(user) {
                 console.log("User id generated is " + user.id);
                 req.login(user, function(err){
-                if (err) { return next(err);}
-                    return res.redirect('/levels');
+                  if (err) { return next(err);}
+                  return res.redirect('/levels');
                 });
             });
         });
-
-      });
-
+    });
 });
 
 

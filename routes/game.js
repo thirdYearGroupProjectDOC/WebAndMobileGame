@@ -10,7 +10,7 @@ router.get('/',
      } else {
          displayName = req.user.displayName;
      }
-     res.render('game', { user: req.user, displayName: displayName, level: req.query.level});
+     res.render('game', { user: req.user, displayName: displayName, level: req.query.level}); //setting: json
 });
 
 

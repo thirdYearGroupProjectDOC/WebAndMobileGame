@@ -10,6 +10,7 @@ var LocalStrategy = require('passport-local');
 var mongoose = require('mongoose');
 
 var users = require('./models/user');
+var levelData = require('./models/levelData');
 
 var game = require('./routes/game');
 var login = require('./routes/login');
