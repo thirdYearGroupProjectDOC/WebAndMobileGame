@@ -70,7 +70,7 @@ player.pos_y = 0;
 // used in main loop for moving on canvas
 player.xmov = 0;
 player.ymov = 0;
-player.speed = tile_size/5;
+player.speed = tile_size/20;
 
 MAP_STAGE.addChild(player);
 

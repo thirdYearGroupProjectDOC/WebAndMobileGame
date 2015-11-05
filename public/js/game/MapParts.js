@@ -8,6 +8,7 @@ function onDragStart(event){
     // the reason for this is because of multitouch
     // we want to track the movement of this particular touch
     this.data = event.data;
+    this.started = true;
     this.alpha = 0.8;
     this.dragging = true;
     if(check_in_map(this.pos_x,this.pos_y)){
@@ -17,21 +18,32 @@ function onDragStart(event){
 
 // for Map Parts only
 function onDragEnd(){
-    this.alpha = 1;
-    this.dragging = false;
+  if(this.started){
+      this.alpha = 1;
+      this.dragging = false;
 
-    // set the interaction data to null
-    this.data = null;
-    if(this.dragged != true){
-        this.rotation+=Math.PI/2;
-        this.dir=turn_dir(this.dir);
+      // set the interaction data to null
+      this.data = null;
+      if(this.dragged != true){
+          this.rotation+=Math.PI/2;
+          this.dir=turn_dir(this.dir);
+      }
+      this.pos_x = toTilePos(this.x);
+      this.pos_y = toTilePos(this.y);
+      this.dragged = false;
+
+      if(map[this.pos_y*map_size+this.pos_x]!=null){
+          this.pos_x = -1;
+          this.pos_y = -1;
+          this.x = this.ox;
+          this.y = this.oy;
+  //        map[this.pos_y*map_size+this.pos_x] = null;
+      }else if(check_in_map(this.pos_x,this.pos_y)){
+          map[this.pos_y*map_size+this.pos_x] = this.dir;
+      }
     }
-    this.pos_x = toTilePos(this.x);
-    this.pos_y = toTilePos(this.y);
-    this.dragged = false;
-    if(check_in_map(this.pos_x,this.pos_y)){
-        map[this.pos_y*map_size+this.pos_x] = this.dir;
-    }
+
+    this.started = false;
         
 }
 
@@ -52,11 +64,11 @@ function onDragMove(){
 
           this.x = newPosition.x - newPosition.x%tile_size + tile_size/2;
           this.y = newPosition.y - newPosition.y%tile_size + tile_size/2;
-          index = toTilePos(this.x)+toTilePos(this.y)*map_size;
+          /*index = toTilePos(this.x)+toTilePos(this.y)*map_size;
           if(map[index]!=null){
             this.x+= tile_size;
             this.y+= tile_size;
-          }
+          }*/
 
         // put it to where mouse is
         }else{
@@ -89,6 +101,7 @@ function createMapParts(x,y,img, dir, counts){
   part.position.y = y;
   // to distinguish between turning road and dragging road 
   part.dragged = false;
+  part.started = false;
   // position on map
   part.pos_x = -1;
   part.pos_y = -1;
