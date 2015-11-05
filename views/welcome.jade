@@ -3,5 +3,303 @@ html
   head
     title= title
     link(rel='stylesheet', href='/stylesheets/style.css')
+    link(href='/css/carousel.css', rel='stylesheet')
+    script.
+      function defaultSetting() {
+        document.getElementById('signup_toggle').focus();
+      }
   body
-    block content
+    style.
+      body {
+        padding: 0;
+        margin-left: 0;
+        background-color: #ff9a03;
+        overflow-x: hidden;
+      }
+      .body-content {
+        padding: 80px;
+      }
+      section {
+        width: 80%;
+        height: 700px;
+        margin: auto;
+        padding: 30px;
+      }
+      .footer-container {
+        background-color: #d68000;
+        border-width: 0;
+        width: 100%;
+        padding: 20px 50px;
+        margin-top: 50px;
+        float: left;
+      }
+      .logo_pic img {
+        width: 40%;
+        border-radius: 50%;
+        float: left;
+        margin-top: 5%;
+      }
+      .right-panel {
+        float: right;
+        width: 320px;
+        /*border: 3px solid green;*/
+        height: 500px;
+      }
+      .toggle-buttons {
+        margin-left: auto;
+        margin-right: auto;
+        text-align:center;
+      }
+      .toggle {
+        width: 132px;
+        height: 42px;
+        background-color: #d68000;
+        border-color: #d77900;
+        font-size: 20px;
+      }
+      .toggle#signin_toggle {
+        border-radius: 0;
+        -webkit-border-top-left-radius: 50px;
+        -moz-border-radius-topleft: 50px;
+        border-top-left-radius: 50px;
+      }
+      .toggle#signup_toggle {
+        border-radius: 0;
+        background-color: #a06002;
+        border-color: #a06002;
+        -webkit-border-top-right-radius: 50px;
+        -moz-border-radius-topright: 50px;
+        border-top-right-radius: 50px;
+      }
+      .toggle#signin_toggle:hover,
+      .toggle#signin_toggle:active,
+      .toggle#signin_toggle:focus,
+      .toggle#signup_toggle:hover,
+      .toggle#signup_toggle:active,
+      .toggle#signup_toggle:focus {
+        background-color: #a06002;
+        border-color: #a06002;
+      }
+
+      .card-container {
+        background-color: #F7F7F7;
+        /* just in case there no content*/
+        padding: 20px 25px 30px;
+        margin: 0 auto 25px;
+        margin-top: 0;
+        /* shadows and rounded borders */
+        -moz-border-radius: 2px;
+        -webkit-border-radius: 2px;
+        border-radius: 30px;
+        -moz-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+        -webkit-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+        box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+        width: 270px;
+        height: 50%;
+      }
+      #sign_in_board {
+        display: none;
+      }
+      #sign_up_board {
+        display: block;
+      }
+      .profile-img-card {
+        width: 100px;
+        height: 100px;
+        margin: 20px auto 10px;
+        display: block;
+        -moz-border-radius: 50%;
+        -webkit-border-radius: 50%;
+        border-radius: 50%;
+      }
+      .profile-name-card {
+        font-size: 16px;
+        font-weight: bold;
+        text-align: center;
+        margin: 10px 0 0;
+        min-height: 1em;
+      }
+      .reauth-userID {
+        display: block;
+        color: #404040;
+        line-height: 2;
+        margin-bottom: 10px;
+        font-size: 14px;
+        text-align: center;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        -moz-box-sizing: border-box;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+      }
+      .form-signup #userID,
+      .form-signup #password,
+      .form-signin #userID,
+      .form-signin #password {
+        direction: ltr;
+        height: 44px;
+        font-size: 16px;
+      }
+      .register,
+      .login {
+        font-weight: 700;
+        height: 36px;
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        user-select: none;
+        cursor: default;
+      }
+      button {
+        color: #FFF;
+        background-color: #d68000;
+        border-color: #d77900;
+        text-transform: uppercase;
+        font-size: 14px;
+        font-weight: 400;
+        border-radius: 4px;
+        padding: 6px 12px;
+        display: inline-block;
+        margin-bottom: 0px;
+        line-height: 1.42857;
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: middle;
+        cursor: pointer;
+        -moz-user-select: none;
+        background-image: none;
+        border: 1px solid transparent;
+        margin-top: 10px;
+      }
+      button:hover {
+        background-color: #a06002;
+        border-color: #a06002;
+        text-decoration: none;
+      }
+      .form-signup input[type=password],
+      .form-signup input[type=text],
+      .form-signup button,
+      .form-signin input[type=password],
+      .form-signin input[type=text],
+      .form-signin button {
+        width: 250px;
+        display: block;
+        margin-bottom: 10px;
+        margin-left:10px;
+        z-index: 1;
+        position: relative;
+        -moz-box-sizing: border-box;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+      }
+      .remember-me,
+      .forgot-password {
+        margin-left: 10px;
+      }
+      .register,
+      .login {
+        /*background-color: #4d90fe; */
+        background-color: rgb(104, 145, 162);
+        /* background-color: linear-gradient(rgb(104, 145, 162), rgb(12, 97, 33));*/
+        padding: 0px;
+        font-weight: 700;
+        font-size: 14px;
+        height: 36px;
+        -moz-border-radius: 3px;
+        -webkit-border-radius: 3px;
+        border-radius: 3px;
+        border: none;
+        -o-transition: all 0.218s;
+        -moz-transition: all 0.218s;
+        -webkit-transition: all 0.218s;
+        transition: all 0.218s;
+      }
+      .register:hover,
+      .register:active,
+      .register:focus,
+      .login:hover,
+      .login:active,
+      .login:focus {
+        background-color: #339999;
+      }
+      .forgot-password {
+        color: rgb(104, 145, 162);
+      }
+      .forgot-password:hover,
+      .forgot-password:active,
+      .forgot-password:focus {
+        color: rgb(12, 97, 33);
+      }
+      .form-signup .form-control:focus,
+      .form-signin .form-control:focus {
+        border-color: rgb(123, 411, 362);
+        outline: 0;
+        -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgb(104, 145, 162);
+        box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgb(104, 145, 162);
+      }
+      .jump_to_home {
+        margin-left:auto;
+        margin-right:auto;
+        text-align: center;
+      }
+      p#copyright {
+        margin-top: 0px;
+        margin-left:20px;
+      }
+      a.group-link {
+        padding-left: 13px;
+      }
+    .body-content
+      .logo_pic
+        img(src="http://canineplanet.net/wp-content/uploads/2014/08/cute-dog-2014-08-22.jpg")
+      .right-panel
+        .toggle-buttons
+          button.toggle#signin_toggle(data-action="bea", onclick="toggleSignin()") Sign In
+          script.
+            function toggleSignin() {
+              document.getElementById("sign_in_board").style.display = 'block';
+              document.getElementById("signin_toggle").style.backgroundColor = '#a06002';
+              document.getElementById("sign_up_board").style.display = 'none';
+              document.getElementById("signup_toggle").style.backgroundColor = '#d68000';
+            }
+          button.toggle#signup_toggle(data-action="bea", onclick="toggleSignup()") Sign Up
+          script.
+            function toggleSignup() {
+              document.getElementById("sign_up_board").style.display = 'block';
+              document.getElementById("signup_toggle").style.backgroundColor = '#a06002';
+              document.getElementById("sign_in_board").style.display = 'none';
+              document.getElementById("signin_toggle").style.backgroundColor = '#d68000';
+            }
+        .card-container#sign_in_board
+          img.profile-img-card(src="//ssl.gstatic.com/accounts/ui/avatar_2x.png")
+          form(class="form-signin", name="login", action="/login", method="post")
+            input(type="text", class="form-control", name="username", placeholder="Username")
+            input(type="password", class="form-control", name="password", placeholder="password")
+            div(style="margin: 0 auto; display: table;")
+              button(type="submit", class='button', style="float:initial; width: 80px") Log In
+        .card-container#sign_up_board
+          p.profile-name-card#profile-name
+          form(class="form-signin", role="form", method="post", action="/register")
+            if errormsg
+              div(class="alert alert-danger")
+                p #{errormsg}
+            input(type="text", class="form-control", placeholder="Display name", name ="displayName", required, autofocus)
+            input(type="text", class="form-control", placeholder="Username", name="username", required)
+            input(type="password", class="form-control", placeholder="Password (More than 4 characters)", name="password", pattern="\\S{4}\\S*",required)
+            input(type="password", class="form-control", placeholder="Confirm password", name="password2", required)
+            div(style="margin: 0 auto; display: table; width: 200px")
+              button(type="submit", class='button', style="float:initial; margin-left: 10px; display: table-column; width: 80px") Sign up
+              button(href="/home", data-dismiss="modal", class='button', style="float:initial; margin-left: 10px; display: table-column; width: 80px") Cancel
+        .jump_to_home
+          button(data-action="bea",onclick="redirect()") Jump To Homepage
+          script.
+            function redirect() {
+              window.location.href = '/home'
+            }
+  footer
+    .footer-container
+        p
+        | © Some Project @ Imperial College London 2015
+        | ·
+        a(href='/about') Group 4
+    

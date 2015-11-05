@@ -4,7 +4,13 @@ var router = express.Router();
 router.get('/',
    require('connect-ensure-login').ensureLoggedIn(),
    function(req, res){
-     res.render('game', { user: req.user });
+     var displayName = "";
+     if(!req.user) {
+         displayName = undefined;
+     } else {
+         displayName = req.user.displayName;
+     }
+     res.render('game', { user: req.user, displayName: displayName});
 });
 
 
