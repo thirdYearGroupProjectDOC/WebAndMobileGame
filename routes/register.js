@@ -29,7 +29,7 @@ router.post('/', function(req, res) {
                 console.log("User id generated is " + user.id);
                 req.login(user, function(err){
                 if (err) { return next(err);}
-                    return res.redirect('/game');
+                    return res.redirect('/levels');
                 });
             });
         });

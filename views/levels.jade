@@ -1,0 +1,17 @@
+extends layout
+
+block content
+  h1= title
+  p Welcome to #{title}
+  h3 There are #{levelCount} levels
+  .list-group
+      a.list-group-item.active( href="/game?level=1" )
+          h4.list-group-item-heading First Level
+          p.list-group-item-text Some thing
+      a.list-group-item( href="/game?level=2" )
+          h4.list-group-item-heading Second Level
+          p.list-group-item-text Some thing
+      a.list-group-item( href="/game?level=3" )
+          h4.list-group-item-heading Second Level
+          p.list-group-item-text Some thing
+  canvas#map(width=500, height=400)
