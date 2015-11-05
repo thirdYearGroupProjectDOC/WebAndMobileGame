@@ -3,8 +3,11 @@ extends layout
 block content
   h1= title
   p Welcome to #{title}
+  h2 Welcome!  #{uname}
   h3 There are #{levelCount} levels
-  .list-group
+  form(name="selectLvls" action="/levels" method="post")
+    <div class="lvls">
+    .list-group
       a.list-group-item.active( href="/game?level=1" )
           h4.list-group-item-heading First Level
           p.list-group-item-text Some thing
@@ -12,6 +15,9 @@ block content
           h4.list-group-item-heading Second Level
           p.list-group-item-text Some thing
       a.list-group-item( href="/game?level=3" )
-          h4.list-group-item-heading Second Level
+          h4.list-group-item-heading Third Level
+          p.list-group-item-text Some thing
+      a.list-group-item( href="/game?level=4" )
+          h4.list-group-item-heading Fourth Level
           p.list-group-item-text Some thing
   canvas#map(width=500, height=400)

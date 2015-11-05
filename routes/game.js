@@ -10,9 +10,8 @@ router.get('/',
      } else {
          displayName = req.user.displayName;
      }
-     res.render('game', { user: req.user, displayName: displayName});
+     res.render('game', { user: req.user, displayName: displayName, level: req.query.level});
 });
 
 
 module.exports = router;
-

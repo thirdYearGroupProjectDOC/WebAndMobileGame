@@ -11,6 +11,7 @@ router.get('/', function(req, res, next) {
 router.post('/',
   passport.authenticate('local', {failureRedirect: '/login'}),
   function(req, res){
+    console.log(req.user.username);
     res.redirect('/levels');
   }
 );
