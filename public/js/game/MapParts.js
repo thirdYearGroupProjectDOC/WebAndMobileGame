@@ -84,7 +84,25 @@ function onDragMove(){
 
           this.x = newPosition.x - newPosition.x%tile_size + tile_size/2;
           this.y = newPosition.y - newPosition.y%tile_size + tile_size/2;
-          
+
+          // end tile automatically change dir
+          if(this.name=='end'){
+            // can be optimised later
+            if(toTilePos(this.x)==map_size-1){
+              this.dir = [3];
+              this.rotation = Math.PI/2;
+            }else if(toTilePos(this.x)==0){
+              this.dir = [1];
+              this.rotation = Math.PI/2*3;
+            }else if(toTilePos(this.y)==0){
+              this.dir = [2];
+              this.rotation = 0;
+            }else if(toTilePos(this.y)==map_size-1){
+              this.dir = [0];
+              this.rotation = Math.PI/2*2;
+            }
+          }
+
         // put it to where mouse is
         }else{
 
