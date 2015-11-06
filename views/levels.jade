@@ -6,6 +6,7 @@ block content
   h2 Welcome!  #{uname}
   h3 There are #{levelCount} levels
   <a href="/createLevel" class="btn btn-primary">Create my own level</a>
+  <a href="/rank" class="btn btn-info">Go see the ranks</a>
   p ===
   form(name="selectLvls" action="/levels" method="post")
     <div class="lvls">
@@ -22,4 +23,3 @@ block content
       a.list-group-item( href="/game?level=4" )
           h4.list-group-item-heading Fourth Level
           p.list-group-item-text Some thing
-  canvas#map(width=500, height=400)

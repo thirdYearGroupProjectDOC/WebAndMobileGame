@@ -1,0 +1,27 @@
+extends layout
+
+block content
+  h1= title
+  p Welcome to #{title}
+  p Total rank count is #{rankData}
+  <a href="/levels" class="btn btn-info">Back to level Selection</a>
+  div.ranks
+    table.table
+      thead
+        tr
+          th Firstname
+          th Lastname
+          th Email
+      tbody
+        tr.success
+          td John
+          td Doe
+          td john@example.com
+        tr.danger
+          td Mary
+          td Moe
+          td mary@example.com
+        tr.info
+         td July
+         td Dooley
+         td july@example.com
