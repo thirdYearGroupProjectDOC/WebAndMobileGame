@@ -1,5 +1,5 @@
 
-
+/*
 function onButtonUp()
 {
     this.isdown = false;
@@ -12,11 +12,12 @@ function onButtonUp()
     }
 }
 
-
+*/
 function player_start() {
 
-   for (var i=0; i<instructionsQueuePointer; i++) {
-       switch (instructionsQueue[i]) {
+   //for (var i=0; i<instructionsQueuePointer; i++) {
+       INSTRUCT_STAGE.children[step].alpha = 0.5;
+       switch (instructionsQueue[step]) {
         case 0:
             player_move(player_dir);
             break;
@@ -30,7 +31,7 @@ function player_start() {
         default:
             break;
        }
-   }
+ //  }
 
 }
 
@@ -202,8 +203,8 @@ function resetButtonOut()
 
 function game_reset() {
 
-   player.x = zero_x;
-   player.y = zero_y;
+   player.x = 0;
+   player.y = 0;
    player.pos_x = 0;
    player.pos_y = 0;
    player_dir = 1;
@@ -214,6 +215,7 @@ function game_reset() {
 
    }
    instructionsQueuePointer = 0;
+   step = 0;
 }
 
 

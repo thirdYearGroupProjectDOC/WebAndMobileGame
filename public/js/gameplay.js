@@ -93,6 +93,13 @@ function animate(){
 
     requestAnimationFrame(animate);
     renderer.render(stage);
+
+    //when one step is finished
+    if (player.x+player.y != 0 && player.xmov == 0 && player.ymov == 0) {
+    step ++;
+    player_start();
+  }
+  
 }
 
 // used for turning road
@@ -161,6 +168,7 @@ for(var i = 0; i<map_size*map_size*2; i++){
     instructionsQueue[i] = -1;
 }
 var instructionsQueuePointer = 0;
+var step = 0;
 
 var INSTRUCT_STAGE = new PIXI.Container();
 
@@ -179,8 +187,8 @@ undo_button = createUndoButton(700,200,'assets/undo.png');
 
 reset_button = createResetButton(310,510,'assets/reset.png');
 
-var turn_left = createInstructions(selections_x+100, 10,'assets/spt_inst_left.png');
-var turn_right = createInstructions(selections_x+100, 60,'assets/spt_inst_right.png');
-var move_forward = createInstructions(selections_x+100, 110,'assets/spt_inst_forward.png');
+var turn_left = createInstructions(selections_x+200, 10,'assets/spt_inst_left.png');
+var turn_right = createInstructions(selections_x+200, 60,'assets/spt_inst_right.png');
+var move_forward = createInstructions(selections_x+200, 110,'assets/spt_inst_forward.png');
 
 
