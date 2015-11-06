@@ -1,5 +1,7 @@
 var express = require('express');
 var expressSession = require('express-session');
+var connectEnsure = require('connect-ensure-login');
+var connectFlash = require('connect-flash');
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
@@ -8,6 +10,7 @@ var bodyParser = require('body-parser');
 var passport = require('passport');
 var LocalStrategy = require('passport-local');
 var mongoose = require('mongoose');
+var bcrypt = require('bcrypt');
 
 var users = require('./models/user');
 
@@ -32,7 +35,7 @@ app.set('view engine', 'jade');
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(expressSession({secret: 'secret', resave: false,
   saveUninitialized: false}));
-
+app.use(connectFlash());
 app.use(passport.initialize());
 app.use(passport.session())
 app.use(logger('dev'));
@@ -64,14 +67,19 @@ passport.use(new LocalStrategy(function(username, password, done) {
       }
 
       if (!user) {
-        return done(null, false);
+        return done(null, false, {message: 'incorrect username or password.'});
       }
 
-      if (user.password != password) {
-        return done(null, false);
-      }
+      bcrypt.compare(password, user.password, function(err, res) {
+        if (err) {
+          return done(err);
+        }
+        if (res) {
+          return done(null, user);
+        }
+        return done(null, false, {message: 'incorrect username or password.'});
+      });
 
-      return done(null, user);
     });
   });
 }));

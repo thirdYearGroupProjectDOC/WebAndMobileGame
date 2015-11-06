@@ -4,6 +4,7 @@ var express = require('express');
 var router = express.Router();
 var passport = require('passport');
 var users = require('../models/user');
+var bcrypt = require('bcrypt');
 
 
 router.get('/', function(req, res, next) {
@@ -21,17 +22,36 @@ router.post('/', function(req, res) {
                 res.render('register', { errormsg: 'This username already exists. Try something else :D' });
                 return ;
             }
-            users.UserDetails.create({
-            username: req.param('username'),
-            password: req.param('password'),
-            displayName: req.param('displayName')
-            }).then(function(user) {
-                console.log("User id generated is " + user.id);
-                req.login(user, function(err){
-                if (err) { return next(err);}
-                    return res.redirect('/game');
+
+            bcrypt.genSalt(function (err, salt) {
+                if (err) {
+                    throw err;
+                }
+
+                bcrypt.hash(req.param('password'), salt, function(err, hash){
+                    if (err) {
+                        throw err;
+                    }
+
+                    //console.log(hash);
+
+                    users.UserDetails.create({
+                        username: req.param('username'),
+                        password: hash,
+                        displayName: req.param('displayName')
+                    }).then(function(user) {
+                        console.log("User id generated is " + user.id);
+                        req.login(user, function(err){
+                        if (err) {
+                            return next(err);
+                        }
+                        return res.redirect('/game');
+                        });
+                    });
                 });
+
             });
+
         });
 
       });
