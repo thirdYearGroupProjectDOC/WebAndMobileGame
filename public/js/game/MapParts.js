@@ -32,7 +32,7 @@ function onDragStart(event){
     this.started = true;
     this.alpha = 0.8;
     this.dragging = true;
-    if(check_in_map(this.pos_x,this.pos_y)){
+    if(check_in_map(this.pos_x,this.pos_y,this.name)){
         map[this.pos_y*map_size+this.pos_x] = null;
     }
 }
@@ -59,8 +59,10 @@ function onDragEnd(){
           this.x = this.ox;
           this.y = this.oy;
   //        map[this.pos_y*map_size+this.pos_x] = null;
-      }else if(check_in_map(this.pos_x,this.pos_y)){
+      }else if(check_in_map(this.pos_x,this.pos_y,this.name)){
+
           map[this.pos_y*map_size+this.pos_x] = this.dir;
+          show_msg(this.pos_y*map_size+this.pos_x);
       }
     }
 

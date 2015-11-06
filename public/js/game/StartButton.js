@@ -36,7 +36,7 @@ function createStartButton(x,y,img){
 function onButtonDown()
 {
     this.isdown = true;
-    player_move(2);
+    player_move(1);
     this.alpha = 1;
 }
 
