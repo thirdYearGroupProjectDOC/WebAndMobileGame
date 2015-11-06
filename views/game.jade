@@ -1,13 +1,12 @@
 extends layout
 
+
 block content
   div.welcomebox
       // Filtered inline output
       p.
-        Welcome, #{user.displayName}
+        Welcome, #{user.displayName}, this is level #{level}
   p
       a(class='button', href='/logout') Log out
- 
-  script(type="text/javascript",src="js/gameplay.js")
-  
 
+  script(type="text/javascript",src="js/gameplay.js")
