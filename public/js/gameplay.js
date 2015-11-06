@@ -14,8 +14,8 @@ var tile_size = 80;
 var zero_x = 80;
 var zero_y = 60;
 
-var selections_x = 600;
-var selections_y = 50;
+var selections_x = 500;
+var selections_y = 0;
 
 // create the root of the scene graph
 var stage = new PIXI.Container();
@@ -37,22 +37,19 @@ for (var j = 0; j < map_size; j++) {
 MAP_STAGE.x = zero_x;
 MAP_STAGE.y = zero_y;
 
+// setting directions of road pieces according to image's default direction
+// for detail and usage see the comments below
+dir_dict = {'monster':[-1], 'corner':[0,3], 'end':[2], 'straight':[0,2], 't':[1,2,3], 'tree':[]};
 
 // create road part from image, can be dragged to fit on map,
 // dir defines where it points to that leads to another road,
 // 0 is north, 1 is east, 2 is south, 3 is west, -1 is hell :)
-var road_monster = createMapParts(selections_x,selections_y,'assets/spt_monster.png');
-road_monster.dir = [-1];
-var road_corner = createMapParts(selections_x,selections_y+100,'assets/spt_road_corner.png');
-road_corner.dir = [0,3];
-var road_end = createMapParts(selections_x,selections_y+200,'assets/spt_road_end.png');
-road_end.dir = [2];
-var road_straight = createMapParts(selections_x,selections_y+300,'assets/spt_road_straight.png');
-road_straight.dir = [0,2];
-var road_t = createMapParts(selections_x,selections_y+400,'assets/spt_road_t.png');
-road_t.dir = [1,2,3];
-var road_tree = createMapParts(selections_x,selections_y+500,'assets/spt_tree.png'); 
-road_tree.dir = [];
+var road_monster = createMapParts(selections_x,selections_y,'assets/spt_monster.png',dir_dict['monster'],0);
+var road_corner = createMapParts(selections_x,selections_y+tile_size*1.5,'assets/spt_road_corner.png',dir_dict['corner'],1);
+var road_end = createMapParts(selections_x,selections_y+tile_size*3,'assets/spt_road_end.png',dir_dict['end'],0);
+var road_straight = createMapParts(selections_x,selections_y+tile_size*4.5,'assets/spt_road_straight.png',dir_dict['straight'],0);
+var road_t = createMapParts(selections_x,selections_y+tile_size*6,'assets/spt_road_t.png',dir_dict['t'],0);
+var road_tree = createMapParts(selections_x,selections_y+tile_size*7.5,'assets/spt_tree.png',dir_dict['tree'],0);
 
 
 // create start button
@@ -60,120 +57,46 @@ start_button = createStartButton(180,550,'assets/spt_inst_start.png');
 
 var player_tex = PIXI.Texture.fromImage('assets/spt_boy.png');
 var player = new PIXI.Sprite(player_tex);
-player.x = zero_x;
-player.y = zero_y;
+// position and size
+player.x = 0;
+player.y = 0;
 player.width = tile_size;
 player.height = tile_size;
+
+// position on map, only descrete numbers
 player.pos_x = 0;
 player.pos_y = 0;
 
-stage.addChild(player);
+// used in main loop for moving on canvas
+player.xmov = 0;
+player.ymov = 0;
+player.speed = tile_size/20;
+
+MAP_STAGE.addChild(player);
 
 animate();
+
 function animate(){
   //show_msg(map);
-  requestAnimationFrame(animate);
-  renderer.render(stage);
+    player.x += player.speed*Math.sign(player.xmov);
+    player.y += player.speed*Math.sign(player.ymov);
+    player.xmov = Math.sign(player.xmov) * (Math.abs(player.xmov)-player.speed);
+    player.ymov = Math.sign(player.ymov) * (Math.abs(player.ymov)-player.speed);
+
+    requestAnimationFrame(animate);
+    renderer.render(stage);
 }
-
-// for Map Parts only
-function onDragStart(event){
-    // store a reference to the data
-    // the reason for this is because of multitouch
-    // we want to track the movement of this particular touch
-    this.data = event.data;
-    this.alpha = 0.8;
-    this.dragging = true;
-    if(check_in_map(this.pos_x,this.pos_y)){
-        map[this.pos_y*map_size+this.pos_x] = null;
-    }
-}
-
-// for Map Parts only
-function onDragEnd(){
-    this.alpha = 1;
-
-    this.dragging = false;
-
-    // set the interaction data to null
-    this.data = null;
-    if(this.dragged != true){
-        this.rotation+=Math.PI/2;
-        turn_dir(this.dir);
-    }
-    this.pos_x = Math.floor(this.position.x / tile_size) - 1;
-    this.pos_y = Math.floor(this.position.y / tile_size) - 1;
-    this.dragged = false;
-    if(check_in_map(this.pos_x,this.pos_y)){
-        map[this.pos_y*map_size+this.pos_x] = this.dir;
-    }
-        
-}
-
-// for Map Parts only
-function onDragMove(){
-    if (this.dragging)
-    {
-        this.dragged = true;
-        var newPosition = this.data.getLocalPosition(this.parent);
-        // enter tiling region ( MAP )
-        if(this.position.x > zero_x && this.position.x < zero_x+map_size*tile_size &&
-          this.position.y > zero_y && this.position.y < zero_y+map_size*tile_size){
-
-          this.position.x = newPosition.x - newPosition.x%tile_size+tile_size/2;
-          this.position.y = newPosition.y - newPosition.y%tile_size+tile_size/4;
-
-        // put it to where mouse is
-        }else{
-
-          this.position.x = newPosition.x;
-          this.position.y = newPosition.y;
-        }
-    
-    }
-}
-
-// for Map Parts only
-function createMapParts(x,y,img){
-  var tex_troad_straigh = PIXI.Texture.fromImage(img);
-  var part = new PIXI.Sprite(tex_troad_straigh);
-
-  part.interactive = true;
-  part.buttonMode = true;
-  part.anchor.set(0.5);
-  part.width = tile_size;
-  part.height = tile_size;
-  part.position.x = x;
-  part.position.y = y;
-  // to distinguish between turning road and dragging road 
-  part.dragged = false;
-  // position on map
-  part.pos_x = -1;
-  part.pos_y = -1;
-
-  part
-    // events for drag start
-    .on('mousedown', onDragStart)
-    .on('touchstart', onDragStart)
-    // events for drag end
-    .on('mouseup', onDragEnd)
-    .on('mouseupoutside', onDragEnd)
-    .on('touchend', onDragEnd)
-    .on('touchendoutside', onDragEnd)
-    // events for drag move
-    .on('mousemove', onDragMove)
-    .on('touchmove', onDragMove);//haha
-  stage.addChild(part);
-  return part;
-}
-
 
 // used for turning road
 function turn_dir(dir){
+  res = [];
   for(var i = 0; i < dir.length; i++){
-    dir[i] ++;
-    dir[i] %= 4;
+    if(dir[i]>=0){
+      res[i] = dir[i]+1;
+      res[i] %= 4;
+    }
   }
+  return res;
 }
 
 // used for printing message on screen
@@ -192,92 +115,31 @@ function check_in_map(x,y){
     return x>=0 && x<map_size && y >=0 && y<map_size;
 }
 
-function createStartButton(x,y,img){
-  var start_tex = PIXI.Texture.fromImage(img);
-  var start_button = new PIXI.Sprite(start_tex);
-  start_button.width = tile_size*2;
-  start_button.height = tile_size;
-  start_button.buttonMode = true;
-  start_button.anchor.set(0.5);
-  start_button.position.x = x;
-  start_button.position.y = y;
-  // make the button interactive...
-  start_button.interactive = true;
-  start_button
-      // set the mousedown and touchstart callback...
-      .on('mousedown', onButtonDown)
-      .on('touchstart', onButtonDown)
-
-      // set the mouseup and touchend callback...
-      .on('mouseup', onButtonUp)
-      .on('touchend', onButtonUp)
-      .on('mouseupoutside', onButtonUp)
-      .on('touchendoutside', onButtonUp)
-
-      // set the mouseover callback...
-      .on('mouseover', onButtonOver)
-
-      // set the mouseout callback...
-      .on('mouseout', onButtonOut)
-      
-  start_button.tap = null;
-  start_button.click = null;
-  // add it to the stage
-  stage.addChild(start_button);
-  return start_button;
-}
-
-function onButtonDown()
-{
-    this.isdown = true;
-    player_move(1);
-    this.alpha = 1;
-}
-
-function onButtonUp()
-{
-    this.isdown = false;
-    if (this.isOver){
-    }
-    else{
-    }
-}
-
-function onButtonOver()
-{
-    this.isOver = true;
-    if (this.isdown){
-        return;
-    }
-}
-
-function onButtonOut()
-{
-    this.isOver = false;
-    if (this.isdown){
-        return;
-    }
-}
-
+/* @dir is the direction player moves, 0 notrh and clockwise inc
+*  first check whether the road player stands on has this dir
+*  then check boundries
+*/
 function player_move(dir){
-  switch(dir) {
-    case 0:
-        player.y -= tile_size;
-        player.pos_y -= 1;
-        break;
-    case 1:
-        player.x += tile_size;
-        player.pos_x += 1;
-        break;
-    case 2:
-        player.y += tile_size;
-        player.pos_y += 1;
-        break;
-    case 3:
-        player.x -= tile_size;
-        player.pos_x -= 1;
-        break;
-    default:
-        //
+
+  // get direction!
+  var xmov = (2-dir)*dir%2;
+  var ymov = (dir-1)*(1-dir%2);
+
+  var cur = player.pos_y*map_size+player.pos_x;
+  var dst = (player.pos_y+ymov)*map_size + player.pos_x+xmov;
+
+  //opsite direction
+  var op = (dir+2)%4;
+
+  if(dst<map_size*map_size && map[cur].indexOf(dir)!=-1
+    && map[dst].indexOf(op)!=-1){
+
+    player.xmov = xmov*tile_size;
+    player.ymov = ymov*tile_size;
+
+    player.pos_x += xmov;
+    player.pos_y += ymov;
+
   }
+
 }

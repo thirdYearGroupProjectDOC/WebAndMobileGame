@@ -8,12 +8,9 @@ router.get('/', function(req, res, next) {
   res.render('login');
 });
 
-router.post('/',
-  passport.authenticate('local', {failureRedirect: '/login'}),
-  function(req, res){
-    console.log(req.user.username);
-    res.redirect('/levels');
-  }
+router.post('/',  passport.authenticate('local', {successRedirect: '/levels',
+                                  failureRedirect: '/login',
+                                  failureFlash: true})
 );
 
 
