@@ -9,6 +9,8 @@ html(lang='en')
         script(src='/js/html5shiv.js')
         script(src='/js/respond.min.js')
         script(type='text/javascript', src ="js/pixi.js")
+        script(type='text/javascript', src ="js/game/MapParts.js")
+        script(type='text/javascript', src ="js/game/StartButton.js")
         script(type='text/javascript', src ="js/gameplay.js")
         script(type='text/javascript', src ="js/instructions.js")
         // Custom styles for this template
@@ -17,8 +19,27 @@ html(lang='en')
     body
         style.
           body {
-            padding: 80px 50px 50px;
             background-color: #f1c233;
+            padding-bottom: 0;
+          }
+          .title-text {
+            font-weight: 600;
+            color: #ff9a03;
+          }
+          a:hover.title-text {
+            color: #d68000;
+            cursor: pointer;
+            text-decoration: none;
+          }
+          .footer-container {
+            background-color: #ff9a03;
+            border-width: 0;
+            width: 100%;
+            padding: 20px 50px;
+            margin-top: 50px;
+          }
+          .body-content {
+            padding: 80px 50px 50px;
           }
         NAVBAR
         style.
@@ -47,7 +68,7 @@ html(lang='en')
             height: 80px;
             background-color: #d68000;
           }
-          a.button {
+          a.button, .button {
             color: #FFF;
             background-color: #d68000;
             border-color: #d77900;
@@ -69,7 +90,7 @@ html(lang='en')
             margin-top: 10px;
             float: right;
           }
-          a:hover.button {
+          a:hover.button, :hover.button {
             background-color: #a06002;
             border-color: #a06002;
             text-decoration: none;
@@ -95,40 +116,40 @@ html(lang='en')
                             ul.nav.navbar-nav
                                 li
                                     a(href='/about') About
-                                li.dropdown
-                                    a.dropdown-toggle(href='#', data-toggle='dropdown')
-                                        | My Account
-                                    ul.dropdown-menu
-                                        li
-                                            a(href='/') View Profile
-                                        li.divider
-                                        li
-                                            a(href='/') Edit Profile
-                            //if !firstname
-                            //    form(class="navbar-form navbar-right", role="form", action="/", method="post")
-                            //        div(class="form-group")
-                            //            input(type="text", placeholder="Email", class="form-control", name="username")
-                            //        div(class="form-group")
-                            //            input(type="password", placeholder="Password", class="form-control", name="password")
-                            //        button(type="submit", class="btn btn-success btn-sm").
-                            //            Sign in
-                            //else
-                            //    form(class="navbar-form navbar-right navbar-text", action="/logout", method="post")
-                            //        div(class="form-group", align = "right")
-                            //            h9 Welcome, #{firstname}!&nbsp;&nbsp;
-                            //            button(type="submit", class="btn btn-danger btn-sm").
-                            //                Log out
-                            a.button(style="margin-left: 10px; margin-top: 25px;")
-                              | Sign Up
-                            a.button(style="margin-top: 25px;",href='login')
-                              | Sign In
-        block content
-        .container
-          footer
-              p
-                  | © Some Project @ Imperial College London 2015
-                  | ·
-                  a(href='/about') Group 4
+                                li
+                                    a(href='/game') Play
+                                if displayName
+                                    li.dropdown
+                                        a.dropdown-toggle(href='#', data-toggle='dropdown')
+                                            | My Account
+                                        ul.dropdown-menu
+                                            li
+                                                a(href='/profile-view') View Profile
+                                            li.divider
+                                            li
+                                                a(href='/profile-edit') Edit Profile
+                                            li.divider
+                                            li
+                                                a(href='/delete-account') Delete Account
+                            if !displayName
+                                a.button(style="margin-left: 10px; margin-top: 25px;", href='register')
+                                  | Sign Up
+                                a.button(style="margin-top: 25px;",href='login')
+                                  | Sign In
+                            else
+                                a.button(style="margin-top: 25px;",href='logout')
+                                  | Log out
+                                .welcome-message(style="display: inline-block; margin-top: 30px; margin-right: 20px; float: right")
+                                  | Welcome, #{displayName}
+                            
+        .body-content
+          block content
+    footer
+        .footer-container
+            p
+            | © Some Project @ Imperial College London 2015
+            | ·
+            a(href='/about') Group 4
 
         // Placed at the end of the document so the pages load faster
         script(src='/js/jquery.js')

@@ -1,0 +1,43 @@
+extends layout
+
+block content
+  style.
+    .form-control {
+      margin: 5px auto;
+      width: 300px;
+    }
+    .profile-container {
+      width: 350px; 
+      margin: 0 auto;
+    }
+    .profile-box {
+      color: #000;
+      background-color: white;
+      border-color: #d77900;
+      font-size: 14px;
+      font-weight: 400;
+      border-radius: 20px;
+      padding: 6px 12px;
+      display: inline-block;
+      margin-bottom: 0px;
+      line-height: 1.42857;
+      text-align: center;
+      white-space: nowrap;
+      vertical-align: middle;
+      -moz-user-select: none;
+      background-image: none;
+      border: 1px solid transparent;
+      margin: 0 auto;
+      margin-top: 10px;
+    }
+  .profile-container
+    form(class="profile-box", role="form", method="post", action="/profile-edit")
+      if errormsg
+        p #{errormsg}
+      input(type="text", class="form-control", placeholder="Display name", name ="displayName", required, autofocus)
+      div(style="margin: 0 auto; width: 270px; text-align: left;")
+        | #{user.username}
+      input(type="password", class="form-control", placeholder="Password (More than 4 characters)", name="password", pattern="\\S{4}\\S*",required)
+      input(type="password", class="form-control", placeholder="Confirm password", name="password2", required)
+      div(style="margin: 0 auto; display: table;")
+        button(type="submit", class='button', style="float:initial") Edit
