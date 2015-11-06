@@ -12,12 +12,14 @@ router.get('/', function(req, res, next) {
 });
 
 router.post('/', function(req, res) {
-    if (req.param('password') !== req.param('password2')) {
+    console.log(req.body.username);
+    if (req.body.password !== req.body.password2) {
       res.render('register', { errormsg: 'Password and confirm password did not match. Try it again :D' });
       return;
     }
     process.nextTick(function() {
-        users.UserDetails.findOne({username : req.param('username')}, function(err, user){
+        users.UserDetails.findOne({username : req.body.username},
+        function(err, user){
             if (user) {
                 res.render('register', { errormsg: 'This username already exists. Try something else :D' });
                 return ;
@@ -28,7 +30,7 @@ router.post('/', function(req, res) {
                     throw err;
                 }
 
-                bcrypt.hash(req.param('password'), salt, function(err, hash){
+                bcrypt.hash(req.body.password, salt, function(err, hash){
                     if (err) {
                         throw err;
                     }
@@ -36,9 +38,9 @@ router.post('/', function(req, res) {
                     //console.log(hash);
 
                     users.UserDetails.create({
-                        username: req.param('username'),
+                        username: req.body.username,
                         password: hash,
-                        displayName: req.param('displayName')
+                        displayName: req.body.displayName
                     }).then(function(user) {
                         console.log("User id generated is " + user.id);
                         req.login(user, function(err){
