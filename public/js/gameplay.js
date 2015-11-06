@@ -3,13 +3,15 @@ document.body.appendChild(renderer.view);
 
 // size of the actuall game size
 var map_size = 5;
+// for start and end point
+map_size +=2;
 var map = [];
-for(var i = 0; i<map_size*map_size; i++){
+for(var i = 0; i<Math.pow(map_size,2); i++){
     map[i] = null;
 }
 
 // tile size , depends on screen later
-var tile_size = 80;
+var tile_size = 60;
 // where the first road begin
 var zero_x = 80;
 var zero_y = 60;
@@ -24,8 +26,8 @@ var MAP_STAGE = new PIXI.Container();
 
 stage.addChild(MAP_STAGE);
 // create background
-for (var j = 0; j < map_size; j++) {
-    for (var i = 0; i < map_size; i++) {
+for (var j = 1; j < map_size-1; j++) {
+    for (var i = 1; i < map_size-1; i++) {
         var bg = PIXI.Sprite.fromImage('assets/background.png');
         bg.x = tile_size * i;
         bg.y = tile_size * j;
@@ -44,12 +46,12 @@ dir_dict = {'monster':[-1], 'corner':[0,3], 'end':[2], 'straight':[0,2], 't':[1,
 // create road part from image, can be dragged to fit on map,
 // dir defines where it points to that leads to another road,
 // 0 is north, 1 is east, 2 is south, 3 is west, -1 is hell :)
-var road_monster = createMapParts(selections_x,selections_y,'assets/spt_monster.png',dir_dict['monster'],0);
-var road_corner = createMapParts(selections_x,selections_y+tile_size*1.5,'assets/spt_road_corner.png',dir_dict['corner'],1);
-var road_end = createMapParts(selections_x,selections_y+tile_size*3,'assets/spt_road_end.png',dir_dict['end'],0);
-var road_straight = createMapParts(selections_x,selections_y+tile_size*4.5,'assets/spt_road_straight.png',dir_dict['straight'],0);
-var road_t = createMapParts(selections_x,selections_y+tile_size*6,'assets/spt_road_t.png',dir_dict['t'],0);
-var road_tree = createMapParts(selections_x,selections_y+tile_size*7.5,'assets/spt_tree.png',dir_dict['tree'],0); 
+var road_monster = createMapParts(selections_x,selections_y,'assets/spt_monster.png','monster',0);
+var road_corner = createMapParts(selections_x,selections_y+tile_size*1.5,'assets/spt_road_corner.png','corner',1);
+var road_end = createMapParts(selections_x,selections_y+tile_size*3,'assets/spt_road_end.png','end',0);
+var road_straight = createMapParts(selections_x,selections_y+tile_size*4.5,'assets/spt_road_straight.png','straight',0);
+var road_t = createMapParts(selections_x,selections_y+tile_size*6,'assets/spt_road_t.png','t',0);
+var road_tree = createMapParts(selections_x,selections_y+tile_size*7.5,'assets/spt_tree.png','tree',0); 
 
 
 // create start button
@@ -110,10 +112,7 @@ function show_msg(msg){
     stage.addChild(spinningText);
 }
 
-// checking for relative position om game map
-function check_in_map(x,y){
-    return x>=0 && x<map_size && y >=0 && y<map_size;
-}
+
 
 /* @dir is the direction player moves, 0 notrh and clockwise inc
 *  first check whether the road player stands on has this dir

@@ -1,5 +1,26 @@
 function toTilePos(n){
-  return Math.floor(n / tile_size);
+  // +1 because of start and end point
+  return Math.floor(n / tile_size); 
+}
+
+// checking for relative position om game map
+function check_in_map(x,y,name){ 
+  if(name == 'end'){
+    return x>=0 && x<map_size && y >=0 && y<map_size;
+  }else{
+    return x>=1 && x<map_size-1 && y >=1 && y<map_size-1;   
+  }
+}
+
+// tiling map region, x, y are real position on canvas
+function check_tiling_region(x,y,name){
+  if(name=='end'){
+    return x > 0 && x < map_size*tile_size &&
+            y > 0 && y < map_size*tile_size
+  }else{
+    return x > tile_size && x < (map_size-1)*tile_size &&
+            y > tile_size && y < (map_size-1)*tile_size
+  }
 }
 
 // for Map Parts only
@@ -59,17 +80,11 @@ function onDragMove(){
         this.dragged = true;
         var newPosition = this.data.getLocalPosition(this.parent);
         // enter tiling region ( MAP )
-        if(this.x > 0 && this.x < map_size*tile_size &&
-          this.y > 0 && this.y < map_size*tile_size){
+        if(check_tiling_region(this.x,this.y,this.name)){
 
           this.x = newPosition.x - newPosition.x%tile_size + tile_size/2;
           this.y = newPosition.y - newPosition.y%tile_size + tile_size/2;
-          /*index = toTilePos(this.x)+toTilePos(this.y)*map_size;
-          if(map[index]!=null){
-            this.x+= tile_size;
-            this.y+= tile_size;
-          }*/
-
+          
         // put it to where mouse is
         }else{
 
@@ -81,17 +96,10 @@ function onDragMove(){
 }
 
 // for Map Parts only
-function createMapParts(x,y,img, dir, counts){
+function createMapParts(x,y,img, name, counts){
   var tex_troad_straigh = PIXI.Texture.fromImage(img);
   var part = new PIXI.Sprite(tex_troad_straigh);
  
-  // these variables are only used for creating 
-  // another road
-  part.img = img;
-  part.ox = x;
-  part.oy = y;
-  part.odir = dir;
-
   part.interactive = true;
   part.buttonMode = true;
   part.anchor.set(0.5);
@@ -105,8 +113,16 @@ function createMapParts(x,y,img, dir, counts){
   // position on map
   part.pos_x = -1;
   part.pos_y = -1;
-  part.dir = dir;
+  part.name = name;
+  part.dir = dir_dict[name];
   part.counts = counts;
+
+  // these variables are only used for creating 
+  // another road
+  part.img = img;
+  part.ox = x;
+  part.oy = y;
+  part.odir = this.dir;
 
   part
     // events for drag start
