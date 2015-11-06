@@ -17,7 +17,7 @@ router.get('/', function(req, res, next) {
   });
   var levelCount = 4;
   console.log(req.user.displayName);
-  res.render('levels', { title: 'Homepage', levelCount: levelCount, uname: req.user.displayName});//uname: req.query.uname,
+  res.render('levels', { title: 'Select Levels', levelCount: levelCount, uname: req.user.displayName});//uname: req.query.uname,
 });
 
 /*
