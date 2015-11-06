@@ -20,6 +20,7 @@ router.post('/', function(req, res) {
                 res.render('register', { errormsg: 'This username already exists. Try something else :D' });
                 return ;
             }
+
             bcrypt.genSalt(function (err, salt) {
                 if (err) {
                     throw err;
