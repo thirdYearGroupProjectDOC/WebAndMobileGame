@@ -303,8 +303,35 @@ function player_move(dir){
 }
 
 
+//-----------------------------------------------------------
 
 
 
+var instructionsQueue = [];
+for(var i = 0; i<map_size*map_size*2; i++){
+    instructionsQueue[i] = -1;
+}
+var instructionsQueuePointer = 0;
+
+var INSTRUCT_STAGE = new PIXI.Container();
+
+stage.addChild(INSTRUCT_STAGE);
+
+
+var queue_x = 800;
+var queue_y = 10;
+
+INSTRUCT_STAGE.x = queue_x;
+INSTRUCT_STAGE.y = queue_y;
+
+
+undo_button = createUndoButton(700,200,'assets/undo.png');
+
+
+reset_button = createResetButton(310,510,'assets/reset.png');
+
+var turn_left = createInstructions(selections_x+100, 10,'assets/spt_inst_left.png');
+var turn_right = createInstructions(selections_x+100, 60,'assets/spt_inst_right.png');
+var move_forward = createInstructions(selections_x+100, 110,'assets/spt_inst_forward.png');
 
 
