@@ -17,7 +17,13 @@ router.get('/', function(req, res, next) {
   });
   var levelCount = 4;
   console.log(req.user.displayName);
-  res.render('levels', { title: 'Homepage', levelCount: levelCount, uname: req.user.displayName});//uname: req.query.uname,
+    var displayName = "";
+    if(!req.user) {
+        displayName = undefined;
+    } else {
+        displayName = req.user.displayName;
+    }
+  res.render('levels', { title: 'Select Levels', levelCount: levelCount, uname: displayName, displayName: displayName});//uname: req.query.uname,
 });
 
 /*

@@ -5,6 +5,8 @@ block content
   p Welcome to #{title}
   h2 Welcome!  #{uname}
   h3 There are #{levelCount} levels
+  <a href="/createLevel" class="btn btn-primary">Create my own level</a>
+  p ===
   form(name="selectLvls" action="/levels" method="post")
     <div class="lvls">
     .list-group
