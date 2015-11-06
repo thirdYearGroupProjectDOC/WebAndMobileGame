@@ -60,9 +60,7 @@ function onDragEnd(){
           this.y = this.oy;
   //        map[this.pos_y*map_size+this.pos_x] = null;
       }else if(check_in_map(this.pos_x,this.pos_y,this.name)){
-
           map[this.pos_y*map_size+this.pos_x] = this.dir;
-          show_msg(this.pos_y*map_size+this.pos_x);
       }
     }
 
@@ -116,11 +114,11 @@ function onDragMove(){
 }
 
 // for Map Parts only
-function createMapParts(x,y,img, name, counts){
+function createMapParts(x,y,img, name, counts, active){
   var tex_troad_straigh = PIXI.Texture.fromImage(img);
   var part = new PIXI.Sprite(tex_troad_straigh);
  
-  part.interactive = true;
+  part.interactive = active;
   part.buttonMode = true;
   part.anchor.set(0.5);
   part.width = tile_size;

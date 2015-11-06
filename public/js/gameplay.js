@@ -46,12 +46,12 @@ dir_dict = {'monster':[-1], 'corner':[0,3], 'end':[2], 'straight':[0,2], 't':[1,
 // create road part from image, can be dragged to fit on map,
 // dir defines where it points to that leads to another road,
 // 0 is north, 1 is east, 2 is south, 3 is west, -1 is hell :)
-var road_monster = createMapParts(selections_x,selections_y,'assets/spt_monster.png','monster',0);
-var road_corner = createMapParts(selections_x,selections_y+tile_size*1.5,'assets/spt_road_corner.png','corner',1);
-var road_end = createMapParts(selections_x,selections_y+tile_size*3,'assets/spt_road_end.png','end',0);
-var road_straight = createMapParts(selections_x,selections_y+tile_size*4.5,'assets/spt_road_straight.png','straight',0);
-var road_t = createMapParts(selections_x,selections_y+tile_size*6,'assets/spt_road_t.png','t',0);
-var road_tree = createMapParts(selections_x,selections_y+tile_size*7.5,'assets/spt_tree.png','tree',0); 
+var road_monster = createMapParts(selections_x,selections_y,'assets/spt_monster.png','monster',0,true);
+var road_corner = createMapParts(selections_x,selections_y+tile_size*1.5,'assets/spt_road_corner.png','corner',1,false);
+var road_end = createMapParts(selections_x,selections_y+tile_size*3,'assets/spt_road_end.png','end',0,true);
+var road_straight = createMapParts(selections_x,selections_y+tile_size*4.5,'assets/spt_road_straight.png','straight',0,true);
+var road_t = createMapParts(selections_x,selections_y+tile_size*6,'assets/spt_road_t.png','t',0,true);
+var road_tree = createMapParts(selections_x,selections_y+tile_size*7.5,'assets/spt_tree.png','tree',0,true); 
 
 
 // create start button
@@ -130,7 +130,6 @@ function player_move(dir){
 
   //opsite direction
   var op = (dir+2)%4;
-  show_msg(cur);
   // check road condition
   if(dst<map_size*map_size && map[cur].indexOf(dir)!=-1
     && map[dst].indexOf(op)!=-1){
