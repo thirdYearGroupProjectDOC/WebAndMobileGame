@@ -3,6 +3,18 @@ function toTilePos(n){
   return Math.floor(n / tile_size); 
 }
 
+// used for turning road
+function turn_dir(dir){
+  res = [];
+  for(var i = 0; i < dir.length; i++){
+    if(dir[i]>=0){
+      res[i] = dir[i]+1;
+      res[i] %= 4;
+    }
+  }
+  return res;
+}
+
 // checking for relative position om game map
 function check_in_map(x,y,name){ 
   if(name == 'end'){
@@ -45,20 +57,21 @@ function onDragEnd(){
 
       // set the interaction data to null
       this.data = null;
+
+      // click on piece will simply turn
       if(this.dragged != true){
-          this.rotation+=Math.PI/2;
-          this.dir=turn_dir(this.dir);
+          this.turn();
       }
       this.pos_x = toTilePos(this.x);
       this.pos_y = toTilePos(this.y);
       this.dragged = false;
 
+      // if the position is being possessed, go back
       if(map[this.pos_y*map_size+this.pos_x]!=null){
           this.pos_x = -1;
           this.pos_y = -1;
           this.x = this.ox;
           this.y = this.oy;
-  //        map[this.pos_y*map_size+this.pos_x] = null;
       }else if(check_in_map(this.pos_x,this.pos_y,this.name)){
           map[this.pos_y*map_size+this.pos_x] = this.dir;
       }
@@ -102,10 +115,8 @@ function onDragMove(){
               this.rotation = Math.PI/2*2;
             }
           }
-
         // put it to where mouse is
         }else{
-
           this.x = newPosition.x;
           this.y = newPosition.y;
         }
@@ -113,8 +124,17 @@ function onDragMove(){
     }
 }
 
-// for Map Parts only
-function createMapParts(x,y,img, name, counts, active){
+/*
+creating map pieces
+@x , y: position on MAP_STAGE
+@img : texture source
+@name : used for getting directions, also for special uses e.g.
+        end road piece can change dir depends on position
+@counts : number of pieces can be picked from this position
+@active : can be moved or not.
+@turn : change start direction , simply turn "turn" times  
+*/
+function createMapParts(x,y,img, name, counts, active, turn){
   var tex_troad_straigh = PIXI.Texture.fromImage(img);
   var part = new PIXI.Sprite(tex_troad_straigh);
  
@@ -140,7 +160,15 @@ function createMapParts(x,y,img, name, counts, active){
   part.img = img;
   part.ox = x;
   part.oy = y;
-  part.odir = this.dir;
+  part.odir = part.dir;
+  part.turn = function (){
+    part.dir = turn_dir(part.dir);
+    part.rotation += Math.PI/2;
+  }
+
+  for(var i = 0; i<turn; i ++){
+    part.turn();
+  }
 
   part
     // events for drag start

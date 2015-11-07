@@ -16,8 +16,8 @@ var tile_size = 60;
 var zero_x = 80;
 var zero_y = 60;
 
-var selections_x = 500;
-var selections_y = 0;
+var selects_x = 500;
+var selects_y = 0;
 
 // create the root of the scene graph
 var stage = new PIXI.Container();
@@ -47,12 +47,12 @@ dir_dict = {'monster':[-1], 'corner':[0,3], 'end':[2], 'straight':[0,2], 't':[1,
 // dir defines where it points to that leads to another road,
 // 0 is north, 1 is east, 2 is south, 3 is west, -1 is hell :)
 
-var road_monster = createMapParts(selections_x,selections_y,'assets/spt_monster.png','monster',0,true);
-var road_corner = createMapParts(selections_x,selections_y+tile_size*1.5,'assets/spt_road_corner.png','corner',1,false);
-var road_end = createMapParts(selections_x,selections_y+tile_size*3,'assets/spt_road_end.png','end',0,true);
-var road_straight = createMapParts(selections_x,selections_y+tile_size*4.5,'assets/spt_road_straight.png','straight',0,true);
-var road_t = createMapParts(selections_x,selections_y+tile_size*6,'assets/spt_road_t.png','t',0,true);
-var road_tree = createMapParts(selections_x,selections_y+tile_size*7.5,'assets/spt_tree.png','tree',0,true); 
+var road_monster = createMapParts(selects_x,selects_y,'assets/spt_monster.png','monster',0,true);
+var road_corner = createMapParts(selects_x,selects_y+tile_size*1.5,'assets/spt_road_corner.png','corner',1,false);
+var road_end = createMapParts(selects_x,selects_y+tile_size*3,'assets/spt_road_end.png','end',0,true,1);
+var road_straight = createMapParts(selects_x,selects_y+tile_size*4.5,'assets/spt_road_straight.png','straight',0,true);
+var road_t = createMapParts(selects_x,selects_y+tile_size*6,'assets/spt_road_t.png','t',0,true);
+var road_tree = createMapParts(selects_x,selects_y+tile_size*7.5,'assets/spt_tree.png','tree',0,true); 
 
 
 
@@ -91,17 +91,7 @@ function animate(){
     renderer.render(stage);
 }
 
-// used for turning road
-function turn_dir(dir){
-  res = [];
-  for(var i = 0; i < dir.length; i++){
-    if(dir[i]>=0){
-      res[i] = dir[i]+1;
-      res[i] %= 4;
-    }
-  }
-  return res;
-}
+
 
 // used for printing message on screen
 function show_msg(msg){
