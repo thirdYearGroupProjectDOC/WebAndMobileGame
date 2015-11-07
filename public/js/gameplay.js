@@ -65,6 +65,11 @@ var player = new PIXI.Sprite(player_tex);
 // position and size
 player.x = 0;
 player.y = 0;
+
+player.aim_x = 0;
+player.aim_y = 0;
+
+
 player.width = tile_size;
 player.height = tile_size;
 
@@ -72,7 +77,7 @@ player.height = tile_size;
 player.pos_x = 0;
 player.pos_y = 0;
 var player_dir = 1;
-
+player.isWalking = false;
 
 // used in main loop for moving on canvas
 player.xmov = 0;
@@ -95,7 +100,7 @@ function animate(){
     renderer.render(stage);
 
     //when one step is finished
-    if (player.x+player.y != 0 && player.xmov == 0 && player.ymov == 0) {
+    if (step < (instructionsQueuePointer - 1) && player.isWalking == true && player.x == player.aim_x && player.y == player.aim_y && player.xmov == 0 && player.ymov == 0) {
     step ++;
     player_start();
   }
@@ -152,10 +157,15 @@ function player_move(dir){
     player.xmov = xmov*tile_size;
     player.ymov = ymov*tile_size;
 
+
+
     player.pos_x += xmov;
     player.pos_y += ymov;
 
   }
+
+  player.aim_x += xmov*tile_size;
+  player.aim_y += ymov*tile_size;
 
 }
 

@@ -43,6 +43,7 @@ function onButtonDown()
 function onButtonUp()
 {
     this.isdown = false;
+    player.isWalking = true;
     player_start();
     if (this.isOver){
     }

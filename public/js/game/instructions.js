@@ -208,6 +208,11 @@ function game_reset() {
    player.pos_x = 0;
    player.pos_y = 0;
    player_dir = 1;
+   player.isWalking = false;
+   player.aim_x = 0;
+   player.aim_y = 0;
+  // player.xmov = 0;
+  // player.ymov = 0;
 
    for (var i = instructionsQueuePointer - 1; i >= 0; i--) {
        instructionsQueue[i] = -1;
