@@ -14,22 +14,21 @@ function onButtonUp()
 
 */
 function player_start() {
-   //for (var i=0; i<instPointer; i++) {
-       //INSTRUCT_STAGE.children[step].alpha = 0.5;
-       switch (instQueue[step]) {
+       switch (instQueue[step].dir) {
         case 0:
             player_move(player_dir);
             break;
         case 1:
+            player.wait = tile_size/player.speed;
             player_dir = (player_dir + 3) % 4;
             break;
         case 2:
+            player.wait = tile_size/player.speed;
             player_dir = (player_dir + 1) % 4;
             break;
         default:
             break;
        }
- //  }
 
 }
 
@@ -226,14 +225,6 @@ function createInstructions(x,y,img,inst) {
   var instruct_tex = PIXI.Texture.fromImage(img);
   var instruction = new PIXI.Sprite(instruct_tex);
 
-
-  /*if (img == 'assets/spt_inst_right.png') {
-     instruction.dir = 2;
-  } else if (img =='assets/spt_inst_forward.png') {
-    instruction.dir = 0;
-  } else if (img =='assets/spt_inst_left.png') {
-    instruction.dir = 1;
-  }*/
   instruction.dir = inst;
 
   instruction.width = tile_size*2;
@@ -274,8 +265,8 @@ function instructionButtonDown() {
 
 function instructionButtonUp() {
    this.down = false;
-   instQueue[instPointer] = this.dir;
-   instPointer++;
+      
+   
 
    //put instruction symbol in the stack
    if (this.dir == 2) {
@@ -285,11 +276,14 @@ function instructionButtonUp() {
    } else if (this.dir == 1) {
       instr = PIXI.Sprite.fromImage('assets/spt_inst_left.png');
    }
-
+      instr.dir = this.dir;
       instr.x = 50;
-      instr.y = 50*(instPointer-1);
+      instr.y = 50*(instPointer);
       instr.height = tile_size/2;
       instr.width = tile_size*2;
+
+      instQueue[instPointer] = instr;
+      instPointer++;
       INSTRUCT_STAGE.addChild(instr);
 
 }

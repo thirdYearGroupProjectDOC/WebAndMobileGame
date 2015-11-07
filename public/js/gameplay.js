@@ -82,6 +82,8 @@ var player_dir = 1;
 player.xmov = 0;
 player.ymov = 0;
 player.speed = tile_size/20;
+player.wait = 0;
+player.wait_speed = 0;
 
 MAP_STAGE.addChild(player);
 
@@ -121,21 +123,30 @@ animate();
 
 function animate(){
     //show_msg(map);
+
     player.x += player.speed*Math.sign(player.xmov);
     player.y += player.speed*Math.sign(player.ymov);
     player.xmov = Math.sign(player.xmov) * (Math.abs(player.xmov)-player.speed);
     player.ymov = Math.sign(player.ymov) * (Math.abs(player.ymov)-player.speed);
+    
+    if(player.wait != 0){
+      player.wait --;
+    }
 
     requestAnimationFrame(animate);
     renderer.render(stage);
 
+    //show_msg(player.xmov);
+    if((player.xmov != 0) || (player.ymov != 0) || (player.wait != 0)){
+      instQueue[step-1].rotation += 0.1;
+    }
     //when one step is finished
-    if (start/*&&player.x+player.y != 0*/ && player.xmov == 0 && player.ymov == 0 && instQueue.length != 0) {
+    if (start && player.xmov == 0 && player.ymov == 0 
+      && player.wait == 0 && instQueue.length != 0) {
       player_start();
       step++;
     }
-
-  
+ 
 }
 
 
@@ -146,8 +157,8 @@ function show_msg(msg){
 
     // setting the anchor point to 0.5 will center align the text... great for spinning!
     spinningText.anchor.set(0.5);
-    spinningText.x = 500+Math.random()*40;
-    spinningText.y = 200+Math.random()*40;
+    spinningText.x = 500+Math.random()*200;
+    spinningText.y = 200+Math.random()*200;
     stage.addChild(spinningText);
 }
 
@@ -170,8 +181,8 @@ function player_move(dir){
   //opsite direction
   var op = (dir+2)%4;
   // check road condition
-  if(/*dst<map_size*map_size && map[cur].indexOf(dir)!=-1
-    && map[dst].indexOf(op)!=-1*/true){
+  if(dst<map_size*map_size && map[cur].indexOf(dir)!=-1
+    && map[dst].indexOf(op)!=-1){
 
     player.xmov = xmov*tile_size;
     player.ymov = ymov*tile_size;
