@@ -85,6 +85,38 @@ player.speed = tile_size/20;
 
 MAP_STAGE.addChild(player);
 
+//-----------------------------------------------------------
+
+
+
+var instQueue = [];
+/*for(var i = 0; i<map_size*map_size*2; i++){
+    instQueue[i] = -1;
+}*/
+var instPointer = 0;
+var step = 0;
+
+var INSTRUCT_STAGE = new PIXI.Container();
+
+stage.addChild(INSTRUCT_STAGE);
+
+var queue_x = 800;
+var queue_y = 10;
+
+INSTRUCT_STAGE.x = queue_x;
+INSTRUCT_STAGE.y = queue_y;
+
+
+undo_button = createUndoButton(700,200,'assets/undo.png');
+reset_button = createResetButton(310,510,'assets/reset.png');
+
+var turn_left = createInstructions(selects_x+200, 10,'assets/spt_inst_left.png',1);
+var turn_right = createInstructions(selects_x+200, 60,'assets/spt_inst_right.png',2);
+var move_forward = createInstructions(selects_x+200, 110,'assets/spt_inst_forward.png',0);
+
+
+var start = false;
+
 animate();
 
 function animate(){
@@ -98,10 +130,11 @@ function animate(){
     renderer.render(stage);
 
     //when one step is finished
-    if (player.x+player.y != 0 && player.xmov == 0 && player.ymov == 0) {
-      step ++;
+    if (start/*&&player.x+player.y != 0*/ && player.xmov == 0 && player.ymov == 0 && instQueue.length != 0) {
       player_start();
+      step++;
     }
+
   
 }
 
@@ -113,8 +146,8 @@ function show_msg(msg){
 
     // setting the anchor point to 0.5 will center align the text... great for spinning!
     spinningText.anchor.set(0.5);
-    spinningText.position.x = 310;
-    spinningText.position.y = 200;
+    spinningText.x = 500+Math.random()*40;
+    spinningText.y = 200+Math.random()*40;
     stage.addChild(spinningText);
 }
 
@@ -137,8 +170,8 @@ function player_move(dir){
   //opsite direction
   var op = (dir+2)%4;
   // check road condition
-  if(dst<map_size*map_size && map[cur].indexOf(dir)!=-1
-    && map[dst].indexOf(op)!=-1){
+  if(/*dst<map_size*map_size && map[cur].indexOf(dir)!=-1
+    && map[dst].indexOf(op)!=-1*/true){
 
     player.xmov = xmov*tile_size;
     player.ymov = ymov*tile_size;
@@ -150,37 +183,5 @@ function player_move(dir){
   
 
 }
-
-//-----------------------------------------------------------
-
-
-
-var instructionsQueue = [];
-for(var i = 0; i<map_size*map_size*2; i++){
-    instructionsQueue[i] = -1;
-}
-var instructionsQueuePointer = 0;
-var step = 0;
-
-var INSTRUCT_STAGE = new PIXI.Container();
-
-stage.addChild(INSTRUCT_STAGE);
-
-
-var queue_x = 800;
-var queue_y = 10;
-
-INSTRUCT_STAGE.x = queue_x;
-INSTRUCT_STAGE.y = queue_y;
-
-
-undo_button = createUndoButton(700,200,'assets/undo.png');
-
-
-reset_button = createResetButton(310,510,'assets/reset.png');
-
-var turn_left = createInstructions(selections_x+200, 10,'assets/spt_inst_left.png');
-var turn_right = createInstructions(selections_x+200, 60,'assets/spt_inst_right.png');
-var move_forward = createInstructions(selections_x+200, 110,'assets/spt_inst_forward.png');
 
 

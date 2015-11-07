@@ -43,7 +43,8 @@ function onButtonDown()
 function onButtonUp()
 {
     this.isdown = false;
-    player_start();
+
+    start = true;
     if (this.isOver){
     }
     else{
