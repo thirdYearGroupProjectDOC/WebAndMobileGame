@@ -1,4 +1,4 @@
-var renderer = PIXI.autoDetectRenderer(800, 600,{backgroundColor : 0x1099bb});
+var renderer = PIXI.autoDetectRenderer(1200, 800,{backgroundColor : 0x1099bb});
 document.body.appendChild(renderer.view);
 
 // size of the actuall game size
@@ -43,6 +43,10 @@ MAP_STAGE.y = zero_y;
 // for detail and usage see the comments below
 dir_dict = {'monster':[-1], 'corner':[0,3], 'end':[2], 'straight':[0,2], 't':[1,2,3], 'tree':[]};
 
+
+
+
+
 // create road part from image, can be dragged to fit on map,
 // dir defines where it points to that leads to another road,
 // 0 is north, 1 is east, 2 is south, 3 is west, -1 is hell :)
@@ -53,6 +57,7 @@ var road_end = createMapParts(selects_x,selects_y+tile_size*3,'assets/spt_road_e
 var road_straight = createMapParts(selects_x,selects_y+tile_size*4.5,'assets/spt_road_straight.png','straight',0,true);
 var road_t = createMapParts(selects_x,selects_y+tile_size*6,'assets/spt_road_t.png','t',0,true);
 var road_tree = createMapParts(selects_x,selects_y+tile_size*7.5,'assets/spt_tree.png','tree',0,true); 
+
 
 
 
@@ -70,6 +75,8 @@ player.height = tile_size;
 // position on map, only descrete numbers
 player.pos_x = 1;
 player.pos_y = 1;
+var player_dir = 1;
+
 
 // used in main loop for moving on canvas
 player.xmov = 0;
@@ -89,6 +96,13 @@ function animate(){
 
     requestAnimationFrame(animate);
     renderer.render(stage);
+
+    //when one step is finished
+    if (player.x+player.y != 0 && player.xmov == 0 && player.ymov == 0) {
+      step ++;
+      player_start();
+    }
+  
 }
 
 
@@ -136,3 +150,37 @@ function player_move(dir){
   
 
 }
+
+//-----------------------------------------------------------
+
+
+
+var instructionsQueue = [];
+for(var i = 0; i<map_size*map_size*2; i++){
+    instructionsQueue[i] = -1;
+}
+var instructionsQueuePointer = 0;
+var step = 0;
+
+var INSTRUCT_STAGE = new PIXI.Container();
+
+stage.addChild(INSTRUCT_STAGE);
+
+
+var queue_x = 800;
+var queue_y = 10;
+
+INSTRUCT_STAGE.x = queue_x;
+INSTRUCT_STAGE.y = queue_y;
+
+
+undo_button = createUndoButton(700,200,'assets/undo.png');
+
+
+reset_button = createResetButton(310,510,'assets/reset.png');
+
+var turn_left = createInstructions(selections_x+200, 10,'assets/spt_inst_left.png');
+var turn_right = createInstructions(selections_x+200, 60,'assets/spt_inst_right.png');
+var move_forward = createInstructions(selections_x+200, 110,'assets/spt_inst_forward.png');
+
+
