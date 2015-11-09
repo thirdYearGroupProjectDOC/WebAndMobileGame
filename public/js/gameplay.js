@@ -185,14 +185,14 @@ var INSTRUCT_STAGE = new PIXI.Container();
 stage.addChild(INSTRUCT_STAGE);
 
 
-var queue_x = 800;
+var queue_x = 850;
 var queue_y = 10;
 
 INSTRUCT_STAGE.x = queue_x;
 INSTRUCT_STAGE.y = queue_y;
 
 
-undo_button = createUndoButton(700,200,'assets/undo.png');
+undo_button = createUndoButton(700,410,'assets/undo.png');
 
 
 reset_button = createResetButton(310,510,'assets/reset.png');
@@ -200,5 +200,13 @@ reset_button = createResetButton(310,510,'assets/reset.png');
 var turn_left = createInstructions(selections_x+200, 10,'assets/spt_inst_left.png');
 var turn_right = createInstructions(selections_x+200, 60,'assets/spt_inst_right.png');
 var move_forward = createInstructions(selections_x+200, 110,'assets/spt_inst_forward.png');
+var repeat_time = createInstructions(selections_x+200, 160, 'assets/spt_inst_repeat_time.png');
+var repeat_end = createInstructions(selections_x+200, 210, 'assets/spt_inst_repeat_end.png');
+var if_instruct = createInstructions(selections_x+200, 260, 'assets/spt_inst_if.png');
+var else_instruct = createInstructions(selections_x+200, 310, 'assets/spt_inst_else.png');
+var if_end = createInstructions(selections_x+200, 360, 'assets/spt_inst_end.png');
+
+
+
 
 

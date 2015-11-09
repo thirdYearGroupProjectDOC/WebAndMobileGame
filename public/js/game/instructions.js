@@ -27,7 +27,18 @@ function player_start() {
         case 2:
             player_dir = (player_dir + 1) % 4;
             break;
+        case 3:
 
+            break;
+        case 4:
+            break;
+        case 5:
+
+            break;
+        case 6:
+            break;
+        case 7:
+            break;
         default:
             break;
        }
@@ -46,8 +57,8 @@ function player_start() {
 function createUndoButton(x,y,img){
   var undo_tex = PIXI.Texture.fromImage(img);
   var undo_button = new PIXI.Sprite(undo_tex);
-  undo_button.width = 65;
-  undo_button.height = 65;
+  undo_button.width = tile_size;
+  undo_button.height = tile_size/2;
   undo_button.buttonMode = true;
   undo_button.position.x = x;
   undo_button.position.y = y;
@@ -234,11 +245,21 @@ function createInstructions(x,y,img) {
 
 
   if (img == 'assets/spt_inst_right.png') {
-     instruction.dir = 2;
+    instruction.dir = 2;
   } else if (img =='assets/spt_inst_forward.png') {
     instruction.dir = 0;
   } else if (img =='assets/spt_inst_left.png') {
     instruction.dir = 1;
+  } else if (img =='assets/spt_inst_repeat_time.png') {
+    instruction.dir = 3;
+  } else if (img =='assets/spt_inst_repeat_end.png') {
+    instruction.dir = 4;
+  } else if (img =='assets/spt_inst_if.png') {
+    instruction.dir = 5;
+  } else if (img =='assets/spt_inst_else.png') {
+    instruction.dir = 6;
+  } else if (img =='assets/spt_inst_end.png') {
+    instruction.dir = 7;
   }
 
   instruction.width = tile_size*2;
@@ -290,6 +311,16 @@ function instructionButtonUp() {
       instr = PIXI.Sprite.fromImage('assets/spt_inst_forward.png');
    } else if (this.dir == 1) {
       instr = PIXI.Sprite.fromImage('assets/spt_inst_left.png');
+   } else if (this.dir == 3) {
+      instr = PIXI.Sprite.fromImage('assets/spt_inst_repeat_time.png');
+   } else if (this.dir == 4) {
+      instr = PIXI.Sprite.fromImage('assets/spt_inst_repeat_end.png');
+   } else if (this.dir == 5) {
+      instr = PIXI.Sprite.fromImage('assets/spt_inst_if.png');
+   } else if (this.dir == 6) {
+      instr = PIXI.Sprite.fromImage('assets/spt_inst_else.png');
+   } else if (this.dir == 7) {
+      instr = PIXI.Sprite.fromImage('assets/spt_inst_end');
    }
 
       instr.x = 50;
