@@ -124,9 +124,6 @@ function stack_undo() {
 }
 
 // create reset button
-
-
-
 function createResetButton(x,y,img){
   var reset_tex = PIXI.Texture.fromImage(img);
   var reset_button = new PIXI.Sprite(reset_tex);
@@ -201,25 +198,25 @@ function resetButtonOut()
 
 function game_reset() {
 
-   player.x = tile_size;
-   player.y = tile_size;
-   player.pos_x = 1;
-   player.pos_y = 1;
-   player_dir = 1;
-   start = false;
+    player.x = tile_size;
+    player.y = tile_size;
+    player.pos_x = 1;
+    player.pos_y = 1;
+    player_dir = 1;
+    start = false;
+    for(var i = 0; i < ROAD_STAGE.children.length; i++){
+        ROAD_STAGE.children[i].interactive = true;
+    }
 
-   for (var i = instPointer - 1; i >= 0; i--) {
-       instQueue[i] = -1;
-       INSTRUCT_STAGE.removeChild(INSTRUCT_STAGE.children[i]);
-   }
-   instPointer = 0;
-   step = 0;
+    INSTRUCT_STAGE.removeChildren();
+    instQueue = [];
+    instPointer = 0;
+    step = 0;
 }
 
 
 
-// create instructions
-
+// create instructions button
 function createInstructions(x,y,img,inst) {
 
   var instruct_tex = PIXI.Texture.fromImage(img);
@@ -278,7 +275,7 @@ function instructionButtonUp() {
    }
       instr.dir = this.dir;
       instr.x = 50;
-      instr.y = 50*(instPointer);
+      instr.y = tile_size + 50*(instPointer);
       instr.height = tile_size/2;
       instr.width = tile_size*2;
 

@@ -25,6 +25,7 @@ var stage = new PIXI.Container();
 var MAP_STAGE = new PIXI.Container();
 
 stage.addChild(MAP_STAGE);
+
 // create background
 for (var j = 1; j < map_size-1; j++) {
     for (var i = 1; i < map_size-1; i++) {
@@ -44,18 +45,19 @@ MAP_STAGE.y = zero_y;
 dir_dict = {'monster':[-1], 'corner':[0,3], 'end':[2], 'straight':[0,2], 't':[1,2,3], 'tree':[]};
 
 
-
+ROAD_STAGE = new PIXI.Container();
+MAP_STAGE.addChild(ROAD_STAGE);
 
 
 // create road part from image, can be dragged to fit on map,
 // dir defines where it points to that leads to another road,
 // 0 is north, 1 is east, 2 is south, 3 is west, -1 is hell :)
-
+// for detail of each parameter, see createMapParts in MapParts.js
 var road_monster = createMapParts(selects_x,selects_y,'assets/spt_monster.png','monster',0,true);
-var road_corner = createMapParts(selects_x,selects_y+tile_size*1.5,'assets/spt_road_corner.png','corner',1,false);
+var road_corner = createMapParts(selects_x,selects_y+tile_size*1.5,'assets/spt_road_corner.png','corner',2,true);
 var road_end = createMapParts(selects_x,selects_y+tile_size*3,'assets/spt_road_end.png','end',0,true,1);
-var road_straight = createMapParts(selects_x,selects_y+tile_size*4.5,'assets/spt_road_straight.png','straight',0,true);
-var road_t = createMapParts(selects_x,selects_y+tile_size*6,'assets/spt_road_t.png','t',0,true);
+var road_straight = createMapParts(selects_x,selects_y+tile_size*4.5,'assets/spt_road_straight.png','straight',2,true,1);
+var road_t = createMapParts(selects_x,selects_y+tile_size*6,'assets/spt_road_t.png','t',3,true);
 var road_tree = createMapParts(selects_x,selects_y+tile_size*7.5,'assets/spt_tree.png','tree',0,true); 
 
 
@@ -64,6 +66,7 @@ var road_tree = createMapParts(selects_x,selects_y+tile_size*7.5,'assets/spt_tre
 // create start button
 start_button = createStartButton(180,550,'assets/spt_inst_start.png');
 
+// create player
 var player_tex = PIXI.Texture.fromImage('assets/spt_boy.png');
 var player = new PIXI.Sprite(player_tex);
 // position and size
@@ -81,20 +84,18 @@ var player_dir = 1;
 // used in main loop for moving on canvas
 player.xmov = 0;
 player.ymov = 0;
-player.speed = tile_size/20;
+player.speed = tile_size/30;
 player.wait = 0;
 player.wait_speed = 0;
 
 MAP_STAGE.addChild(player);
+
 
 //-----------------------------------------------------------
 
 
 
 var instQueue = [];
-/*for(var i = 0; i<map_size*map_size*2; i++){
-    instQueue[i] = -1;
-}*/
 var instPointer = 0;
 var step = 0;
 
@@ -136,17 +137,30 @@ function animate(){
     requestAnimationFrame(animate);
     renderer.render(stage);
 
-    //show_msg(player.xmov);
+    // when player are moving or turning
     if((player.xmov != 0) || (player.ymov != 0) || (player.wait != 0)){
-      instQueue[step-1].rotation += 0.1;
+      instQueue[step-1].y -= 1;
+      instQueue[step-1].height += 1;
+      instQueue[step-1].x -= 0.5;
+      instQueue[step-1].width += 1;
+
+      if(instQueue[step-2]){
+        instQueue[step-2].height -= 1;
+        instQueue[step-2].width -= 1;
+        instQueue[step-2].x += 0.5;
+      }
     }
+
     //when one step is finished
     if (start && player.xmov == 0 && player.ymov == 0 
       && player.wait == 0 && instQueue.length != 0) {
       player_start();
       step++;
+      for(var i = 0; i < MAP_STAGE.children.length; i++){
+        ROAD_STAGE.children[i].interactive = false;
+      }
     }
- 
+    
 }
 
 

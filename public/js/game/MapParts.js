@@ -87,8 +87,7 @@ function onDragMove(){
     {
       	if(this.counts>0){
       	  this.counts--;
-      	  a = createMapParts(this.ox, this.oy, this.img, this.odir, 0);
-          MAP_STAGE.swapChildren(a,player);
+      	  a = createMapParts(this.ox, this.oy, this.img, this.name, 0, true, this.oturn);
       	} 
         this.dragged = true;
         var newPosition = this.data.getLocalPosition(this.parent);
@@ -131,7 +130,7 @@ creating map pieces
 @name : used for getting directions, also for special uses e.g.
         end road piece can change dir depends on position
 @counts : number of pieces can be picked from this position
-@active : can be moved or not.
+@active : can be draged or not.
 @turn : change start direction , simply turn "turn" times  
 */
 function createMapParts(x,y,img, name, counts, active, turn){
@@ -160,7 +159,7 @@ function createMapParts(x,y,img, name, counts, active, turn){
   part.img = img;
   part.ox = x;
   part.oy = y;
-  part.odir = part.dir;
+  part.oturn = turn;
   part.turn = function (){
     part.dir = turn_dir(part.dir);
     part.rotation += Math.PI/2;
@@ -182,7 +181,7 @@ function createMapParts(x,y,img, name, counts, active, turn){
     // events for drag move
     .on('mousemove', onDragMove)
     .on('touchmove', onDragMove);//haha
-  MAP_STAGE.addChild(part);
+  ROAD_STAGE.addChild(part);
   
   return part;
 }
