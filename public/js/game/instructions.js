@@ -263,8 +263,6 @@ function instructionButtonDown() {
 function instructionButtonUp() {
    this.down = false;
       
-   
-
    //put instruction symbol in the stack
    if (this.dir == 2) {
       instr = PIXI.Sprite.fromImage('assets/spt_inst_right.png');

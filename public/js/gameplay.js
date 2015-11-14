@@ -84,21 +84,18 @@ var player_dir = 1;
 // used in main loop for moving on canvas
 player.xmov = 0;
 player.ymov = 0;
-player.speed = tile_size/30;
+player.speed = tile_size/60;
 player.wait = 0;
-player.wait_speed = 0;
 
 MAP_STAGE.addChild(player);
 
 
-//-----------------------------------------------------------
-
-
-
+// instructions waiting to be read
 var instQueue = [];
 var instPointer = 0;
 var step = 0;
 
+// stage for instructions stacks, not buttons
 var INSTRUCT_STAGE = new PIXI.Container();
 
 stage.addChild(INSTRUCT_STAGE);
@@ -118,13 +115,19 @@ var turn_right = createInstructions(selects_x+200, 60,'assets/spt_inst_right.png
 var move_forward = createInstructions(selects_x+200, 110,'assets/spt_inst_forward.png',0);
 
 
+// boolean for start executing instructions
 var start = false;
+// for slower step animation
+var count = 0;
+// store count,
+// used for set time intervel between read instructions
+var store = 0;
+// intervel between reading instructions
+// size/speed is the time each instruction takes
+var intervel = tile_size/player.speed + 5;
 
 animate();
-
 function animate(){
-    //show_msg(map);
-
     player.x += player.speed*Math.sign(player.xmov);
     player.y += player.speed*Math.sign(player.ymov);
     player.xmov = Math.sign(player.xmov) * (Math.abs(player.xmov)-player.speed);
@@ -139,28 +142,42 @@ function animate(){
 
     // when player are moving or turning
     if((player.xmov != 0) || (player.ymov != 0) || (player.wait != 0)){
-      instQueue[step-1].y -= 1;
-      instQueue[step-1].height += 1;
-      instQueue[step-1].x -= 0.5;
-      instQueue[step-1].width += 1;
+      var cur = instQueue[step-1];
+      var last = instQueue[step-2];
 
-      if(instQueue[step-2]){
-        instQueue[step-2].height -= 1;
-        instQueue[step-2].width -= 1;
-        instQueue[step-2].x += 0.5;
+      //move up and scale
+      cur.y -= 1;
+      cur.height += 1;
+      cur.x -= 0.5;
+      cur.width += 1;
+      
+      // random changing color, need better animation here
+      if(count % 5 == 0){
+        cur.tint = Math.random()* 0xF1FFFF;
+      }
+
+      // last instruction restore to original size
+      if(last){
+        last.height -= 1;
+        last.width -= 1;
+        last.x += 0.5;
       }
     }
 
-    //when one step is finished
+    //when one step is finished, read next instruction
     if (start && player.xmov == 0 && player.ymov == 0 
-      && player.wait == 0 && instQueue.length != 0) {
+      && player.wait == 0 && instQueue.length != 0 && count - store>65) {
+      store = count;
       player_start();
       step++;
+      // while executing instructions, can't move road pieces,
+      // can only be set back by reset button
       for(var i = 0; i < MAP_STAGE.children.length; i++){
         ROAD_STAGE.children[i].interactive = false;
       }
     }
     
+    count += 1;
 }
 
 
@@ -169,7 +186,6 @@ function animate(){
 function show_msg(msg){
     var spinningText = new PIXI.Text(msg, { font: 'bold 60px Arial', fill: '#cc00ff', align: 'center', stroke: '#FFFFFF', strokeThickness: 6 });
 
-    // setting the anchor point to 0.5 will center align the text... great for spinning!
     spinningText.anchor.set(0.5);
     spinningText.x = 500+Math.random()*200;
     spinningText.y = 200+Math.random()*200;
