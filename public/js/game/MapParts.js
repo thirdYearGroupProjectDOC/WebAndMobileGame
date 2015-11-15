@@ -68,10 +68,16 @@ function onDragEnd(){
 
       // if the position is being possessed, go back
       if(map[this.pos_y*map_size+this.pos_x]!=null){
-          this.pos_x = -1;
-          this.pos_y = -1;
-          this.x = this.ox;
-          this.y = this.oy;
+          var gen = this.generator;
+          if(gen.count == 0){
+            gen.count = 2;
+            gen.gen();
+          }else{
+            gen.count ++;
+            gen.update();
+          }
+          ROAD_STAGE.removeChild(this);
+          delete(this);
       }else if(check_in_map(this.pos_x,this.pos_y,this.name)){
           map[this.pos_y*map_size+this.pos_x] = this.dir;
       }
@@ -85,11 +91,11 @@ function onDragEnd(){
 function onDragMove(){
     if (this.dragging)
     {
-      	if(this.counts>0){
-      	  this.counts--;
-      	  a = createMapParts(this.ox, this.oy, this.img, this.name, 0, true, this.oturn);
-      	} 
         this.dragged = true;
+        if(this.fresh){
+          this.fresh = false;
+          this.generator.gen();
+        }
         var newPosition = this.data.getLocalPosition(this.parent);
         // enter tiling region ( MAP )
         if(check_tiling_region(this.x,this.y,this.name)){
@@ -123,6 +129,53 @@ function onDragMove(){
     }
 }
 
+// meant to be used for manage road pieces and show numbers available
+// so using this would assume the piece will be activated 
+// param : num is number of pieces, others is for constructing mapParts
+function MapPartsGenerator(x,y,img,name,turn,num){
+  // used by createMapParts function
+  this.x = x;
+  this.y = y;
+  this.img = img;
+  this.name = name;
+  this.turn = turn;
+  // number of parts
+  if(num){
+    this.count = num;
+  }else{
+    this.count = 1;
+  }
+
+  indicate = createMapParts(this.x,this.y,this.img,this.name,false,this.turn);
+
+  var f = createMapParts(this.x,this.y,this.img,this.name,true,this.turn); 
+  f.generator = this;
+
+
+  var countTxt = new PIXI.Text(':'+this.count);
+  countTxt.x = this.x + 35;
+  countTxt.y = this.y;
+  ROAD_STAGE.addChild(countTxt);
+
+  this.gen = function(){
+    // this is called when moving top pieces
+    // when count is one, don't generate a new piece, 
+    if(this.count > 1){
+      var m = createMapParts(this.x,this.y,this.img,this.name,true,this.turn); 
+      m.generator = this;
+      this.count --;
+    }else{
+      this.count = 0;
+    }
+    this.update();
+  }
+  
+  this.update = function(){
+    countTxt.setText(':'+this.count);
+  }
+
+}
+
 /*
 creating map pieces
 @x , y: position on MAP_STAGE
@@ -133,7 +186,7 @@ creating map pieces
 @active : can be draged or not.
 @turn : change start direction , simply turn "turn" times  
 */
-function createMapParts(x,y,img, name, counts, active, turn){
+function createMapParts(x,y,img, name, active, turn){
   var tex_troad_straigh = PIXI.Texture.fromImage(img);
   var part = new PIXI.Sprite(tex_troad_straigh);
  
@@ -146,13 +199,15 @@ function createMapParts(x,y,img, name, counts, active, turn){
   part.position.y = y;
   // to distinguish between turning road and dragging road 
   part.dragged = false;
+  // when it is being created, the piece is fresh,
+  // used to maintain the counts for same type of piece
+  part.fresh = true;
   part.started = false;
   // position on map
   part.pos_x = -1;
   part.pos_y = -1;
   part.name = name;
   part.dir = dir_dict[name];
-  part.counts = counts;
 
   // these variables are only used for creating 
   // another road
@@ -160,6 +215,8 @@ function createMapParts(x,y,img, name, counts, active, turn){
   part.ox = x;
   part.oy = y;
   part.oturn = turn;
+
+  // turn clockwise
   part.turn = function (){
     part.dir = turn_dir(part.dir);
     part.rotation += Math.PI/2;

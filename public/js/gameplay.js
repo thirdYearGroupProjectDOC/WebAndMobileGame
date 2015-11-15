@@ -50,18 +50,13 @@ MAP_STAGE.addChild(ROAD_STAGE);
 
 
 // create road part from image, can be dragged to fit on map,
-// dir defines where it points to that leads to another road,
-// 0 is north, 1 is east, 2 is south, 3 is west, -1 is hell :)
-// for detail of each parameter, see createMapParts in MapParts.js
-var road_monster = createMapParts(selects_x,selects_y,'assets/spt_monster.png','monster',0,true);
-var road_corner = createMapParts(selects_x,selects_y+tile_size*1.5,'assets/spt_road_corner.png','corner',2,true);
-var road_end = createMapParts(selects_x,selects_y+tile_size*3,'assets/spt_road_end.png','end',0,true,1);
-var road_straight = createMapParts(selects_x,selects_y+tile_size*4.5,'assets/spt_road_straight.png','straight',2,true,1);
-var road_t = createMapParts(selects_x,selects_y+tile_size*6,'assets/spt_road_t.png','t',3,true);
-var road_tree = createMapParts(selects_x,selects_y+tile_size*7.5,'assets/spt_tree.png','tree',0,true); 
-
-
-
+// for detail of each parameter, see createMapParts&&generator in MapParts.js
+var road_monster = new MapPartsGenerator(selects_x,selects_y,'assets/spt_monster.png','monster',0,3);
+var road_corner = new MapPartsGenerator(selects_x,selects_y+tile_size*1.5,'assets/spt_road_corner.png','corner',0,3);
+var road_end = new MapPartsGenerator(selects_x,selects_y+tile_size*3,'assets/spt_road_end.png','end',0,3);
+var road_straight = new MapPartsGenerator(selects_x,selects_y+tile_size*4.5,'assets/spt_road_straight.png','straight',0,3);
+var road_t = new MapPartsGenerator(selects_x,selects_y+tile_size*6,'assets/spt_road_t.png','t',0,3);
+var road_tree = new MapPartsGenerator(selects_x,selects_y+tile_size*7.5,'assets/spt_tree.png','tree',0,3); 
 
 // create start button
 start_button = createStartButton(180,550,'assets/spt_inst_start.png');
