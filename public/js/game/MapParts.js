@@ -148,7 +148,10 @@ function MapPartsGenerator(x,y,img,name,turn,num){
     this.count = 1;
   }
 
-  indicate = createMapParts(this.x,this.y,this.img,this.name,false,this.turn);
+  // add indicate to stage so it won't be activated by game_reset
+  indicate = createMapParts(this.x+zero_x,this.y+zero_y,this.img,this.name,false,this.turn);
+  ROAD_STAGE.removeChild(indicate);
+  stage.addChild(indicate);
 
   var f = createMapParts(this.x,this.y,this.img,this.name,true,this.turn); 
   f.generator = this;
