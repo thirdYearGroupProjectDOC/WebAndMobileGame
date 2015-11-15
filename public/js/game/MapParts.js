@@ -153,6 +153,9 @@ function MapPartsGenerator(x,y,img,name,turn,num){
   ROAD_STAGE.removeChild(indicate);
   stage.addChild(indicate);
 
+  // prevent indicate shows on top
+  stage.setChildIndex(indicate,0);
+
   var f = createMapParts(this.x,this.y,this.img,this.name,true,this.turn); 
   f.generator = this;
 
