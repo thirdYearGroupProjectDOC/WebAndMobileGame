@@ -36,13 +36,14 @@ function createStartButton(x,y,img){
 function onButtonDown()
 {
     this.isdown = true;
-    player_move(2);
     this.alpha = 1;
 }
 
 function onButtonUp()
 {
     this.isdown = false;
+
+    start = true;
     if (this.isOver){
     }
     else{

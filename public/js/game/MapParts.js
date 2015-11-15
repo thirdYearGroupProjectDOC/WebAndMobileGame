@@ -1,5 +1,38 @@
 function toTilePos(n){
-  return Math.floor(n / tile_size);
+  // +1 because of start and end point
+  return Math.floor(n / tile_size); 
+}
+
+// used for turning road
+function turn_dir(dir){
+  res = [];
+  for(var i = 0; i < dir.length; i++){
+    if(dir[i]>=0){
+      res[i] = dir[i]+1;
+      res[i] %= 4;
+    }
+  }
+  return res;
+}
+
+// checking for relative position om game map
+function check_in_map(x,y,name){ 
+  if(name == 'end'){
+    return x>=0 && x<map_size && y >=0 && y<map_size;
+  }else{
+    return x>=1 && x<map_size-1 && y >=1 && y<map_size-1;   
+  }
+}
+
+// tiling map region, x, y are real position on canvas
+function check_tiling_region(x,y,name){
+  if(name=='end'){
+    return x > 0 && x < map_size*tile_size &&
+            y > 0 && y < map_size*tile_size
+  }else{
+    return x > tile_size && x < (map_size-1)*tile_size &&
+            y > tile_size && y < (map_size-1)*tile_size
+  }
 }
 
 // for Map Parts only
@@ -11,7 +44,7 @@ function onDragStart(event){
     this.started = true;
     this.alpha = 0.8;
     this.dragging = true;
-    if(check_in_map(this.pos_x,this.pos_y)){
+    if(check_in_map(this.pos_x,this.pos_y,this.name)){
         map[this.pos_y*map_size+this.pos_x] = null;
     }
 }
@@ -24,21 +57,30 @@ function onDragEnd(){
 
       // set the interaction data to null
       this.data = null;
+
+      // click on piece will simply turn
       if(this.dragged != true){
-          this.rotation+=Math.PI/2;
-          this.dir=turn_dir(this.dir);
+          this.turn();
       }
       this.pos_x = toTilePos(this.x);
       this.pos_y = toTilePos(this.y);
       this.dragged = false;
 
+      // if the position is being possessed, go back
       if(map[this.pos_y*map_size+this.pos_x]!=null){
-          this.pos_x = -1;
-          this.pos_y = -1;
-          this.x = this.ox;
-          this.y = this.oy;
-  //        map[this.pos_y*map_size+this.pos_x] = null;
-      }else if(check_in_map(this.pos_x,this.pos_y)){
+          var gen = this.generator;
+          //if there was no active pieces, put one on the pile,
+          // else just increase count and update;
+          if(gen.count == 0){
+            gen.count = 2;
+            gen.gen();
+          }else{
+            gen.count ++;
+            gen.update();
+          }
+          ROAD_STAGE.removeChild(this);
+          delete(this);
+      }else if(check_in_map(this.pos_x,this.pos_y,this.name)){
           map[this.pos_y*map_size+this.pos_x] = this.dir;
       }
     }
@@ -51,28 +93,37 @@ function onDragEnd(){
 function onDragMove(){
     if (this.dragging)
     {
-      	if(this.counts>0){
-      	  this.counts--;
-      	  a = createMapParts(this.ox, this.oy, this.img, this.odir, 0);
-          MAP_STAGE.swapChildren(a,player);
-      	} 
         this.dragged = true;
+        if(this.fresh){
+          this.fresh = false;
+          this.generator.gen();
+        }
         var newPosition = this.data.getLocalPosition(this.parent);
         // enter tiling region ( MAP )
-        if(this.x > 0 && this.x < map_size*tile_size &&
-          this.y > 0 && this.y < map_size*tile_size){
+        if(check_tiling_region(this.x,this.y,this.name)){
 
           this.x = newPosition.x - newPosition.x%tile_size + tile_size/2;
           this.y = newPosition.y - newPosition.y%tile_size + tile_size/2;
-          /*index = toTilePos(this.x)+toTilePos(this.y)*map_size;
-          if(map[index]!=null){
-            this.x+= tile_size;
-            this.y+= tile_size;
-          }*/
 
+          // end tile automatically change dir
+          if(this.name=='end'){
+            // can be optimised later
+            if(toTilePos(this.x)==map_size-1){
+              this.dir = [3];
+              this.rotation = Math.PI/2;
+            }else if(toTilePos(this.x)==0){
+              this.dir = [1];
+              this.rotation = Math.PI/2*3;
+            }else if(toTilePos(this.y)==0){
+              this.dir = [2];
+              this.rotation = 0;
+            }else if(toTilePos(this.y)==map_size-1){
+              this.dir = [0];
+              this.rotation = Math.PI/2*2;
+            }
+          }
         // put it to where mouse is
         }else{
-
           this.x = newPosition.x;
           this.y = newPosition.y;
         }
@@ -80,19 +131,68 @@ function onDragMove(){
     }
 }
 
-// for Map Parts only
-function createMapParts(x,y,img, dir, counts){
+// meant to be used for manage road pieces and show numbers available
+// so using this would assume the piece will be activated 
+// param : num is number of pieces, others is for constructing mapParts
+function MapPartsGenerator(x,y,img,name,turn,num){
+  // used by createMapParts function
+  this.x = x;
+  this.y = y;
+  this.img = img;
+  this.name = name;
+  this.turn = turn;
+  // number of parts
+  if(num){
+    this.count = num;
+  }else{
+    this.count = 1;
+  }
+
+  indicate = createMapParts(this.x,this.y,this.img,this.name,false,this.turn);
+
+  var f = createMapParts(this.x,this.y,this.img,this.name,true,this.turn); 
+  f.generator = this;
+
+
+  var countTxt = new PIXI.Text(':'+this.count);
+  countTxt.x = this.x + 35;
+  countTxt.y = this.y;
+  ROAD_STAGE.addChild(countTxt);
+
+  this.gen = function(){
+    // this is called when moving top pieces
+    // when count is one, don't generate a new piece, 
+    if(this.count > 1){
+      var m = createMapParts(this.x,this.y,this.img,this.name,true,this.turn); 
+      m.generator = this;
+      this.count --;
+    }else{
+      this.count = 0;
+    }
+    this.update();
+  }
+  
+  this.update = function(){
+    countTxt.setText(':'+this.count);
+  }
+
+}
+
+/*
+creating map pieces
+@x , y: position on MAP_STAGE
+@img : texture source
+@name : used for getting directions, also for special uses e.g.
+        end road piece can change dir depends on position
+@counts : number of pieces can be picked from this position
+@active : can be draged or not.
+@turn : change start direction , simply turn "turn" times  
+*/
+function createMapParts(x,y,img, name, active, turn){
   var tex_troad_straigh = PIXI.Texture.fromImage(img);
   var part = new PIXI.Sprite(tex_troad_straigh);
  
-  // these variables are only used for creating 
-  // another road
-  part.img = img;
-  part.ox = x;
-  part.oy = y;
-  part.odir = dir;
-
-  part.interactive = true;
+  part.interactive = active;
   part.buttonMode = true;
   part.anchor.set(0.5);
   part.width = tile_size;
@@ -101,12 +201,32 @@ function createMapParts(x,y,img, dir, counts){
   part.position.y = y;
   // to distinguish between turning road and dragging road 
   part.dragged = false;
+  // when it is being created, the piece is fresh,
+  // used to maintain the counts for same type of piece
+  part.fresh = true;
   part.started = false;
   // position on map
   part.pos_x = -1;
   part.pos_y = -1;
-  part.dir = dir;
-  part.counts = counts;
+  part.name = name;
+  part.dir = dir_dict[name];
+
+  // these variables are only used for creating 
+  // another road
+  part.img = img;
+  part.ox = x;
+  part.oy = y;
+  part.oturn = turn;
+
+  // turn clockwise
+  part.turn = function (){
+    part.dir = turn_dir(part.dir);
+    part.rotation += Math.PI/2;
+  }
+
+  for(var i = 0; i<turn; i ++){
+    part.turn();
+  }
 
   part
     // events for drag start
@@ -120,7 +240,7 @@ function createMapParts(x,y,img, dir, counts){
     // events for drag move
     .on('mousemove', onDragMove)
     .on('touchmove', onDragMove);//haha
-  MAP_STAGE.addChild(part);
+  ROAD_STAGE.addChild(part);
   
   return part;
 }
