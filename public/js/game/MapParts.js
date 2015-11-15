@@ -69,6 +69,8 @@ function onDragEnd(){
       // if the position is being possessed, go back
       if(map[this.pos_y*map_size+this.pos_x]!=null){
           var gen = this.generator;
+          //if there was no active pieces, put one on the pile,
+          // else just increase count and update;
           if(gen.count == 0){
             gen.count = 2;
             gen.gen();

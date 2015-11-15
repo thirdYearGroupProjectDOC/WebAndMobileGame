@@ -105,10 +105,16 @@ INSTRUCT_STAGE.y = queue_y;
 undo_button = createUndoButton(700,200,'assets/undo.png');
 reset_button = createResetButton(310,510,'assets/reset.png');
 
-var turn_left = createInstructions(selects_x+200, 10,'assets/spt_inst_left.png',1);
-var turn_right = createInstructions(selects_x+200, 60,'assets/spt_inst_right.png',2);
-var move_forward = createInstructions(selects_x+200, 110,'assets/spt_inst_forward.png',0);
+var INST_BUTTON_STAGE = new PIXI.Container();
+stage.addChild(INST_BUTTON_STAGE);
 
+var turn_left = new inst_count(selects_x+200,10,10);
+var turn_right = new inst_count(selects_x+200, 60,10);
+var move_forward = new inst_count(selects_x+200, 110,10);
+
+turn_left.gen('assets/spt_inst_left.png',1);
+turn_right.gen('assets/spt_inst_right.png',2);
+move_forward.gen('assets/spt_inst_forward.png',0);
 
 // boolean for start executing instructions
 var start = false;

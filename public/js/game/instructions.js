@@ -117,10 +117,13 @@ function undoButtonOut()
 // undo the most recent instruction
 function stack_undo() {
 
-   instPointer--;
-   instQueue[instPointer] = -1;
-   INSTRUCT_STAGE.removeChild(INSTRUCT_STAGE.children[instPointer]);
+  instPointer--;
+  instQueue[instPointer] = -1;
 
+  cur = INSTRUCT_STAGE.children[instPointer]
+  INSTRUCT_STAGE.removeChild(cur);
+  cur.button.generator.count++;
+  cur.button.generator.update();
 }
 
 // create reset button
@@ -204,8 +207,14 @@ function game_reset() {
     player.pos_y = 1;
     player_dir = 1;
     start = false;
+    // road pieces can be moved again
     for(var i = 0; i < ROAD_STAGE.children.length; i++){
         ROAD_STAGE.children[i].interactive = true;
+    }
+
+    // restore instructions buttons's count
+    for(var i = 0; i < INST_BUTTON_STAGE.children.length; i++){
+      INST_BUTTON_STAGE.children[i].generator.reset();
     }
 
     INSTRUCT_STAGE.removeChildren();
@@ -214,6 +223,31 @@ function game_reset() {
     step = 0;
 }
 
+function inst_count(x,y,count){
+  this.count = count;
+  this.max = count;
+  this.x = x;
+  this.y = y;
+
+  var countTxt = new PIXI.Text(':'+count);
+  countTxt.x = this.x + tile_size+ 45;
+  countTxt.y = this.y;
+  stage.addChild(countTxt);
+
+  this.update = function(){
+    countTxt.setText(':'+this.count);
+  }
+
+  this.reset = function(){
+    this.count = this.max;
+    this.update();
+  }
+
+  this.gen = function(img,inst){
+    var ib = createInstructions(this.x,this.y,img,inst);
+    ib.generator = this;
+  }
+}
 
 
 // create instructions button
@@ -230,7 +264,6 @@ function createInstructions(x,y,img,inst) {
   instruction.interactive = true;
   instruction.x = x;
   instruction.y = y;
-  
   
   instruction
     .on('mousedown', instructionButtonDown)
@@ -252,7 +285,7 @@ function createInstructions(x,y,img,inst) {
 
   instruction.tap = null;
   instruction.click = null; 
-   stage.addChild(instruction); 
+   INST_BUTTON_STAGE.addChild(instruction); 
    return instruction;
 }
 
@@ -261,26 +294,35 @@ function instructionButtonDown() {
 }
 
 function instructionButtonUp() {
-   this.down = false;
-      
-   //put instruction symbol in the stack
-   if (this.dir == 2) {
+  this.down = false;
+  if(this.generator.count>0){
+    // dec count and update text
+    this.generator.count--;
+    this.generator.update();
+
+    //put instruction symbol in the stack
+    if (this.dir == 2) {
       instr = PIXI.Sprite.fromImage('assets/spt_inst_right.png');
-   } else if (this.dir == 0) {
+    } else if (this.dir == 0) {
       instr = PIXI.Sprite.fromImage('assets/spt_inst_forward.png');
-   } else if (this.dir == 1) {
+    } else if (this.dir == 1) {
       instr = PIXI.Sprite.fromImage('assets/spt_inst_left.png');
-   }
+    }
       instr.dir = this.dir;
       instr.x = 50;
       instr.y = tile_size + 50*(instPointer);
       instr.height = tile_size/2;
       instr.width = tile_size*2;
+      // used for undo button, inc instruction count
+      instr.button = this;
 
       instQueue[instPointer] = instr;
       instPointer++;
       INSTRUCT_STAGE.addChild(instr);
-
+  }else{
+    // TODO: add another stage for error messages
+    show_msg('hahaha');
+  }
 }
 
 function instructionButtonUpOutside() {
