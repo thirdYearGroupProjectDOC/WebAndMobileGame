@@ -25,6 +25,7 @@ var stage = new PIXI.Container();
 var MAP_STAGE = new PIXI.Container();
 
 stage.addChild(MAP_STAGE);
+
 // create background
 for (var j = 1; j < map_size-1; j++) {
     for (var i = 1; i < map_size-1; i++) {
@@ -44,26 +45,23 @@ MAP_STAGE.y = zero_y;
 dir_dict = {'monster':[-1], 'corner':[0,3], 'end':[2], 'straight':[0,2], 't':[1,2,3], 'tree':[]};
 
 
-
+ROAD_STAGE = new PIXI.Container();
+MAP_STAGE.addChild(ROAD_STAGE);
 
 
 // create road part from image, can be dragged to fit on map,
-// dir defines where it points to that leads to another road,
-// 0 is north, 1 is east, 2 is south, 3 is west, -1 is hell :)
-
-var road_monster = createMapParts(selects_x,selects_y,'assets/spt_monster.png','monster',0,true);
-var road_corner = createMapParts(selects_x,selects_y+tile_size*1.5,'assets/spt_road_corner.png','corner',1,false);
-var road_end = createMapParts(selects_x,selects_y+tile_size*3,'assets/spt_road_end.png','end',0,true,1);
-var road_straight = createMapParts(selects_x,selects_y+tile_size*4.5,'assets/spt_road_straight.png','straight',0,true);
-var road_t = createMapParts(selects_x,selects_y+tile_size*6,'assets/spt_road_t.png','t',0,true);
-var road_tree = createMapParts(selects_x,selects_y+tile_size*7.5,'assets/spt_tree.png','tree',0,true); 
-
-
-
+// for detail of each parameter, see createMapParts&&generator in MapParts.js
+var road_monster = new MapPartsGenerator(selects_x,selects_y,'assets/spt_monster.png','monster',0,3);
+var road_corner = new MapPartsGenerator(selects_x,selects_y+tile_size*1.5,'assets/spt_road_corner.png','corner',0,3);
+var road_end = new MapPartsGenerator(selects_x,selects_y+tile_size*3,'assets/spt_road_end.png','end',0,3);
+var road_straight = new MapPartsGenerator(selects_x,selects_y+tile_size*4.5,'assets/spt_road_straight.png','straight',0,3);
+var road_t = new MapPartsGenerator(selects_x,selects_y+tile_size*6,'assets/spt_road_t.png','t',0,3);
+var road_tree = new MapPartsGenerator(selects_x,selects_y+tile_size*7.5,'assets/spt_tree.png','tree',0,3); 
 
 // create start button
 start_button = createStartButton(180,550,'assets/spt_inst_start.png');
 
+// create player
 var player_tex = PIXI.Texture.fromImage('assets/spt_boy.png');
 var player = new PIXI.Sprite(player_tex);
 // position and size
@@ -83,23 +81,18 @@ player.isWalking = false;
 // used in main loop for moving on canvas
 player.xmov = 0;
 player.ymov = 0;
-player.speed = tile_size/20;
+player.speed = tile_size/60;
 player.wait = 0;
-player.wait_speed = 0;
 
 MAP_STAGE.addChild(player);
 
-//-----------------------------------------------------------
 
-
-
+// instructions waiting to be read
 var instQueue = [];
-/*for(var i = 0; i<map_size*map_size*2; i++){
-    instQueue[i] = -1;
-}*/
 var instPointer = 0;
 var step = 0;
 
+// stage for instructions stacks, not buttons
 var INSTRUCT_STAGE = new PIXI.Container();
 
 stage.addChild(INSTRUCT_STAGE);
@@ -114,18 +107,30 @@ INSTRUCT_STAGE.y = queue_y;
 undo_button = createUndoButton(700,200,'assets/undo.png');
 reset_button = createResetButton(310,510,'assets/reset.png');
 
-var turn_left = createInstructions(selects_x+200, 10,'assets/spt_inst_left.png',1);
-var turn_right = createInstructions(selects_x+200, 60,'assets/spt_inst_right.png',2);
-var move_forward = createInstructions(selects_x+200, 110,'assets/spt_inst_forward.png',0);
+var INST_BUTTON_STAGE = new PIXI.Container();
+stage.addChild(INST_BUTTON_STAGE);
 
+var turn_left = new inst_count(selects_x+200,10,10);
+var turn_right = new inst_count(selects_x+200, 60,10);
+var move_forward = new inst_count(selects_x+200, 110,10);
 
+turn_left.gen('assets/spt_inst_left.png',1);
+turn_right.gen('assets/spt_inst_right.png',2);
+move_forward.gen('assets/spt_inst_forward.png',0);
+
+// boolean for start executing instructions
 var start = false;
+// for slower step animation
+var count = 0;
+// store count,
+// used for set time intervel between read instructions
+var store = 0;
+// intervel between reading instructions
+// size/speed is the time each instruction takes
+var intervel = tile_size/player.speed + 5;
 
 animate();
-
 function animate(){
-    //show_msg(map);
-
     player.x += player.speed*Math.sign(player.xmov);
     player.y += player.speed*Math.sign(player.ymov);
     player.xmov = Math.sign(player.xmov) * (Math.abs(player.xmov)-player.speed);
@@ -138,19 +143,48 @@ function animate(){
     requestAnimationFrame(animate);
     renderer.render(stage);
 
-    //show_msg(player.xmov);
+    // when player are moving or turning
     if((player.xmov != 0) || (player.ymov != 0) || (player.wait != 0)){
-      instQueue[step-1].rotation += 0.1;
+      var cur = instQueue[step-1];
+      var last = instQueue[step-2];
+
+      //move up and scale
+      cur.y -= 1;
+      cur.height += 1;
+      cur.x -= 0.5;
+      cur.width += 1;
+      
+      // random changing color, need better animation here
+      if(count % 5 == 0){
+        cur.tint = Math.random()* 0xF1FFFF;
+      }
+
+      // last instruction restore to original size
+      if(last){
+        last.height -= 1;
+        last.width -= 1;
+        last.x += 0.5;
+      }
     }
-    //when one step is finished
+
+
+    //when one step is finished, read next instruction
 
     if (start && player.xmov == 0 && player.ymov == 0 
-      && player.wait == 0 && instQueue.length != 0) {
+      && player.wait == 0 && instQueue.length != 0 && count - store>65) {
+      store = count;
       player_start();
       step++;
 
+      // while executing instructions, can't move road pieces,
+      // can only be set back by reset button
+      for(var i = 0; i < MAP_STAGE.children.length; i++){
+        ROAD_STAGE.children[i].interactive = false;
+      }
+
     }
- 
+    
+    count += 1;
 }
 
 
@@ -159,7 +193,6 @@ function animate(){
 function show_msg(msg){
     var spinningText = new PIXI.Text(msg, { font: 'bold 60px Arial', fill: '#cc00ff', align: 'center', stroke: '#FFFFFF', strokeThickness: 6 });
 
-    // setting the anchor point to 0.5 will center align the text... great for spinning!
     spinningText.anchor.set(0.5);
     spinningText.x = 500+Math.random()*200;
     spinningText.y = 200+Math.random()*200;
