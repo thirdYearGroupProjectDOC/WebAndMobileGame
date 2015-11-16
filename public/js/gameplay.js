@@ -154,7 +154,7 @@ function animate(){
       
       // random changing color, need better animation here
       if(count % 5 == 0){
-        cur.tint = Math.random()* 0xF1FFFF;
+        //cur.tint = Math.random()* 0xF1FFFF;
       }
 
       // last instruction restore to original size
@@ -173,9 +173,8 @@ function animate(){
       step++;
       // while executing instructions, can't move road pieces,
       // can only be set back by reset button
-      for(var i = 0; i < MAP_STAGE.children.length; i++){
-        ROAD_STAGE.children[i].interactive = false;
-      }
+      
+
     }
     
     count += 1;

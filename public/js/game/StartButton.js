@@ -44,6 +44,14 @@ function onButtonUp()
     this.isdown = false;
 
     start = true;
+    for(var i = 0; i < ROAD_STAGE.children.length; i++){
+        ROAD_STAGE.children[i].interactive = false;
+
+    }
+    for(var i = 0; i < INST_BUTTON_STAGE.children.length; i++){
+        INST_BUTTON_STAGE.children[i].interactive = false;
+    }
+    
     if (this.isOver){
     }
     else{
