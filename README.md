@@ -25,3 +25,7 @@ DEBUG=myapp npm start
 ```
 
 To start the website navigation, go to localhost:8080/home
+
+TIP:
+running on firefox would use lots of cpu,
+chrome is fine

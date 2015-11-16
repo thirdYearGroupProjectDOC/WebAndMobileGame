@@ -1,5 +1,3 @@
-
-
 var express = require('express');
 var router = express.Router();
 var passport = require('passport');
@@ -45,7 +43,7 @@ router.post('/', function(req, res) {
                         if (err) {
                             return next(err);
                         }
-                        return res.redirect('/game');
+                        return res.redirect('/levels');
                         });
                     });
                 });
@@ -53,9 +51,7 @@ router.post('/', function(req, res) {
             });
 
         });
-
-      });
-
+    });
 });
 
 

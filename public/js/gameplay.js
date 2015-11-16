@@ -3,19 +3,21 @@ document.body.appendChild(renderer.view);
 
 // size of the actuall game size
 var map_size = 5;
+// for start and end point
+map_size +=2;
 var map = [];
-for(var i = 0; i<map_size*map_size; i++){
+for(var i = 0; i<Math.pow(map_size,2); i++){
     map[i] = null;
 }
 
 // tile size , depends on screen later
-var tile_size = 80;
+var tile_size = 60;
 // where the first road begin
 var zero_x = 80;
 var zero_y = 60;
 
-var selections_x = 500;
-var selections_y = 0;
+var selects_x = 500;
+var selects_y = 0;
 
 // create the root of the scene graph
 var stage = new PIXI.Container();
@@ -24,8 +26,8 @@ var MAP_STAGE = new PIXI.Container();
 
 stage.addChild(MAP_STAGE);
 // create background
-for (var j = 0; j < map_size; j++) {
-    for (var i = 0; i < map_size; i++) {
+for (var j = 1; j < map_size-1; j++) {
+    for (var i = 1; i < map_size-1; i++) {
         var bg = PIXI.Sprite.fromImage('assets/background.png');
         bg.x = tile_size * i;
         bg.y = tile_size * j;
@@ -48,12 +50,14 @@ dir_dict = {'monster':[-1], 'corner':[0,3], 'end':[2], 'straight':[0,2], 't':[1,
 // create road part from image, can be dragged to fit on map,
 // dir defines where it points to that leads to another road,
 // 0 is north, 1 is east, 2 is south, 3 is west, -1 is hell :)
-var road_monster = createMapParts(selections_x,selections_y,'assets/spt_monster.png',dir_dict['monster'],0);
-var road_corner = createMapParts(selections_x,selections_y+tile_size*1.5,'assets/spt_road_corner.png',dir_dict['corner'],1);
-var road_end = createMapParts(selections_x,selections_y+tile_size*3,'assets/spt_road_end.png',dir_dict['end'],0);
-var road_straight = createMapParts(selections_x,selections_y+tile_size*4.5,'assets/spt_road_straight.png',dir_dict['straight'],0);
-var road_t = createMapParts(selections_x,selections_y+tile_size*6,'assets/spt_road_t.png',dir_dict['t'],0);
-var road_tree = createMapParts(selections_x,selections_y+tile_size*7.5,'assets/spt_tree.png',dir_dict['tree'],0); 
+
+var road_monster = createMapParts(selects_x,selects_y,'assets/spt_monster.png','monster',0,true);
+var road_corner = createMapParts(selects_x,selects_y+tile_size*1.5,'assets/spt_road_corner.png','corner',1,false);
+var road_end = createMapParts(selects_x,selects_y+tile_size*3,'assets/spt_road_end.png','end',0,true,1);
+var road_straight = createMapParts(selects_x,selects_y+tile_size*4.5,'assets/spt_road_straight.png','straight',0,true);
+var road_t = createMapParts(selects_x,selects_y+tile_size*6,'assets/spt_road_t.png','t',0,true);
+var road_tree = createMapParts(selects_x,selects_y+tile_size*7.5,'assets/spt_tree.png','tree',0,true); 
+
 
 
 
@@ -63,19 +67,16 @@ start_button = createStartButton(180,550,'assets/spt_inst_start.png');
 var player_tex = PIXI.Texture.fromImage('assets/spt_boy.png');
 var player = new PIXI.Sprite(player_tex);
 // position and size
-player.x = 0;
-player.y = 0;
 
-player.aim_x = 0;
-player.aim_y = 0;
-
+player.x = tile_size*1;
+player.y = tile_size*1;
 
 player.width = tile_size;
 player.height = tile_size;
 
 // position on map, only descrete numbers
-player.pos_x = 0;
-player.pos_y = 0;
+player.pos_x = 1;
+player.pos_y = 1;
 var player_dir = 1;
 player.isWalking = false;
 
@@ -83,41 +84,76 @@ player.isWalking = false;
 player.xmov = 0;
 player.ymov = 0;
 player.speed = tile_size/20;
+player.wait = 0;
+player.wait_speed = 0;
 
 MAP_STAGE.addChild(player);
+
+//-----------------------------------------------------------
+
+
+
+var instQueue = [];
+/*for(var i = 0; i<map_size*map_size*2; i++){
+    instQueue[i] = -1;
+}*/
+var instPointer = 0;
+var step = 0;
+
+var INSTRUCT_STAGE = new PIXI.Container();
+
+stage.addChild(INSTRUCT_STAGE);
+
+var queue_x = 800;
+var queue_y = 10;
+
+INSTRUCT_STAGE.x = queue_x;
+INSTRUCT_STAGE.y = queue_y;
+
+
+undo_button = createUndoButton(700,200,'assets/undo.png');
+reset_button = createResetButton(310,510,'assets/reset.png');
+
+var turn_left = createInstructions(selects_x+200, 10,'assets/spt_inst_left.png',1);
+var turn_right = createInstructions(selects_x+200, 60,'assets/spt_inst_right.png',2);
+var move_forward = createInstructions(selects_x+200, 110,'assets/spt_inst_forward.png',0);
+
+
+var start = false;
 
 animate();
 
 function animate(){
-  //show_msg(map);
+    //show_msg(map);
 
     player.x += player.speed*Math.sign(player.xmov);
     player.y += player.speed*Math.sign(player.ymov);
     player.xmov = Math.sign(player.xmov) * (Math.abs(player.xmov)-player.speed);
     player.ymov = Math.sign(player.ymov) * (Math.abs(player.ymov)-player.speed);
+    
+    if(player.wait != 0){
+      player.wait --;
+    }
 
     requestAnimationFrame(animate);
     renderer.render(stage);
 
+    //show_msg(player.xmov);
+    if((player.xmov != 0) || (player.ymov != 0) || (player.wait != 0)){
+      instQueue[step-1].rotation += 0.1;
+    }
     //when one step is finished
-    if (step < (instructionsQueuePointer - 1) && player.isWalking == true && player.x == player.aim_x && player.y == player.aim_y && player.xmov == 0 && player.ymov == 0) {
-    step ++;
-    player_start();
-  }
-  
+
+    if (start && player.xmov == 0 && player.ymov == 0 
+      && player.wait == 0 && instQueue.length != 0) {
+      player_start();
+      step++;
+
+    }
+ 
 }
 
-// used for turning road
-function turn_dir(dir){
-  res = [];
-  for(var i = 0; i < dir.length; i++){
-    if(dir[i]>=0){
-      res[i] = dir[i]+1;
-      res[i] %= 4;
-    }
-  }
-  return res;
-}
+
 
 // used for printing message on screen
 function show_msg(msg){
@@ -125,32 +161,30 @@ function show_msg(msg){
 
     // setting the anchor point to 0.5 will center align the text... great for spinning!
     spinningText.anchor.set(0.5);
-    spinningText.position.x = 310;
-    spinningText.position.y = 200;
+    spinningText.x = 500+Math.random()*200;
+    spinningText.y = 200+Math.random()*200;
     stage.addChild(spinningText);
 }
 
-// checking for relative position om game map
-function check_in_map(x,y){
-    return x>=0 && x<map_size && y >=0 && y<map_size;
-}
+
 
 /* @dir is the direction player moves, 0 notrh and clockwise inc
 *  first check whether the road player stands on has this dir
-*  then check boundries  
+*  then check boundries
 */
 function player_move(dir){
 
   // get direction!
+  // can only be +1, -1
   var xmov = (2-dir)*dir%2;
   var ymov = (dir-1)*(1-dir%2);
-  
+
   var cur = player.pos_y*map_size+player.pos_x;
   var dst = (player.pos_y+ymov)*map_size + player.pos_x+xmov;
 
   //opsite direction
   var op = (dir+2)%4;
-
+  // check road condition
   if(dst<map_size*map_size && map[cur].indexOf(dir)!=-1
     && map[dst].indexOf(op)!=-1){
 
@@ -163,50 +197,11 @@ function player_move(dir){
     player.pos_y += ymov;
 
   }
+  
 
   player.aim_x += xmov*tile_size;
   player.aim_y += ymov*tile_size;
 
 }
-
-//-----------------------------------------------------------
-
-
-
-var instructionsQueue = [];
-for(var i = 0; i<map_size*map_size*2; i++){
-    instructionsQueue[i] = -1;
-}
-var instructionsQueuePointer = 0;
-var step = 0;
-
-var INSTRUCT_STAGE = new PIXI.Container();
-
-stage.addChild(INSTRUCT_STAGE);
-
-
-var queue_x = 850;
-var queue_y = 10;
-
-INSTRUCT_STAGE.x = queue_x;
-INSTRUCT_STAGE.y = queue_y;
-
-
-undo_button = createUndoButton(700,410,'assets/undo.png');
-
-
-reset_button = createResetButton(310,510,'assets/reset.png');
-
-var turn_left = createInstructions(selections_x+200, 10,'assets/spt_inst_left.png');
-var turn_right = createInstructions(selections_x+200, 60,'assets/spt_inst_right.png');
-var move_forward = createInstructions(selections_x+200, 110,'assets/spt_inst_forward.png');
-var repeat_time = createInstructions(selections_x+200, 160, 'assets/spt_inst_repeat_time.png');
-var repeat_end = createInstructions(selections_x+200, 210, 'assets/spt_inst_repeat_end.png');
-var if_instruct = createInstructions(selections_x+200, 260, 'assets/spt_inst_if.png');
-var else_instruct = createInstructions(selections_x+200, 310, 'assets/spt_inst_else.png');
-var if_end = createInstructions(selections_x+200, 360, 'assets/spt_inst_end.png');
-
-
-
 
 
