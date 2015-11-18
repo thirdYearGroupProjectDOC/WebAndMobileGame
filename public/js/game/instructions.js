@@ -214,10 +214,13 @@ function game_reset() {
 
     // restore instructions buttons's count
     for(var i = 0; i < INST_BUTTON_STAGE.children.length; i++){
-      INST_BUTTON_STAGE.children[i].interactive = true;
       INST_BUTTON_STAGE.children[i].generator.reset();
+      INST_BUTTON_STAGE.children[i].interactive = true;
     }
 
+    ERROR_STAGE.removeChildren();
+    
+    start_button.interactive = true;
     INSTRUCT_STAGE.removeChildren();
     instQueue = [];
     instPointer = 0;

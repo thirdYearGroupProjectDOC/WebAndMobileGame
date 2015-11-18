@@ -109,8 +109,8 @@ var INST_BUTTON_STAGE = new PIXI.Container();
 stage.addChild(INST_BUTTON_STAGE);
 
 var turn_left = new inst_count(selects_x+200,10,10);
-var turn_right = new inst_count(selects_x+200,60,10);
-var move_forward = new inst_count(selects_x+200,110,10);
+var turn_right = new inst_count(selects_x+200, 60,10);
+var move_forward = new inst_count(selects_x+200, 110,10);
 
 turn_left.gen('assets/spt_inst_left.png',1);
 turn_right.gen('assets/spt_inst_right.png',2);
@@ -154,7 +154,7 @@ function animate(){
       
       // random changing color, need better animation here
       if(count % 5 == 0){
-        //cur.tint = Math.random()* 0xF1FFFF;
+        cur.tint = Math.random()* 0xF1FFFF;
       }
 
       // last instruction restore to original size
@@ -173,13 +173,17 @@ function animate(){
       step++;
       // while executing instructions, can't move road pieces,
       // can only be set back by reset button
-      
-
+      for(var i = 0; i < MAP_STAGE.children.length; i++){
+        ROAD_STAGE.children[i].interactive = false;
+      }
     }
     
     count += 1;
 }
 
+
+var ERROR_STAGE = new PIXI.Container();
+stage.addChild(ERROR_STAGE);
 
 
 // used for printing message on screen
@@ -189,7 +193,7 @@ function show_msg(msg){
     spinningText.anchor.set(0.5);
     spinningText.x = 500+Math.random()*200;
     spinningText.y = 200+Math.random()*200;
-    stage.addChild(spinningText);
+    ERROR_STAGE.addChild(spinningText);
 }
 
 
@@ -220,6 +224,10 @@ function player_move(dir){
     player.pos_x += xmov;
     player.pos_y += ymov;
 
+  }else{
+    show_msg('wrong direction!!');
+    start = false;
+    start_button.interactive = false;
   }
   
 
