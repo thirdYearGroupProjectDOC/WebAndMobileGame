@@ -8,6 +8,12 @@ for(var i = 0; i<map_size*map_size; i++){
     map[i] = null;
 }
 
+$("#saveButton").click(function() {
+  $.post( '/test','apple', function(data) {
+    alert(data);
+  });
+});
+
 // tile size , depends on screen later
 var tile_size = 80;
 // where the first road begin

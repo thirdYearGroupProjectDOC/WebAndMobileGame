@@ -16,6 +16,7 @@ var users = require('./models/user');
 var levelData = require('./models/levelData');
 
 var game = require('./routes/game');
+var test = require('./routes/test');
 var login = require('./routes/login');
 var logout = require('./routes/logout');
 var routes = require('./routes/welcome');
@@ -56,6 +57,7 @@ app.use('/about', about);
 app.use('/home', home);
 app.use('/levels', levels);
 app.use('/rank', rank);
+app.use('/test', test);
 app.use('/register', register);
 app.use('/createLevel', createLevel);
 app.use('/profile-view', profile_view);
