@@ -10,13 +10,14 @@ router.get('/', function(req, res, next) {
       console.log( "Number of levels:", count );
     }
   });
+
   levelDatas.levelData.findOne({id : 1}, function(err, result){ // retrieving record
       if (result) {
           console.log(result.data);
       }
   });
   var levelCount = 4;
-  console.log(req.user.displayName);
+  console.log("hey");
     var displayName = "";
     if(!req.user) {
         displayName = undefined;

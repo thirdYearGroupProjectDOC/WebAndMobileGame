@@ -8,9 +8,11 @@ for(var i = 0; i<map_size*map_size; i++){
     map[i] = null;
 }
 
-$("#saveButton").click(function() {
-  $.post( '/test','apple', function(data) {
-    alert(data);
+console.log(levelData);//configuration of level in JSON format
+$("#saveButton").click(function(event) { // when save button clicked
+  event.preventDefault(); //prevent page from reload
+  $.post( '/test',{a2:'apple'}, function(data) { // post the parameter a2 to test.js
+    alert(data); //alert the data after getting reply
   });
 });
 
