@@ -108,13 +108,15 @@ reset_button = createResetButton(310,510,'assets/reset.png');
 var INST_BUTTON_STAGE = new PIXI.Container();
 stage.addChild(INST_BUTTON_STAGE);
 
-var turn_left = new inst_count(selects_x+200,10,10);
-var turn_right = new inst_count(selects_x+200, 60,10);
-var move_forward = new inst_count(selects_x+200, 110,10);
+var turn_left = new inst_button(selects_x+200,10,10);
+var turn_right = new inst_button(selects_x+200, 60,10);
+var move_forward = new inst_button(selects_x+200, 110,10);
+var loop_start = new inst_drop_down_button(selects_x+200, 160, 10);
 
 turn_left.gen('assets/spt_inst_left.png',1);
 turn_right.gen('assets/spt_inst_right.png',2);
 move_forward.gen('assets/spt_inst_forward.png',0);
+loop_start.gen('assets/spt_inst_repeat_time.png',3);
 
 // boolean for start executing instructions
 var start = false;

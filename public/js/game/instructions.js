@@ -227,7 +227,7 @@ function game_reset() {
     step = 0;
 }
 
-function inst_count(x,y,count){
+function inst_button(x,y,count){
   this.count = count;
   this.max = count;
   this.x = x;
@@ -253,6 +253,31 @@ function inst_count(x,y,count){
   }
 }
 
+function inst_drop_down_button(x,y,count) {
+  this.count = count;
+  this.max = count;
+  this.x = x;
+  this.y = y;
+
+  var countTxt = new PIXI.Text(':'+count);
+  countTxt.x = this.x + tile_size+ 45;
+  countTxt.y = this.y;
+  stage.addChild(countTxt);
+
+  this.update = function(){
+    countTxt.setText(':'+this.count);
+  }
+
+  this.reset = function(){
+    this.count = this.max;
+    this.update();
+  }
+
+  this.gen = function(img,inst){
+    var ib = createDropDownInstructions(this.x,this.y,img,inst);
+    ib.generator = this;
+  }
+}
 
 // create instructions button
 function createInstructions(x,y,img,inst) {
@@ -293,6 +318,7 @@ function createInstructions(x,y,img,inst) {
    return instruction;
 }
 
+
 function instructionButtonDown() {
    this.down = true;
 }
@@ -329,6 +355,7 @@ function instructionButtonUp() {
   }
 }
 
+
 function instructionButtonUpOutside() {
    this.down = false;
 } 
@@ -349,3 +376,91 @@ function instructionButtonOut()
     }
 }
 
+
+// create a button with drop-down menu, i.e. loop start button
+function createDropDownInstructions(x,y,img,inst) {
+  var instruct_tex = PIXI.Texture.fromImage(img);
+  var instruction = new PIXI.Sprite(instruct_tex);
+
+  instruction.menuShown = false;
+  instruction.dir = inst;
+
+  instruction.width = tile_size*2;
+  instruction.height = tile_size/2;
+  instruction.buttonMode = true;
+  instruction.interactive = true;
+  instruction.x = x;
+  instruction.y = y;
+
+  // default repeat time 
+  // this variable is used for executing instrructions.
+  instruction.repeat_time = 3;
+  var loopTimeText = new PIXI.Text(instruction.repeat_time);
+  loopTimeText.width *= 0.8;
+  loopTimeText.height *= 0.8;
+  loopTimeText.x = instruction.x + 55;
+  loopTimeText.y = instruction.y + 5;
+  
+  INST_BUTTON_STAGE.addChild(instruction); 
+  INST_BUTTON_STAGE.addChild(loopTimeText);
+  
+  //used for update text value
+  instruction.loopTime = loopTimeText;
+  
+  // drop down menu container
+  var drop = new PIXI.Container();
+  drop.x = INST_BUTTON_STAGE.x;
+  drop.y = INST_BUTTON_STAGE.y;
+  drop.instButt = instruction;
+  instruction.con = drop;
+  INST_BUTTON_STAGE.addChild(drop);
+  
+  instruction
+    .on('mousedown', instructionButtonDown)
+    .on('touchstart', instructionButtonDown)
+
+      // set the mouseup and touchend callback...
+    .on('mouseup', instructionDropDownButtonUp)
+    .on('touchend', instructionButtonUp)
+
+    .on('mouseupoutside', instructionButtonUpOutside)
+    .on('touchendoutside', instructionButtonUpOutside)
+
+      // set the mouseover callback...
+    .on('mouseover', instructionButtonOver)
+
+      // set the mouseout callback...
+    .on('mouseout', instructionButtonOut);
+
+
+  instruction.tap = null;
+  instruction.click = null; 
+   
+   return instruction;
+}
+
+
+function instructionDropDownButtonUp() {
+  if (this.menuShown == false) {
+    this.menuShown = true;
+    for (var i = 0; i < 9; i++) {
+      var txt = new PIXI.Text(i+1, {font: '20px bold'});
+      txt.x = this.x + 50;
+      txt.y = this.y + 30+ (i+1)*20;
+      txt.interactive = true;
+      txt.repeat_time = i + 1;
+      txt.on('mousedown', dropDownTxtClicked);
+      txt.on('touchstart', dropDownTxtClicked);
+      txt.wrapper = this.con;
+      this.con.addChild(txt);
+    }
+  } else {
+    this.menuShown = false;
+  }
+}
+
+function dropDownTxtClicked() {
+  this.wrapper.instButt.menuShown = false;
+  this.wrapper.instButt.loopTime.setText(this.repeat_time);
+  this.wrapper.removeChildren();
+}
