@@ -169,15 +169,10 @@ function animate(){
 
     //when one step is finished, read next instruction
     if (start && player.xmov == 0 && player.ymov == 0 
-      && player.wait == 0 && instQueue.length != 0 && count - store>65) {
+      && player.wait == 0 && instQueue.length != 0 && (count - store)>65) {
       store = count;
       player_start();
       step++;
-      // while executing instructions, can't move road pieces,
-      // can only be set back by reset button
-      for(var i = 0; i < MAP_STAGE.children.length; i++){
-        ROAD_STAGE.children[i].interactive = false;
-      }
     }
     
     count += 1;
@@ -216,9 +211,20 @@ function player_move(dir){
 
   //opsite direction
   var op = (dir+2)%4;
+
+  
+  var on_road = false;
+  var has_path = false;
+  if(map[cur] && map[cur].indexOf(dir)!=-1){
+    on_road = true;
+  }
+  if(map[dst] && map[dst].indexOf(op)!=-1){
+    has_path = true;
+  }
+
   // check road condition
-  if(dst<map_size*map_size && map[cur].indexOf(dir)!=-1
-    && map[dst].indexOf(op)!=-1){
+  if(dst<map_size*map_size && on_road
+    && has_path){
 
     player.xmov = xmov*tile_size;
     player.ymov = ymov*tile_size;
@@ -228,8 +234,16 @@ function player_move(dir){
 
   }else{
     show_msg('wrong direction!!');
+    if(!on_road){
+      show_msg('not standing on raod');
+    }
+    if(!has_path){
+      show_msg('no road to your destination');
+    }
+    
     start = false;
     start_button.interactive = false;
+
   }
   
 

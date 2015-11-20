@@ -42,8 +42,9 @@ function onButtonDown()
 function onButtonUp()
 {
     this.isdown = false;
-
     start = true;
+
+    // disable road pieces and instruction buttons
     for(var i = 0; i < ROAD_STAGE.children.length; i++){
         ROAD_STAGE.children[i].interactive = false;
 
@@ -52,10 +53,7 @@ function onButtonUp()
         INST_BUTTON_STAGE.children[i].interactive = false;
     }
     
-    if (this.isOver){
-    }
-    else{
-    }
+    
 }
 
 function onButtonOver()
