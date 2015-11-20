@@ -67,7 +67,8 @@ function onDragEnd(){
       this.dragged = false;
 
       // if the position is being possessed, go back
-      if(map[this.pos_y*map_size+this.pos_x]!=null){
+      if(map[this.pos_y*map_size+this.pos_x]!=null
+        || ! check_tiling_region(this.x,this.y,this.name)){
           var gen = this.generator;
           //if there was no active pieces, put one on the pile,
           // else just increase count and update;
