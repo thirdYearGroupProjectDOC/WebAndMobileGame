@@ -381,6 +381,9 @@ function instructionButtonOut()
 function createDropDownInstructions(x,y,img,inst) {
   var instruct_tex = PIXI.Texture.fromImage(img);
   var instruction = new PIXI.Sprite(instruct_tex);
+  var drop = new PIXI.Container();
+  drop.x = INST_BUTTON_STAGE.x;
+  drop.y = INST_BUTTON_STAGE.y;
 
   instruction.menuShown = false;
   instruction.dir = inst;
@@ -402,18 +405,14 @@ function createDropDownInstructions(x,y,img,inst) {
   loopTimeText.y = instruction.y + 5;
   
   INST_BUTTON_STAGE.addChild(instruction); 
-  INST_BUTTON_STAGE.addChild(loopTimeText);
+  drop.addChild(loopTimeText);
   
   //used for update text value
   instruction.loopTime = loopTimeText;
   
-  // drop down menu container
-  var drop = new PIXI.Container();
-  drop.x = INST_BUTTON_STAGE.x;
-  drop.y = INST_BUTTON_STAGE.y;
-  drop.instButt = instruction;
-  instruction.con = drop;
-  INST_BUTTON_STAGE.addChild(drop);
+  drop.button_parent = instruction;
+  instruction.drop_down = drop;
+  stage.addChild(drop);
   
   instruction
     .on('mousedown', instructionButtonDown)
@@ -451,8 +450,8 @@ function instructionDropDownButtonUp() {
       txt.repeat_time = i + 1;
       txt.on('mousedown', dropDownTxtClicked);
       txt.on('touchstart', dropDownTxtClicked);
-      txt.wrapper = this.con;
-      this.con.addChild(txt);
+      txt.drop_parent = this.drop_down;
+      this.drop_down.addChild(txt);
     }
   } else {
     this.menuShown = false;
@@ -460,7 +459,9 @@ function instructionDropDownButtonUp() {
 }
 
 function dropDownTxtClicked() {
-  this.wrapper.instButt.menuShown = false;
-  this.wrapper.instButt.loopTime.setText(this.repeat_time);
-  this.wrapper.removeChildren();
+  var b_parent = this.drop_parent.button_parent;
+  b_parent.menuShown = false;
+  b_parent.loopTime.setText(this.repeat_time);
+  this.drop_parent.removeChildren();
+  this.drop_parent.addChild(b_parent.loopTime);
 }
