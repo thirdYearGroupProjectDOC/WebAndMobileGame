@@ -16,15 +16,17 @@ function onButtonUp()
 function player_start() {
        switch (instQueue[step].dir) {
         case 0:
-            player_move(player_dir);
+            player_move(player.face_dir);
             break;
         case 1:
             player.wait = tile_size/player.speed;
-            player_dir = (player_dir + 3) % 4;
+            player.face_dir = (player.face_dir + 3) % 4;
+            turn_animation(player.face_dir);
             break;
         case 2:
             player.wait = tile_size/player.speed;
-            player_dir = (player_dir + 1) % 4;
+            player.face_dir = (player.face_dir + 1) % 4;
+            turn_animation(player.face_dir);
             break;
         default:
             break;
@@ -205,7 +207,8 @@ function game_reset() {
     player.y = tile_size;
     player.pos_x = 1;
     player.pos_y = 1;
-    player_dir = 1;
+    player.face_dir = 1;
+    turn_animation(player.face_dir);
     start = false;
     // road pieces can be moved again
     for(var i = 0; i < ROAD_STAGE.children.length; i++){

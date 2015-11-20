@@ -29,7 +29,7 @@ stage.addChild(MAP_STAGE);
 // create background
 for (var j = 1; j < map_size-1; j++) {
     for (var i = 1; i < map_size-1; i++) {
-        var bg = PIXI.Sprite.fromImage('assets/background.png');
+        var bg = PIXI.Sprite.fromImage('assets/Newburg/floor1.png');
         bg.x = tile_size * i;
         bg.y = tile_size * j;
         bg.height = tile_size;
@@ -42,7 +42,7 @@ MAP_STAGE.y = zero_y;
 
 // setting directions of road pieces according to image's default direction
 // for detail and usage see the comments below
-dir_dict = {'monster':[-1], 'corner':[0,3], 'end':[2], 'straight':[0,2], 't':[1,2,3], 'tree':[]};
+dir_dict = {'monster':[-1], 'corner':[2,3], 'end':[2], 'straight':[1,3], 't':[1,2,3], 'tree':[]};
 
 
 ROAD_STAGE = new PIXI.Container();
@@ -52,18 +52,21 @@ MAP_STAGE.addChild(ROAD_STAGE);
 // create road part from image, can be dragged to fit on map,
 // for detail of each parameter, see createMapParts&&generator in MapParts.js
 var road_monster = new MapPartsGenerator(selects_x,selects_y,'assets/spt_monster.png','monster',0,3);
-var road_corner = new MapPartsGenerator(selects_x,selects_y+tile_size*1.5,'assets/spt_road_corner.png','corner',0,3);
+var road_corner = new MapPartsGenerator(selects_x,selects_y+tile_size*1.5,'assets/Newburg/road_turn.png','corner',0,3);
 var road_end = new MapPartsGenerator(selects_x,selects_y+tile_size*3,'assets/spt_road_end.png','end',0,3);
-var road_straight = new MapPartsGenerator(selects_x,selects_y+tile_size*4.5,'assets/spt_road_straight.png','straight',0,3);
-var road_t = new MapPartsGenerator(selects_x,selects_y+tile_size*6,'assets/spt_road_t.png','t',0,3);
-var road_tree = new MapPartsGenerator(selects_x,selects_y+tile_size*7.5,'assets/spt_tree.png','tree',0,3); 
+var road_straight = new MapPartsGenerator(selects_x,selects_y+tile_size*4.5,'assets/Newburg/road_straight.png','straight',0,3);
+var road_t = new MapPartsGenerator(selects_x,selects_y+tile_size*6,'assets/Newburg/road_t.png','t',0,3);
+var road_tree = new MapPartsGenerator(selects_x,selects_y+tile_size*7.5,'assets/Newburg/rock.png','tree',0,3); 
 
 // create start button
 start_button = createStartButton(180,550,'assets/spt_inst_start.png');
 
 // create player
-var player_tex = PIXI.Texture.fromImage('assets/spt_boy.png');
-var player = new PIXI.Sprite(player_tex);
+var player_right = PIXI.Texture.fromImage('assets/Newburg/monkey/right.png');
+var player_left = PIXI.Texture.fromImage('assets/Newburg/monkey/left.png');
+var player_back = PIXI.Texture.fromImage('assets/Newburg/monkey/back.png');
+var player_front = PIXI.Texture.fromImage('assets/Newburg/monkey/front.png');
+var player = new PIXI.Sprite(player_right);
 // position and size
 player.x = tile_size*1;
 player.y = tile_size*1;
@@ -73,7 +76,7 @@ player.height = tile_size;
 // position on map, only descrete numbers
 player.pos_x = 1;
 player.pos_y = 1;
-var player_dir = 1;
+player.face_dir = 1;
 
 
 // used in main loop for moving on canvas
@@ -217,7 +220,10 @@ function player_move(dir){
   var has_path = false;
   if(map[cur] && map[cur].indexOf(dir)!=-1){
     on_road = true;
+
+    
   }
+    
   if(map[dst] && map[dst].indexOf(op)!=-1){
     has_path = true;
   }
@@ -235,7 +241,7 @@ function player_move(dir){
   }else{
     show_msg('wrong direction!!');
     if(!on_road){
-      show_msg('not standing on raod');
+      show_msg('wrong direction on current road');
     }
     if(!has_path){
       show_msg('no road to your destination');
@@ -250,3 +256,46 @@ function player_move(dir){
 }
 
 
+
+
+function instruction_animation(){
+  var cur = instQueue[step-1];
+  var last = instQueue[step-2];
+
+  //move up and scale
+  cur.y -= 1;
+  cur.height += 1;
+  cur.x -= 0.5;
+  cur.width += 1;
+  
+  // random changing color, need better animation here
+  if(count % 5 == 0){
+    cur.tint = Math.random()* 0xF1FFFF;
+  }
+
+  // last instruction restore to original size
+  if(last){
+    last.height -= 1;
+    last.width -= 1;
+    last.x += 0.5;
+  }
+}
+
+function turn_animation(dir){
+  switch(dir){
+    case 0:
+        player.texture = player_back;
+    case 1:
+        player.texture = player_right;
+        break;
+    case 2:
+        player.texture = player_front;
+        break;
+    case 3:
+        player.texture = player_left;
+        break;
+    default:
+        break;
+  }
+  
+}
