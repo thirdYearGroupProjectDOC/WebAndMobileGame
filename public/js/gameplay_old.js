@@ -88,16 +88,8 @@ MAP_STAGE.addChild(player);
 
 
 // instructions waiting to be read
-/* OLD
 var instQueue = [];
 var instPointer = 0;
-*/
-
-//  new
-var instQueue = new LinkedList();
-
-var instId = 0;
-
 var step = 0;
 
 // stage for instructions stacks, not buttons
@@ -112,13 +104,12 @@ INSTRUCT_STAGE.x = queue_x;
 INSTRUCT_STAGE.y = queue_y;
 
 
-//undo_button = createUndoButton(700,250,'assets/undo.png');
+undo_button = createUndoButton(700,250,'assets/undo.png');
 reset_button = createResetButton(310,510,'assets/reset.png');
 
 var INST_BUTTON_STAGE = new PIXI.Container();
 stage.addChild(INST_BUTTON_STAGE);
 
-/*  OLD
 var turn_left = new inst_count(selects_x+200,10,10);
 var turn_right = new inst_count(selects_x+200, 60,10);
 var move_forward = new inst_count(selects_x+200, 110,10);
@@ -128,11 +119,6 @@ turn_left.gen('assets/spt_inst_left.png',1);
 turn_right.gen('assets/spt_inst_right.png',2);
 move_forward.gen('assets/spt_inst_forward.png',0);
 repeat_inst.gen('assets/spt_inst_repeat_time.png',3);
-*/
-// new
-var move_forward = new instructionGenerator(selects_x+250, 50,'assets/spt_inst_forward.png', 'forward', 3 );
-var turn_right = new instructionGenerator(selects_x+250, 130, 'assets/spt_inst_right.png', 'right', 3);
-var turn_left = new instructionGenerator(selects_x+250, 210, 'assets/spt_inst_left.png', 'left', 3);
 
 
 // boolean for start executing instructions
@@ -159,7 +145,7 @@ function animate(){
 
     requestAnimationFrame(animate);
     renderer.render(stage);
-/*   OLD
+
     // when player are moving or turning
     if((player.xmov != 0) || (player.ymov != 0) || (player.wait != 0)){
       var cur = instQueue[step-1];
@@ -182,16 +168,13 @@ function animate(){
         last.width -= 1;
         last.x += 0.5;
       }
-
-
     }
-*/
+
 
     //when one step is finished, read next instruction
 
-    if (start && player.xmov == 0 && player.ymov == 0  && player.wait == 0 && 
-  //    instQueue.length != 0 &&
-       count - store>65) {
+    if (start && player.xmov == 0 && player.ymov == 0 
+      && player.wait == 0 && instQueue.length != 0 && count - store>65) {
       store = count;
       player_start();
       step++;

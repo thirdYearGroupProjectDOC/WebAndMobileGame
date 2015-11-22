@@ -15,7 +15,7 @@ function turn_dir(dir){
   return res;
 }
 
-// checking for relative position om game map
+// checking for relative position on game map
 function check_in_map(x,y,name){ 
   if(name == 'end'){
     return x>=0 && x<map_size && y >=0 && y<map_size;
