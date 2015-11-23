@@ -105,6 +105,19 @@ var INSTRUCT_STAGE = new PIXI.Container();
 
 stage.addChild(INSTRUCT_STAGE);
 
+
+// create instruction background
+/*
+for (var j = 1; j < 10; j++) {
+        var instbg = PIXI.Sprite.fromImage('assets/background.png');
+        instbg.x = 150;
+        instbg.y = tile_size * j;
+        instbg.height = tile_size;
+        instbg.width = tile_size*2;
+        INSTRUCT_STAGE.addChild(instbg);
+    };
+*/
+
 var queue_x = 800;
 var queue_y = 10;
 

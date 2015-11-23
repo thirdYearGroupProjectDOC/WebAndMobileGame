@@ -501,6 +501,24 @@ function onInstDragMove(){
           this.generator.gen();
         }
         var newPosition = this.data.getLocalPosition(this.parent);
+          this.x = newPosition.x;
+          this.y = newPosition.y;
+
+        //when enter the instruction region
+
+        if (check_inst_region(this.x) && this.y > 50 && this.y < (50 + getLength(instQueue) * tile_size)) {
+           
+              var posn = (this.y - 50) % tile_size + 1;
+              var current = instQueue.head;
+            for (i = 0; i < posn; i++) {
+              current = current.next;
+            }
+            while (current != null) {
+              current.value.y += tile_size;
+              current = current.next;
+            }
+
+        } 
         // enter tiling region ( MAP )
         
       /*  if(check_tiling_region(this.x,this.y,this.name)){
@@ -529,8 +547,8 @@ function onInstDragMove(){
         // put it to where mouse is
         }else{ 
           */
-          this.x = newPosition.x;
-          this.y = newPosition.y;
+          
+        
         /*
         }
 */
@@ -543,7 +561,7 @@ function onInstDragMove(){
 
 
 
-
+//create instruction button
 function instructionGenerator(x,y,img,name,num){
   // used by createMapParts function
   this.x = x;
