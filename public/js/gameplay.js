@@ -94,6 +94,7 @@ var instPointer = 0;
 */
 
 //  new
+//var LinkedList = require('linkedlist');
 var instQueue = new LinkedList();
 
 var instId = 0;
@@ -118,8 +119,8 @@ for (var j = 1; j < 10; j++) {
     };
 */
 
-var queue_x = 800;
-var queue_y = 10;
+var queue_x = 890;
+var queue_y = 30;
 
 INSTRUCT_STAGE.x = queue_x;
 INSTRUCT_STAGE.y = queue_y;
@@ -131,17 +132,7 @@ reset_button = createResetButton(310,510,'assets/reset.png');
 var INST_BUTTON_STAGE = new PIXI.Container();
 stage.addChild(INST_BUTTON_STAGE);
 
-/*  OLD
-var turn_left = new inst_count(selects_x+200,10,10);
-var turn_right = new inst_count(selects_x+200, 60,10);
-var move_forward = new inst_count(selects_x+200, 110,10);
-var repeat_inst = new inst_count(selects_x+200, 160,10);
 
-turn_left.gen('assets/spt_inst_left.png',1);
-turn_right.gen('assets/spt_inst_right.png',2);
-move_forward.gen('assets/spt_inst_forward.png',0);
-repeat_inst.gen('assets/spt_inst_repeat_time.png',3);
-*/
 // new
 var move_forward = new instructionGenerator(selects_x+250, 50,'assets/spt_inst_forward.png', 'forward', 3 );
 var turn_right = new instructionGenerator(selects_x+250, 130, 'assets/spt_inst_right.png', 'right', 3);
@@ -172,36 +163,8 @@ function animate(){
 
     requestAnimationFrame(animate);
     renderer.render(stage);
-/*   OLD
-    // when player are moving or turning
-    if((player.xmov != 0) || (player.ymov != 0) || (player.wait != 0)){
-      var cur = instQueue[step-1];
-      var last = instQueue[step-2];
-
-      //move up and scale
-      cur.y -= 1;
-      cur.height += 1;
-      cur.x -= 0.5;
-      cur.width += 1;
-      
-      // random changing color, need better animation here
-      if(count % 5 == 0){
-        cur.tint = Math.random()* 0xF1FFFF;
-      }
-
-      // last instruction restore to original size
-      if(last){
-        last.height -= 1;
-        last.width -= 1;
-        last.x += 0.5;
-      }
-
-
-    }
-*/
 
     //when one step is finished, read next instruction
-
     if (start && player.xmov == 0 && player.ymov == 0  && player.wait == 0 && 
   //    instQueue.length != 0 &&
        count - store>65) {

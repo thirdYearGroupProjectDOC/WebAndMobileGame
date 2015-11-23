@@ -13,142 +13,6 @@ function onButtonUp()
 }
 
 */
-/* OLD
-function player_start() {
-       switch (instQueue[step].dir) {
-        case 0:
-            player_move(player_dir);
-            break;
-        case 1:
-            player.wait = tile_size/player.speed;
-            player_dir = (player_dir + 3) % 4;
-            break;
-        case 2:
-            player.wait = tile_size/player.speed;
-            player_dir = (player_dir + 1) % 4;
-            break;
-
-
-        default:
-            break;
-       }
-
-}
-*/
-
-/*
-
-*/
-// create undo instruction
-
-
-/* WE DON'T NEED UNDO ANYMORE
-function createUndoButton(x,y,img){
-  var undo_tex = PIXI.Texture.fromImage(img);
-  var undo_button = new PIXI.Sprite(undo_tex);
-  undo_button.width = tile_size*2 - 15;
-  undo_button.height = tile_size/2;
-  undo_button.buttonMode = true;
-  undo_button.position.x = x;
-  undo_button.position.y = y;
-  // make the button interactive...
-  undo_button.interactive = true;
-  undo_button
-      // set the mousedown and touchstart callback...
-      .on('mousedown', undoButtonDown)
-      .on('touchstart', undoButtonDown)
-
-      // set the mouseup and touchend callback...
-      .on('mouseup', undoButtonUp)
-      .on('touchend', undoButtonUp)
-      .on('mouseupoutside', undoButtonUp)
-      .on('touchendoutside', undoButtonUp)
-
-      // set the mouseover callback...
-      .on('mouseover', undoButtonOver)
-
-      // set the mouseout callback...
-      .on('mouseout', undoButtonOut)
-      
-  undo_button.tap = null;
-  undo_button.click = null;
-  // add it to the stage
-  stage.addChild(undo_button);
-  return undo_button;
-}
-
-
-
-function undoButtonDown()
-{
-    this.isdown = true;
- //   player_move(1);
-    this.alpha = 1;
-}
-
-function undoButtonUp()
-{
-    this.isdown = false;
-
-    if (instPointer > 0) {
-    stack_undo();
-   }
-
-    if (this.isOver){
-    }
-    else{
-    }
-}
-
-function undoButtonOver()
-{
-    this.isOver = true;
-    if (this.isdown){
-        return;
-    }
-}
-
-function undoButtonOut()
-{
-    this.isOver = false;
-    if (this.isdown){
-        return;
-    }
-}
-
-
-// undo the most recent instruction
-function stack_undo() {
-
-  //if last instruction is repeat, we only decrement its count
-  if (instQueue[instPointer-1].dir == 3) {
-    if (instQueue[instPointer-1].count > 1) {
-      instQueue[instPointer-1].count--;
-      instQueue[instPointer-1].repeatCount.setText(instQueue[instPointer-1].count);
-      instQueue[instPointer-1].button.generator.count++;
-      instQueue[instPointer-1].button.generator.update();
-      
-    } else {
-      instPointer--;
-      instQueue[instPointer] = -1;
-      INSTRUCT_STAGE.removeChild(INSTRUCT_STAGE.children[instPointer]);
-      instPointer--;
-      instQueue[instPointer] = -1;
-      INSTRUCT_STAGE.removeChild(INSTRUCT_STAGE.children[instPointer]);
-    }
-  } else {
-
-  instPointer--;
-  instQueue[instPointer] = -1;
-
-  cur = INSTRUCT_STAGE.children[instPointer];
-  INSTRUCT_STAGE.removeChild(cur);
-  cur.button.generator.count++;
-  cur.button.generator.update();
-  }
-}
-
-*/
 
 
 // create reset button
@@ -255,304 +119,54 @@ function game_reset() {
 }
 
 
-/* OLD
-function inst_count(x,y,count){
-  this.count = count;
-  this.max = count;
-  this.x = x;
-  this.y = y;
-
-  var countTxt = new PIXI.Text(':'+count);
-  countTxt.x = this.x + tile_size+ 45;
-  countTxt.y = this.y;
-  stage.addChild(countTxt);
-
-  this.update = function(){
-    countTxt.setText(':'+this.count);
-  }
-
-  this.reset = function(){
-    this.count = this.max;
-    this.update();
-  }
-
-  this.gen = function(img,inst){
-    var ib = createInstructions(this.x,this.y,img,inst);
-    ib.generator = this;
-  }
-}
-
-*/
-
-/* OLD
-
-// create instructions button
-function createInstructions(x,y,img,inst) {
-
-  var instruct_tex = PIXI.Texture.fromImage(img);
-  var instruction = new PIXI.Sprite(instruct_tex);
-
-  instruction.dir = inst;
-
-
-  instruction.width = tile_size*2;
-  instruction.height = tile_size/2;
-  instruction.buttonMode = true;
-  instruction.interactive = true;
-  instruction.x = x;
-  instruction.y = y;
-  
-  instruction
-    .on('mousedown', instructionButtonDown)
-    .on('touchstart', instructionButtonDown)
-
-      // set the mouseup and touchend callback...
-    .on('mouseup', instructionButtonUp)
-    .on('touchend', instructionButtonUp)
-
-    .on('mouseupoutside', instructionButtonUpOutside)
-    .on('touchendoutside', instructionButtonUpOutside)
-
-      // set the mouseover callback...
-    .on('mouseover', instructionButtonOver)
-
-      // set the mouseout callback...
-    .on('mouseout', instructionButtonOut);
-
-
-  instruction.tap = null;
-  instruction.click = null; 
-   INST_BUTTON_STAGE.addChild(instruction); 
-   return instruction;
-}
-
-function instructionButtonDown() {
-   this.down = true;
-}
-
-function instructionButtonUp() {
-  this.down = false;
-  if(this.generator.count>0){
-    // dec count and update text
-    this.generator.count--;
-    this.generator.update();
-
-    //put instruction symbol in the stack
-    if (this.dir == 2) {
-      instr = PIXI.Sprite.fromImage('assets/spt_inst_right.png');
-    } else if (this.dir == 0) {
-      instr = PIXI.Sprite.fromImage('assets/spt_inst_forward.png');
-    } else if (this.dir == 1) {
-      instr = PIXI.Sprite.fromImage('assets/spt_inst_left.png');
-
-    } else if (this.dir == 3) {
-      if (instPointer>0 && instQueue[instPointer-1].dir == 3) {
-        //if last instruction is repeat, then increment the repeating times
-        instQueue[instPointer-1].count++;
-        instQueue[instPointer-1].repeatCount.setText(instQueue[instPointer-1].count);
-        return;
-
-      } else {
-        //create a new repeat instruction and repeat count
-        instr = PIXI.Sprite.fromImage('assets/spt_inst_repeat_time.png');
-        instr.count = 1;
-        instr.repeatCount = new PIXI.Text(instr.count);
-        instr.repeatCount.x = 200;
-        instr.repeatCount.y = tile_size + 50*(instPointer);
-        INSTRUCT_STAGE.addChild(instr.repeatCount);
-      }
-      
-    }
-
-      instr.dir = this.dir;
-      instr.x = 50;
-      instr.y = tile_size + 50*(instPointer);
-      instr.height = tile_size/2;
-      instr.width = tile_size*2;
-      // used for undo button, inc instruction count
-      instr.button = this;
-
-      instQueue[instPointer] = instr;
-      instPointer++;
-      INSTRUCT_STAGE.addChild(instr);
-  }else{
-    // TODO: add another stage for error messages
-    show_msg('hahaha');
-  }
-}
-
-
-
-function instructionButtonUpOutside() {
-   this.down = false;
-} 
-
-
-function instructionButtonOver() {
-  this.isOver = true;
-    if (this.isdown){
-        return;
-    }
-}
-
-function instructionButtonOut()
-{
-    this.isOver = false;
-    if (this.isdown){
-        return;
-    }
-}
-*/
-
 
 // new instruction buttons 
 // followed by map parts
 
 //check if it is in the instruction region
-function check_inst_region(x){
-     return x > 890 && x < 1010;
+function check_inst_region(x,y,length){
+     return x > INSTRUCT_STAGE.x && x < INSTRUCT_STAGE.x+tile_size &&
+            y > INSTRUCT_STAGE.y+tile_size/2 &&
+            y < INSTRUCT_STAGE.y+tile_size/2+tile_size*2;
+}
+
+function to_Inst_pos(y){
+   return Math.floor((y-INSTRUCT_STAGE.y + tile_size/2)/tile_size);
 }
 
 function onInstDragStart(event){
-    // store a reference to the data
-    // the reason for this is because of multitouch
-    // we want to track the movement of this particular touch
+
     this.data = event.data;
     this.started = true;
     this.alpha = 0.8;
     this.dragging = true;
-    if (check_inst_region(this.x)) {
-       
-       var current = instQueue.head;
-       while (current.value != this && current != null) {
-          current = current.next; 
-       } 
-       while (current.next != null) {
-         current.next.value.y -= tile_size;
-          current = current.next;
-       }
-       instQueue.remove(this);
-    }
-
+    
 
 }
 
 function onInstDragEnd(){
   if(this.started){
-      this.alpha = 1;
-      this.dragging = false;
-
-      // set the interaction data to null
-      this.data = null;
-
-      this.pos_x = toTilePos(this.x);
-      this.pos_y = toTilePos(this.y);
-      this.dragged = false;
-
-      //when it is put in the instruction region
-      if (check_inst_region(this.x)){
-         this.x = 950;
-         this.y = 50 + getLength(instQueue) * tile_size;
-         instQueue.push(this);
-      } else {
-        if (this.generator.count == 0) {
-          this.generator.count = 2;
-          this.generator.gen();
-        } else {
-        this.generator.count ++;
-        this.generator.update();
-      }
-        INST_BUTTON_STAGE.removeChild(this);
-        delete(this);
-      
-      }
-/*
-      // if the position is being possessed, go back
-      if(map[this.pos_y*map_size+this.pos_x]!=null){
-          var gen = this.generator;
-          //if there was no active pieces, put one on the pile,
-          // else just increase count and update;
-          if(gen.count == 0){
-            gen.count = 2;
-            gen.gen();
-          }else{
-            gen.count ++;
-            gen.update();
-          }
-          ROAD_STAGE.removeChild(this);
-          delete(this);
-      }else if(check_in_map(this.pos_x,this.pos_y,this.name)){
-          map[this.pos_y*map_size+this.pos_x] = this.dir;
-      }
-      */
-    }
-
     this.started = false;
-        
+    this.alpha = 1;
+    
+  }
+
 }
 
 
 function onInstDragMove(){
     if (this.dragging)
     {
-        this.dragged = true;
-        if(this.fresh){
-          this.fresh = false;
-          this.generator.gen();
-        }
+
         var newPosition = this.data.getLocalPosition(this.parent);
+
+        if(check_inst_region(this.x,this.y,instQueue.length)){
+          this.x = newPosition.x - newPosition.x%(tile_size*2) +tile_size;
+          this.y = newPosition.y - newPosition.y%tile_size + tile_size/2;
+        }else{
           this.x = newPosition.x;
           this.y = newPosition.y;
-
-        //when enter the instruction region
-
-        if (check_inst_region(this.x) && this.y > 50 && this.y < (50 + getLength(instQueue) * tile_size)) {
-           
-              var posn = (this.y - 50) % tile_size + 1;
-              var current = instQueue.head;
-            for (i = 0; i < posn; i++) {
-              current = current.next;
-            }
-            while (current != null) {
-              current.value.y += tile_size;
-              current = current.next;
-            }
-
-        } 
-        // enter tiling region ( MAP )
-        
-      /*  if(check_tiling_region(this.x,this.y,this.name)){
-
-          this.x = newPosition.x - newPosition.x%tile_size + tile_size/2;
-          this.y = newPosition.y - newPosition.y%tile_size + tile_size/2;
-
-
-          // end tile automatically change dir
-          if(this.name=='end'){
-            // can be optimised later
-            if(toTilePos(this.x)==map_size-1){
-              this.dir = [3];
-              this.rotation = Math.PI/2;
-            }else if(toTilePos(this.x)==0){
-              this.dir = [1];
-              this.rotation = Math.PI/2*3;
-            }else if(toTilePos(this.y)==0){
-              this.dir = [2];
-              this.rotation = 0;
-            }else if(toTilePos(this.y)==map_size-1){
-              this.dir = [0];
-              this.rotation = Math.PI/2*2;
-            }
-          }
-        // put it to where mouse is
-        }else{ 
-          */
-          
-        
-        /*
         }
-*/
-    
     }
 
 }
@@ -656,104 +270,3 @@ function createInstructionParts(x,y,img, name, active, idnum){
   
   return part;
 }
-
-
-// single linked list
-function LinkedList(){  
-  this.head = null;
-}
-
-LinkedList.prototype.push = function(val){
-    var node = {
-       value: val,
-       next: null
-    }
-    if(!this.head){
-      this.head = node;      
-    }
-    else{
-      current = this.head;
-      while(current.next){
-        current = current.next;
-      }
-      current.next = node;
-    }
-  }
-
-  LinkedList.prototype.remove = function(val){
-    var current = this.head;
-    //case-1
-    if(current.value == val){
-       this.head = current.next;     
-    }
-    else{
-      var previous = current;
-      
-      while(current.next){
-        //case-3
-        if(current.value == val){
-          previous.next = current.next;          
-          break;
-        }
-        previous = current;
-        current = current.next;
-      }
-      //case -2
-      if(current.value == val){
-        previous.next == null;
-      }
-    }
-      
-
-  }  
-
-
-  function findLoopStart(sll){
-    var slow = sll.head,
-        fast = sll.head;
-    while(slow && fast){
-       slow = slow.next;
- 
-       //if hits null, then there is no loop
-       if(!fast.next){
-          return null;
-       }
- 
-       fast = fast.next.next;
-       if(slow == fast){
-           slow = sll.head;
-           while(slow != fast){
-              slow = slow.next;
-              fast = fast.next;
-           }
-           return slow;
-       }
-   }
-}
-
-  function getLength(sll){
-   var head = sll.head,
-       current = head,
-       pointer = head,
-       anotherPtr,
-       len = 0;
-    //use the previously written function
-    var loopStartNode = findLoopStart(sll);
-    if(!loopStartNode){
-       while(current){
-          current= current.next;
-          len++;
-       }
-       return len;
-    }
-    else{       
-       anotherPtr = loopStartNode;
-       while(pointer != anotherPtr){
-          len += 2;
-          pointer = pointer.next;
-          anotherPtr = anotherPtr.next;          
-       }
-       return len;
-    }
-}
-        
