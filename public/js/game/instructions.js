@@ -127,11 +127,12 @@ function game_reset() {
 function check_inst_region(x,y,length){
      return x > INSTRUCT_STAGE.x && x < INSTRUCT_STAGE.x+tile_size &&
             y > INSTRUCT_STAGE.y+tile_size/2 &&
-            y < INSTRUCT_STAGE.y+tile_size/2+tile_size*2;
+            y < INSTRUCT_STAGE.y+tile_size/2+tile_size*(instQueue.length+1);
 }
 
 function to_Inst_pos(y){
-   return Math.floor((y-INSTRUCT_STAGE.y + tile_size/2)/tile_size);
+
+   return ( Math.floor((y-INSTRUCT_STAGE.y + tile_size/2)/tile_size)-1);
 }
 
 function onInstDragStart(event){
@@ -140,15 +141,28 @@ function onInstDragStart(event){
     this.started = true;
     this.alpha = 0.8;
     this.dragging = true;
-    
+    if(instQueue.contain(this)){
+      instQueue.remove(this);
+      show_msg(instQueue.length);
+    }
 
 }
 
-function onInstDragEnd(){
+function onInstDragEnd(event){
+
   if(this.started){
+    this.dragging = false;
     this.started = false;
     this.alpha = 1;
-    
+
+    if(this.in_region){
+      //insert into list depends on position
+      var pos = to_Inst_pos(this.y);
+      instQueue.insert(pos,this);
+      show_msg(instQueue.length);
+    }
+
+    instQueue.settle();
   }
 
 }
@@ -161,9 +175,25 @@ function onInstDragMove(){
         var newPosition = this.data.getLocalPosition(this.parent);
 
         if(check_inst_region(this.x,this.y,instQueue.length)){
+          this.in_region = true;
           this.x = newPosition.x - newPosition.x%(tile_size*2) +tile_size;
           this.y = newPosition.y - newPosition.y%tile_size + tile_size/2;
+
+          var temp_pos = to_Inst_pos(this.y);
+          if(!this.down){
+            instQueue.move_down(temp_pos);
+            this.down = true;
+          }
+          
         }else{
+          if(this.down){
+            instQueue.move_restore();
+            this.down = false;
+          }else{
+            
+          }
+
+          this.in_region = false;
           this.x = newPosition.x;
           this.y = newPosition.y;
         }
