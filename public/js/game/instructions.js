@@ -141,10 +141,7 @@ function onInstDragStart(event){
     this.started = true;
     this.alpha = 0.8;
     this.dragging = true;
-    if(instQueue.contain(this)){
-      instQueue.remove(this);
-      show_msg(instQueue.length);
-    }
+    
 
 }
 
@@ -167,22 +164,25 @@ function onInstDragMove(){
         var newPosition = this.data.getLocalPosition(this.parent);
 
         if(check_inst_region(this.x,this.y,instQueue.length)){
-          this.in_region = true;
           this.x = newPosition.x - newPosition.x%(tile_size*2) +tile_size;
           this.y = newPosition.y - newPosition.y%tile_size + tile_size/2;
 
+          // find position to insert in
           var temp_pos = to_Inst_pos(this.y);
+          //remove and insert => update position
           if(instQueue.contain(this)){
             instQueue.remove(this);
           }
           instQueue.insert(temp_pos,this);
-          instQueue.update();
           
         }else{
+          // remove, if not find , nothing happens
           instQueue.remove(this);
           this.x = newPosition.x;
           this.y = newPosition.y;
         }
+        //update pixel position based on instQueue
+        instQueue.update();
     }
 
 }

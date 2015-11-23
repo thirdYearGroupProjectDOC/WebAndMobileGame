@@ -6,6 +6,7 @@ function LinkedList(){
   this.length = 0;
 }
 
+// push to back of the list
 LinkedList.prototype.push = function(val){
     var node = {
        value: val,
@@ -25,6 +26,8 @@ LinkedList.prototype.push = function(val){
     this.length++;
 }
 
+// remove first node has value val,
+// if not find, nothing happends
 LinkedList.prototype.remove = function(val){
   var current = this.head;
   if(!current){
@@ -54,12 +57,11 @@ LinkedList.prototype.remove = function(val){
       this.length--;
       return 0;
     }
-  }
-  
-  
+  } 
 
 }  
 
+// getter function , provide position, get node
 LinkedList.prototype.at = function(position) {
     var currentNode = this.head;
     var length = this.length;
@@ -78,6 +80,7 @@ LinkedList.prototype.at = function(position) {
     return currentNode;
 }
 
+// return true if has node with value val
 LinkedList.prototype.contain = function(val){
   var current = this.head;
   while(current){
@@ -92,11 +95,13 @@ LinkedList.prototype.contain = function(val){
   return false;
 }
 
+// insert into pos with node with value val
 LinkedList.prototype.insert = function(pos,val){
   var node = {
        value: val,
        next: null
   }
+  //can't insert into before head or after tail
   if(pos < 0 || (pos > this.length)){
     return;
   }
@@ -114,8 +119,8 @@ LinkedList.prototype.insert = function(pos,val){
   this.length++;
 }
 
+// update pixel position depends on position in linkedlist
 LinkedList.prototype.update = function(){
-  //show_msg('called in update');
   var i = 0;
   var cur = this.head;
   while(cur){
