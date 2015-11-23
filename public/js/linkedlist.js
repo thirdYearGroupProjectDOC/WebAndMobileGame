@@ -32,16 +32,18 @@ LinkedList.prototype.remove = function(val){
   }
   //find at head
   if(current.value == val){
-     this.head = current.next;     
-  }
-  else{
+    this.head = current.next;
+    this.length--;
+    return 0;     
+  } else{
     var previous = current;
     
     while(current.next){
       //middle
       if(current.value == val){
-        previous.next = current.next;          
-        break;
+        previous.next = current.next; 
+        this.length--;
+        return 0;
       }
       previous = current;
       current = current.next;
@@ -49,11 +51,12 @@ LinkedList.prototype.remove = function(val){
     //tail
     if(current.value == val){
       previous.next == null;
+      this.length--;
+      return 0;
     }
   }
   
-  this.length--;
-  return 0;
+  
 
 }  
 
@@ -75,44 +78,6 @@ LinkedList.prototype.at = function(position) {
     return currentNode;
 }
 
-LinkedList.prototype.move_down = function(position) {
-    var currentNode = this.at(position);
-
-    if(!currentNode.down){
-      while(currentNode){
-        currentNode.down = true;
-        currentNode.value.y += tile_size;
-        currentNode = currentNode.next;
-      }
-    }
-}
-
-
-// move up 
-LinkedList.prototype.move_restore= function() {
-    var currentNode = this.head;
-
-    while(currentNode){
-      if(currentNode.down){
-        currentNode.down = false;
-        currentNode.value.y -= tile_size;
-      }
-      currentNode = currentNode.next;
-    }
-  
-}
-
-
-
-LinkedList.prototype.settle = function(){
-  var cur = this.head;
-  while(cur){
-    cur.down = false;
-    cur = cur.next;
-  }
-
-}
-
 LinkedList.prototype.contain = function(val){
   var current = this.head;
   while(current){
@@ -132,11 +97,14 @@ LinkedList.prototype.insert = function(pos,val){
        value: val,
        next: null
   }
+  if(pos < 0 || (pos > this.length)){
+    return;
+  }
 
   if(pos == 0 ){
     node.next = this.head;
     this.head = node;
-  }else{
+  }else {
     var parent = this.at(pos-1);
     var child = this.at(pos);
     parent.next = node;
@@ -144,5 +112,17 @@ LinkedList.prototype.insert = function(pos,val){
 
   }
   this.length++;
+}
+
+LinkedList.prototype.update = function(){
+  //show_msg('called in update');
+  var i = 0;
+  var cur = this.head;
+  while(cur){
+    cur.value.y = INSTRUCT_STAGE.y + (i+1)*tile_size;
+    cur = cur.next;
+    i++;
+  }
+
 }
 

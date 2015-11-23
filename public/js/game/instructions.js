@@ -155,14 +155,6 @@ function onInstDragEnd(event){
     this.started = false;
     this.alpha = 1;
 
-    if(this.in_region){
-      //insert into list depends on position
-      var pos = to_Inst_pos(this.y);
-      instQueue.insert(pos,this);
-      show_msg(instQueue.length);
-    }
-
-    instQueue.settle();
   }
 
 }
@@ -180,20 +172,14 @@ function onInstDragMove(){
           this.y = newPosition.y - newPosition.y%tile_size + tile_size/2;
 
           var temp_pos = to_Inst_pos(this.y);
-          if(!this.down){
-            instQueue.move_down(temp_pos);
-            this.down = true;
+          if(instQueue.contain(this)){
+            instQueue.remove(this);
           }
+          instQueue.insert(temp_pos,this);
+          instQueue.update();
           
         }else{
-          if(this.down){
-            instQueue.move_restore();
-            this.down = false;
-          }else{
-            
-          }
-
-          this.in_region = false;
+          instQueue.remove(this);
           this.x = newPosition.x;
           this.y = newPosition.y;
         }
