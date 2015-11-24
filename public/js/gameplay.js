@@ -10,6 +10,32 @@ for(var i = 0; i<Math.pow(map_size,2); i++){
     map[i] = null;
 }
 
+console.log(levelData);//configuration of level in JSON format
+var levelInfo = {
+  id: 1,
+  data: {
+  "author": "Sam",
+  "title": "Easy Level",
+  "description": "This is an entry level",
+  "dimen": 5,
+  "start":[{"Coor":[1,0], "Dir":[1]}],
+  "end":[{"Coor":[5,6], "Dir":[3]}],
+
+"straight": 5,
+"endPoint": 5,
+"threeWay": 5,
+"turn": 5,
+
+"snake":[{"Coor":"2,2", "Dir":"0"}],
+"tree":[{"Coor":"3,3", "Dir":"0"}]
+}};
+$("#saveButton").click(function(event) { // when save button clicked
+  event.preventDefault(); //prevent page from reload
+  $.post( '/test',{author:'Sam',LevelInfo:levelInfo}, function(data) { // post the parameter a2 to test.js
+    alert(data); //alert the data after getting reply
+  });
+});
+
 // tile size , depends on screen later
 var tile_size = 60;
 // where the first road begin
@@ -54,9 +80,11 @@ MAP_STAGE.addChild(ROAD_STAGE);
 var road_monster = new MapPartsGenerator(selects_x,selects_y,'assets/spt_monster.png','monster',0,3);
 var road_corner = new MapPartsGenerator(selects_x,selects_y+tile_size*1.5,'assets/Newburg/road_turn.png','corner',0,3);
 var road_end = new MapPartsGenerator(selects_x,selects_y+tile_size*3,'assets/spt_road_end.png','end',0,3);
+
 var road_straight = new MapPartsGenerator(selects_x,selects_y+tile_size*4.5,'assets/Newburg/road_straight.png','straight',0,3);
 var road_t = new MapPartsGenerator(selects_x,selects_y+tile_size*6,'assets/Newburg/road_t.png','t',0,3);
 var road_tree = new MapPartsGenerator(selects_x,selects_y+tile_size*7.5,'assets/Newburg/rock.png','tree',0,3); 
+
 
 // create start button
 start_button = createStartButton(180,550,'assets/spt_inst_start.png');
@@ -138,7 +166,7 @@ function animate(){
     player.y += player.speed*Math.sign(player.ymov);
     player.xmov = Math.sign(player.xmov) * (Math.abs(player.xmov)-player.speed);
     player.ymov = Math.sign(player.ymov) * (Math.abs(player.ymov)-player.speed);
-    
+
     if(player.wait != 0){
       player.wait --;
     }
@@ -156,7 +184,7 @@ function animate(){
       cur.height += 1;
       cur.x -= 0.5;
       cur.width += 1;
-      
+
       // random changing color, need better animation here
       if(count % 5 == 0){
         cur.tint = Math.random()* 0xF1FFFF;
@@ -171,13 +199,15 @@ function animate(){
     }
 
     //when one step is finished, read next instruction
+
     if (start && player.xmov == 0 && player.ymov == 0 
       && player.wait == 0 && instQueue.length != 0 && (count - store)>65) {
+
       store = count;
       player_start();
       step++;
     }
-    
+
     count += 1;
 }
 
@@ -251,11 +281,7 @@ function player_move(dir){
     start_button.interactive = false;
 
   }
-  
-
 }
-
-
 
 
 function instruction_animation(){
@@ -299,3 +325,5 @@ function turn_animation(dir){
   }
   
 }
+
+
