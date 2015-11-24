@@ -11,7 +11,14 @@ router.get('/', function(req, res, next) {
     } else {
         displayName = req.user.displayName;
     }
-  res.render('createLevel', { title: 'Create', uname: displayName, displayName:displayName});
+  res.render('createLevel', { title: 'Create', uname: displayName, displayName:displayName,levelData: 222});
 });
+
+
+router.post('/', function(req, res, next) {
+  require('connect-ensure-login').ensureLoggedIn();
+
+});
+
 
 module.exports = router;
