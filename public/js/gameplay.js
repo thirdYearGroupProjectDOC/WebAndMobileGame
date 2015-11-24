@@ -28,8 +28,7 @@ var levelInfo = {
 
 "snake":[{"Coor":"2,2", "Dir":"0"}],
 "tree":[{"Coor":"3,3", "Dir":"0"}]
-}}
-;
+}};
 $("#saveButton").click(function(event) { // when save button clicked
   event.preventDefault(); //prevent page from reload
   $.post( '/test',{author:'Sam',LevelInfo:levelInfo}, function(data) { // post the parameter a2 to test.js

@@ -59,14 +59,13 @@ router.post('/', function(req, res) {
         "dimen": 5,
         "start":[{"Coor":[1,0], "Dir":[1]}],
         "end":[{"Coor":[5,6], "Dir":[3]}],
-
-      "straight": 5,
-      "endPoint": 5,
-      "threeWay": 5,
-      "turn": 5,
-
-      "snake":[{"Coor":"2,2", "Dir":"0"}],
-      "tree":[{"Coor":"3,3", "Dir":"0"}]
+        "rank":[],
+        "straight": 5,
+        "endPoint": 5,
+        "threeWay": 5,
+        "turn": 5,
+        "snake":[{"Coor":"2,2", "Dir":"0"}],
+        "tree":[{"Coor":"3,3", "Dir":"0"}]
       }
       }).then(function(levelData) {
           console.log(" id generated is " + user.id);

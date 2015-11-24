@@ -30,6 +30,6 @@ block content
           h4.list-group-item-heading #{item.h}
           p.list-group-item-text #{item.d}
       each item in dss
-        a.list-group-item(href=item.id)
+        a.list-group-item(href="/game?level="+item.id)
           h4.list-group-item-heading #{item.title}
           p.list-group-item-text #{item.description}

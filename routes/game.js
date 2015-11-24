@@ -11,6 +11,8 @@ router.get('/',function(req, res, next){
          displayName = req.user.displayName;
      }
      var levelD;
+     var lid = req.query.level; // find id : lid
+     console.log("lid = " + lid);
       levelDatas.levelData.findOne({id : 1}, function(err, result){ // get from mongoDB the level config with id = 1
         if (result) { // acutally we should use req.query.level to be the id in requery
           levelD = result.data; // store json format result in levelD

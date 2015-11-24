@@ -5,6 +5,7 @@ block content
   p Welcome to #{title}
   p Total rank count is #{rankData}
   <a href="/levels" class="btn btn-info">Back to level Selection</a>
+  - var re = result;
   div.ranks
     table.table
       thead
@@ -25,3 +26,15 @@ block content
          td July
          td Dooley
          td july@example.com
+
+  div.ranks
+    table.table
+      thead
+        tr
+          th name
+          th points
+      tbody
+        each obj in re
+          tr.success
+            td #{obj.name}
+            td #{obj.point}
