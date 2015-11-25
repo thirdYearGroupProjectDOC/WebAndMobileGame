@@ -14,7 +14,7 @@ router.get('/', function(req, res, next) {
     var levelData = {
       id: 1,
       data: {
-      "author": "Sam",
+      "author": "Saaaaaam",
       "title": "Easy Level",
       "description": "This is an entry level",
       "dimen": 5,

@@ -25,7 +25,7 @@ router.get('/', function(req, res, next) {
           console.log(result);
           var ds = [];
           for (i = 0; i < levelCount; i++) {
-            ds.push({id:Result[i].id,title:Result[i].data.title,description:Result[i].data.description});
+            ds.push({id:Result[i].id});//,title:Result[i].data.title,description:Result[i].data.description});
           }
           console.log(ds);
           //var levelCount = 4;

@@ -5,7 +5,8 @@ console.log(levelData);//configuration of level in JSON format
 
 $("#saveButton").click(function(event) { // when save button clicked
   event.preventDefault(); //prevent page from reload
-  $.post( '/test',{author:'Sam',LevelInfo:levelInfo}, function(data) { // post the parameter a2 to test.js
+  console.log(levelInfo);
+  $.post( '/test',{author:'Sam',LevelInfo:JSON.stringify(levelInfo)}, function(data) { // post the parameter a2 to test.js
     alert(data); //alert the data after getting reply
   });
 });
