@@ -39,7 +39,7 @@ function map_bg_init(){
 var msg_rec = 0;
 // used for printing message on screen
 function show_msg(msg){
-    var spinningText = new PIXI.Text(msg, { font: 'bold 60px Arial', fill: '#cc00ff', align: 'center', stroke: '#FFFFFF', strokeThickness: 5 });
+    var spinningText = new PIXI.Text(msg, { font: 'bold 30px Arial', align: 'center', stroke: '#FFFFFF', strokeThickness: 5 });
 
     spinningText.anchor.set(0.5);
     spinningText.x = 500;

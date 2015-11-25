@@ -38,9 +38,11 @@ function to_instruction_part() {
 // gather information and make it ready to sent to server
 function set_level_data(){
 
-  if(!validation()){
+  if(validation()==false){
     show_msg('not valid road, can\'t save');
-    return;
+    return -1;
+  }else{
+    show_msg('find');
   }
 
   map_to_pass = [];
@@ -84,7 +86,6 @@ function get_level_data(data){
 }
 
 function validation(){
-show_msg(find_road(2,3,3));
 
   if(on_map_corner(player.pos_x,player.pos_y)){
     return false;
@@ -96,22 +97,21 @@ show_msg(find_road(2,3,3));
 
   //player not on any map position
   if(dir==null){
-    //show_msg('not on map pieces');
+    show_msg('not on map pieces');
     return false;
   }
 
-  var p = {x:player.pos_x, y:player.pos_y};
   if(find_road(player.pos_x,player.pos_y,dir)){
-    show_msg('find')
+    return true;
   }
 
-  return true;
+  return false;
 }
 
 
 
 function find_road(x,y,dir){
-
+  //show_msg('calling');
   var xmov = (2-dir)*dir%2;
   var ymov = (dir-1)*(1-dir%2);
   
@@ -119,33 +119,41 @@ function find_road(x,y,dir){
   var y = y+ymov;
   // get dirs available in new position
   var dirs = map[x + y*map_size];
-  //opsite direction
+
   var op = (dir+2)%4;
 
   //player not on a road
   if(dirs==undefined || dirs==[]){
+    show_msg('not on road');
     return false;
   }
 
   if(on_map_boarder(x,y)){
+    //show_msg('x: ' + x + 'y: ' + y + 'dir'+dir);
+    //show_msg('reach boarder');
     return true;
   }
   // remove the dir just come from
   var index = dirs.indexOf(op);
   if(index > -1){
-    dirs.splice(index,1);
-    show_msg('remain dirs:'+ dirs);
+    //show_msg('dirs before splice' + dirs);
+    var removed = dirs.splice(index,1);
+    //show_msg('dirs remain:'+ dirs);
   }else{
+    show_msg('not valid comming road');
     // comming road is not valid 
     return false;
   }
   
-  res = false;
+  var res = false;
   //show_msg('in recursion: dir length:'+dirs.length);
   for(var i = 0; i < dirs.length; i++){
-    res = res ||arguments.callee(x,y,dirs[i]);
+    //show_msg('i: ' + i +'length'+  dirs.length);
+    //show_msg(dirs.push(removed);
+    res = res || arguments.callee(x,y,dirs[i]);
+    
   }
-
+  dirs.push(removed[0]);
   //show_msg(dirs);
   return res;
 }
