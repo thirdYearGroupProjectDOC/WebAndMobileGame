@@ -83,6 +83,7 @@ function turn_animation(player,dir){
   switch(dir){
     case 0:
         player.texture = player_back;
+        break;
     case 1:
         player.texture = player_right;
         break;

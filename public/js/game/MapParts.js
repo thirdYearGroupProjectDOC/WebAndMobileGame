@@ -46,6 +46,8 @@ function onDragStart(event){
     this.dragging = true;
     if(check_in_map(this.pos_x,this.pos_y,this.name)){
         map[this.pos_y*map_size+this.pos_x] = null;
+        ROAD_ON_MAP_STAGE.removeChild(this);
+        ROAD_STAGE.addChild(this);
     }
 }
 
@@ -85,6 +87,8 @@ function onDragEnd(){
           delete(this);
       }else if(check_in_map(this.pos_x,this.pos_y,this.name)){
           map[this.pos_y*map_size+this.pos_x] = this.dir;
+          ROAD_STAGE.removeChild(this);
+          ROAD_ON_MAP_STAGE.addChild(this);
       }
     }
 
@@ -152,12 +156,9 @@ function MapPartsGenerator(x,y,img,name,turn,num){
   }
 
   // add indicate to stage so it won't be activated by game_reset
-  indicate = createMapParts(this.x+zero_x,this.y+zero_y,this.img,this.name,false,this.turn);
+  indicate = createMapParts(this.x,this.y,this.img,this.name,false,this.turn);
   ROAD_STAGE.removeChild(indicate);
-  stage.addChild(indicate);
-
-  // prevent indicate shows on top
-  stage.setChildIndex(indicate,0);
+  ROAD_INDICATOR_STAGE.addChild(indicate);
 
   var f = createMapParts(this.x,this.y,this.img,this.name,true,this.turn); 
   f.generator = this;

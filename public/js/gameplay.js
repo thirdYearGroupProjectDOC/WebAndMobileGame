@@ -39,9 +39,15 @@ map_bg_init();
 // setting map to reletive zero position
 MAP_STAGE.x = zero_x;
 MAP_STAGE.y = zero_y;
-
+// store map pieces to be selected
 ROAD_STAGE = new PIXI.Container();
 MAP_STAGE.addChild(ROAD_STAGE);
+// store map pieces on map
+ROAD_ON_MAP_STAGE = new PIXI.Container();
+MAP_STAGE.addChild(ROAD_ON_MAP_STAGE);
+
+ROAD_INDICATOR_STAGE = new PIXI.Container();
+ROAD_STAGE.addChild(ROAD_INDICATOR_STAGE);
 
 
 // create road part from image, can be dragged to fit on map,
@@ -56,9 +62,10 @@ var road_tree = new MapPartsGenerator(selects_x,selects_y+tile_size*7.5,'assets/
 
 // utility buttons, function defined in buttonfunctions.js
 start_button = createButton(180,550,'assets/spt_inst_start.png',start_function);
-next_stage_button = createButton(180,500,'assets/spt_inst_start.png',to_instruction_part);
-last_stage_button = createButton(180,460,'assets/spt_inst_start.png',to_map_part);
 
+instruction_stage_button = createButton(180,500,'assets/spt_inst_start.png',to_instruction_part);
+map_stage_button = createButton(180,460,'assets/spt_inst_start.png',to_map_part);
+stage.removeChild(map_stage_button);
 
 // create player
 var player = Player();
@@ -76,22 +83,21 @@ stage.addChild(INSTRUCT_STAGE);
 INSTRUCT_STAGE.x = queue_x;
 INSTRUCT_STAGE.y = queue_y;
 
-undo_button = createButton(700,200,'assets/undo.png',stack_undo);
+//undo_button = createButton(700,200,'assets/undo.png',stack_undo);
 reset_button = createButton(310,510,'assets/reset.png',game_reset);
 
 var INST_BUTTON_STAGE = new PIXI.Container();
 var INST_BUTTON_TXT_STAGE = new PIXI.Container();
 INST_BUTTON_STAGE.addChild(INST_BUTTON_TXT_STAGE);
-//stage.addChild(INST_BUTTON_STAGE);
 
 var turn_left = new inst_button(selects_x+200,10,10);
 var turn_right = new inst_button(selects_x+200, 60,10);
 var move_forward = new inst_button(selects_x+200, 110,10);
 var loop_start = new inst_drop_down_button(selects_x+200, 160, 10);
 
-turn_left.gen('assets/spt_inst_left.png',inst_dict.left);
-turn_right.gen('assets/spt_inst_right.png',inst_dict.right);
-move_forward.gen('assets/spt_inst_forward.png',inst_dict.forward);
+turn_left.gen('assets/spt_inst_left.png',1);
+turn_right.gen('assets/spt_inst_right.png',2);
+move_forward.gen('assets/spt_inst_forward.png',0);
 loop_start.gen('assets/spt_inst_repeat_time.png',3);
 
 
