@@ -2,24 +2,7 @@ var renderer = PIXI.autoDetectRenderer(1200, 800,{backgroundColor : 0x1099bb});
 document.body.appendChild(renderer.view);
 
 console.log(levelData);//configuration of level in JSON format
-var levelInfo = {
-  id: 1,
-  data: {
-  "author": "Sam",
-  "title": "Easy Level",
-  "description": "This is an entry level",
-  "dimen": 5,
-  "start":[{"Coor":[1,0], "Dir":[1]}],
-  "end":[{"Coor":[5,6], "Dir":[3]}],
 
-  "straight": 5,
-  "endPoint": 5,
-  "threeWay": 5,
-  "turn": 5,
-
-  "snake":[{"Coor":"2,2", "Dir":"0"}],
-  "tree":[{"Coor":"3,3", "Dir":"0"}]
-}};
 $("#saveButton").click(function(event) { // when save button clicked
   event.preventDefault(); //prevent page from reload
   $.post( '/test',{author:'Sam',LevelInfo:levelInfo}, function(data) { // post the parameter a2 to test.js
@@ -29,6 +12,11 @@ $("#saveButton").click(function(event) { // when save button clicked
 
 // create the root of the scene graph
 var stage = new PIXI.Container();
+
+// for messages
+var ERROR_STAGE = new PIXI.Container();
+stage.addChild(ERROR_STAGE);
+
 // map base, put all tiles into one container
 var MAP_STAGE = new PIXI.Container();
 stage.addChild(MAP_STAGE);
@@ -62,6 +50,11 @@ var road_tree = new MapPartsGenerator(selects_x,selects_y+tile_size*7.5,'assets/
 
 // utility buttons, function defined in buttonfunctions.js
 start_button = createButton(180,550,'assets/spt_inst_start.png',start_function);
+
+set_level_button = createButton(250,450,'assets/spt_inst_start.png',set_level_data);
+
+//show_msg(levelData.player);
+
 
 instruction_stage_button = createButton(180,500,'assets/spt_inst_start.png',to_instruction_part);
 map_stage_button = createButton(180,460,'assets/spt_inst_start.png',to_map_part);
@@ -101,8 +94,7 @@ move_forward.gen('assets/spt_inst_forward.png',0);
 loop_start.gen('assets/spt_inst_repeat_time.png',3);
 
 
-var ERROR_STAGE = new PIXI.Container();
-stage.addChild(ERROR_STAGE);
+
 
 // boolean for start executing instructions
 var start = false;
@@ -114,7 +106,6 @@ var store = 0;
 // intervel between reading instructions
 // size/speed is the time each instruction takes
 var intervel = tile_size/player.speed + 5;
-
 animate();
 function animate(){
     player.x += player.speed*Math.sign(player.xmov);
