@@ -61,6 +61,15 @@ LinkedList.prototype.remove = function(val){
 
 }  
 
+LinkedList.prototype.removeAll = function(){
+  
+    while (this.head) {
+      this.remove(this.head.value);
+  
+    }
+      return 0;
+}
+
 // getter function , provide position, get node
 LinkedList.prototype.at = function(position) {
     var currentNode = this.head;

@@ -125,7 +125,10 @@ var queue_y = 30;
 INSTRUCT_STAGE.x = queue_x;
 INSTRUCT_STAGE.y = queue_y;
 
-
+/*
+var instruct_region_x = 890;
+var instruct_region_y = 30;
+*/
 //undo_button = createUndoButton(700,250,'assets/undo.png');
 reset_button = createResetButton(310,510,'assets/reset.png');
 

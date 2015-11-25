@@ -102,13 +102,17 @@ function game_reset() {
     for(var i = 0; i < ROAD_STAGE.children.length; i++){
         ROAD_STAGE.children[i].interactive = true;
     }
+      
+      //clear instQueue
+     // instQueue.removeAll();
+      //INSTRUCT_STAGE.removeChildren();
 
     // restore instructions buttons's count
     for(var i = 0; i < INST_BUTTON_STAGE.children.length; i++){
       INST_BUTTON_STAGE.children[i].generator.reset();
     }
 
-    INSTRUCT_STAGE.removeChildren();
+    
     /*  OLD
     instQueue = [];
     instPointer = 0;
@@ -116,12 +120,14 @@ function game_reset() {
     instId = 0;
     step = 0;
 
+  
 }
 
 
 
 // new instruction buttons 
 // followed by map parts
+
 
 //check if it is in the instruction region
 function check_inst_region(x,y,length){
@@ -141,8 +147,10 @@ function onInstDragStart(event){
     this.started = true;
     this.alpha = 0.8;
     this.dragging = true;
-    
-
+    /*
+    INSTRUCT_STAGE.addChild(this);
+    INST_BUTTON_STAGE.remove(this);
+*/
 }
 
 function onInstDragEnd(event){
@@ -154,13 +162,31 @@ function onInstDragEnd(event){
 
   }
 
+  // drag instruction piece to outside will make it be returned to deck
+  if(!check_inst_region(this.x,this.y,instQueue.length)){
+    if (this.generator.count == 0) {
+          this.generator.count = 2;
+          this.generator.gen();
+        } else {
+        this.generator.count ++;
+        this.generator.update();
+      }
+        INST_BUTTON_STAGE.removeChild(this);
+        delete(this);
+  }
+  
+
 }
 
 
 function onInstDragMove(){
     if (this.dragging)
     {
-
+        this.dragged = true;
+        if(this.fresh){
+          this.fresh = false;
+          this.generator.gen();
+        }
         var newPosition = this.data.getLocalPosition(this.parent);
 
         if(check_inst_region(this.x,this.y,instQueue.length)){
