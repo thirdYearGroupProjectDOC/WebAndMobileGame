@@ -1,235 +1,4 @@
-
-/*
-function onButtonUp()
-{
-    this.isdown = false;
-
-    player_start();
-
-    if (this.isOver){
-    }
-    else{
-    }
-}
-
-*/
-function player_start() {
-       switch (instQueue[step].dir) {
-        case 0:
-            player_move(player.face_dir);
-            break;
-        case 1:
-            player.wait = tile_size/player.speed;
-            player.face_dir = (player.face_dir + 3) % 4;
-            turn_animation(player.face_dir);
-            break;
-        case 2:
-            player.wait = tile_size/player.speed;
-            player.face_dir = (player.face_dir + 1) % 4;
-            turn_animation(player.face_dir);
-            break;
-        default:
-            break;
-       }
-
-}
-
-
-/*
-
-*/
-// create undo instruction
-
-
-
-function createUndoButton(x,y,img){
-  var undo_tex = PIXI.Texture.fromImage(img);
-  var undo_button = new PIXI.Sprite(undo_tex);
-  undo_button.width = 65;
-  undo_button.height = 65;
-  undo_button.buttonMode = true;
-  undo_button.position.x = x;
-  undo_button.position.y = y;
-  // make the button interactive...
-  undo_button.interactive = true;
-  undo_button
-      // set the mousedown and touchstart callback...
-      .on('mousedown', undoButtonDown)
-      .on('touchstart', undoButtonDown)
-
-      // set the mouseup and touchend callback...
-      .on('mouseup', undoButtonUp)
-      .on('touchend', undoButtonUp)
-      .on('mouseupoutside', undoButtonUp)
-      .on('touchendoutside', undoButtonUp)
-
-      // set the mouseover callback...
-      .on('mouseover', undoButtonOver)
-
-      // set the mouseout callback...
-      .on('mouseout', undoButtonOut)
-      
-  undo_button.tap = null;
-  undo_button.click = null;
-  // add it to the stage
-  stage.addChild(undo_button);
-  return undo_button;
-}
-
-
-
-function undoButtonDown()
-{
-    this.isdown = true;
- //   player_move(1);
-    this.alpha = 1;
-}
-
-function undoButtonUp()
-{
-    this.isdown = false;
-
-    if (instPointer > 0) {
-    stack_undo();
-   }
-
-    if (this.isOver){
-    }
-    else{
-    }
-}
-
-function undoButtonOver()
-{
-    this.isOver = true;
-    if (this.isdown){
-        return;
-    }
-}
-
-function undoButtonOut()
-{
-    this.isOver = false;
-    if (this.isdown){
-        return;
-    }
-}
-
-
-// undo the most recent instruction
-function stack_undo() {
-
-  instPointer--;
-  instQueue[instPointer] = -1;
-
-  cur = INSTRUCT_STAGE.children[instPointer]
-  INSTRUCT_STAGE.removeChild(cur);
-  cur.button.generator.count++;
-  cur.button.generator.update();
-}
-
-// create reset button
-function createResetButton(x,y,img){
-  var reset_tex = PIXI.Texture.fromImage(img);
-  var reset_button = new PIXI.Sprite(reset_tex);
-  reset_button.width = tile_size*2;
-  reset_button.height = tile_size;
-  reset_button.x = x;
-  reset_button.y = y;
-  // make the button interactive...
-  reset_button.interactive = true;
-  reset_button.buttonMode = true;
-
-  reset_button
-      // set the mousedown and touchstart callback...
-      .on('mousedown', resetButtonDown)
-      .on('touchstart', resetButtonDown)
-
-      // set the mouseup and touchend callback...
-      .on('mouseup', resetButtonUp)
-      .on('touchend', resetButtonUp)
-      .on('mouseupoutside', resetButtonUp)
-      .on('touchendoutside', resetButtonUp)
-
-      // set the mouseover callback...
-      .on('mouseover', resetButtonOver)
-
-      // set the mouseout callback...
-      .on('mouseout', resetButtonOut)
-      
-  reset_button.tap = null;
-  reset_button.click = null;
-  // add it to the stage
-  stage.addChild(reset_button);
-  return reset_button;
-}
-
-
-function resetButtonDown()
-{
-    this.isdown = true;
- //   player_move(1);
-    this.alpha = 1;
-}
-
-function resetButtonUp()
-{
-    this.isdown = false;
-
-    game_reset();
-
-    if (this.isOver){
-    }
-    else{
-    }
-}
-
-function resetButtonOver()
-{
-    this.isOver = true;
-    if (this.isdown){
-        return;
-    }
-}
-
-function resetButtonOut()
-{
-    this.isOver = false;
-    if (this.isdown){
-        return;
-    }
-}
-
-
-function game_reset() {
-
-    player.x = tile_size;
-    player.y = tile_size;
-    player.pos_x = 1;
-    player.pos_y = 1;
-    player.face_dir = 1;
-    turn_animation(player.face_dir);
-    start = false;
-    // road pieces can be moved again
-    for(var i = 0; i < ROAD_STAGE.children.length; i++){
-        ROAD_STAGE.children[i].interactive = true;
-    }
-
-    // restore instructions buttons's count
-    for(var i = 0; i < INST_BUTTON_STAGE.children.length; i++){
-      INST_BUTTON_STAGE.children[i].generator.reset();
-      INST_BUTTON_STAGE.children[i].interactive = true;
-    }
-
-    ERROR_STAGE.removeChildren();
-    
-    start_button.interactive = true;
-    INSTRUCT_STAGE.removeChildren();
-    instQueue = [];
-    instPointer = 0;
-    step = 0;
-}
-
+// text counter for instruction button
 function inst_button(x,y,count){
   this.count = count;
   this.max = count;
@@ -239,7 +8,7 @@ function inst_button(x,y,count){
   var countTxt = new PIXI.Text(':'+count);
   countTxt.x = this.x + tile_size+ 45;
   countTxt.y = this.y;
-  stage.addChild(countTxt);
+  INST_BUTTON_TXT_STAGE.addChild(countTxt);
 
   this.update = function(){
     countTxt.setText(':'+this.count);
@@ -252,32 +21,6 @@ function inst_button(x,y,count){
 
   this.gen = function(img,inst){
     var ib = createInstructions(this.x,this.y,img,inst);
-    ib.generator = this;
-  }
-}
-
-function inst_drop_down_button(x,y,count) {
-  this.count = count;
-  this.max = count;
-  this.x = x;
-  this.y = y;
-
-  var countTxt = new PIXI.Text(':'+count);
-  countTxt.x = this.x + tile_size+ 45;
-  countTxt.y = this.y;
-  stage.addChild(countTxt);
-
-  this.update = function(){
-    countTxt.setText(':'+this.count);
-  }
-
-  this.reset = function(){
-    this.count = this.max;
-    this.update();
-  }
-
-  this.gen = function(img,inst){
-    var ib = createDropDownInstructions(this.x,this.y,img,inst);
     ib.generator = this;
   }
 }
@@ -380,6 +123,36 @@ function instructionButtonOut()
 }
 
 
+
+
+
+// text counter for drop_down_button
+function inst_drop_down_button(x,y,count) {
+  this.count = count;
+  this.max = count;
+  this.x = x;
+  this.y = y;
+
+  var countTxt = new PIXI.Text(':'+count);
+  countTxt.x = this.x + tile_size+ 45;
+  countTxt.y = this.y;
+  stage.addChild(countTxt);
+
+  this.update = function(){
+    countTxt.setText(':'+this.count);
+  }
+
+  this.reset = function(){
+    this.count = this.max;
+    this.update();
+  }
+
+  this.gen = function(img,inst){
+    var ib = createDropDownInstructions(this.x,this.y,img,inst);
+    ib.generator = this;
+  }
+}
+
 // create a button with drop-down menu, i.e. loop start button
 function createDropDownInstructions(x,y,img,inst) {
   var instruct_tex = PIXI.Texture.fromImage(img);
@@ -467,4 +240,28 @@ function dropDownTxtClicked() {
   b_parent.loopTime.setText(this.repeat_time);
   this.drop_parent.removeChildren();
   this.drop_parent.addChild(b_parent.loopTime);
+}
+
+
+function instruction_animation(){
+  var cur = instQueue[step-1];
+  var last = instQueue[step-2];
+
+  //move up and scale
+  cur.y -= 1;
+  cur.height += 1;
+  cur.x -= 0.5;
+  cur.width += 1;
+  
+  // random changing color, need better animation here
+  if(count % 5 == 0){
+    cur.tint = Math.random()* 0xF1FFFF;
+  }
+
+  // last instruction restore to original size
+  if(last){
+    last.height -= 1;
+    last.width -= 1;
+    last.x += 0.5;
+  }
 }

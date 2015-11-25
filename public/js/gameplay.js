@@ -1,15 +1,6 @@
 var renderer = PIXI.autoDetectRenderer(1200, 800,{backgroundColor : 0x1099bb});
 document.body.appendChild(renderer.view);
 
-// size of the actuall game size
-var map_size = 5;
-// for start and end point
-map_size +=2;
-var map = [];
-for(var i = 0; i<Math.pow(map_size,2); i++){
-    map[i] = null;
-}
-
 console.log(levelData);//configuration of level in JSON format
 var levelInfo = {
   id: 1,
@@ -21,13 +12,13 @@ var levelInfo = {
   "start":[{"Coor":[1,0], "Dir":[1]}],
   "end":[{"Coor":[5,6], "Dir":[3]}],
 
-"straight": 5,
-"endPoint": 5,
-"threeWay": 5,
-"turn": 5,
+  "straight": 5,
+  "endPoint": 5,
+  "threeWay": 5,
+  "turn": 5,
 
-"snake":[{"Coor":"2,2", "Dir":"0"}],
-"tree":[{"Coor":"3,3", "Dir":"0"}]
+  "snake":[{"Coor":"2,2", "Dir":"0"}],
+  "tree":[{"Coor":"3,3", "Dir":"0"}]
 }};
 $("#saveButton").click(function(event) { // when save button clicked
   event.preventDefault(); //prevent page from reload
@@ -36,40 +27,18 @@ $("#saveButton").click(function(event) { // when save button clicked
   });
 });
 
-// tile size , depends on screen later
-var tile_size = 60;
-// where the first road begin
-var zero_x = 80;
-var zero_y = 60;
-
-var selects_x = 500;
-var selects_y = 0;
-
 // create the root of the scene graph
 var stage = new PIXI.Container();
 // map base, put all tiles into one container
 var MAP_STAGE = new PIXI.Container();
-
 stage.addChild(MAP_STAGE);
 
 // create background
-for (var j = 1; j < map_size-1; j++) {
-    for (var i = 1; i < map_size-1; i++) {
-        var bg = PIXI.Sprite.fromImage('assets/Newburg/floor1.png');
-        bg.x = tile_size * i;
-        bg.y = tile_size * j;
-        bg.height = tile_size;
-        bg.width = tile_size;
-        MAP_STAGE.addChild(bg);
-    };
-};
+map_bg_init();
+
+// setting map to reletive zero position
 MAP_STAGE.x = zero_x;
 MAP_STAGE.y = zero_y;
-
-// setting directions of road pieces according to image's default direction
-// for detail and usage see the comments below
-dir_dict = {'monster':[-1], 'corner':[2,3], 'end':[2], 'straight':[1,3], 't':[1,2,3], 'tree':[]};
-
 
 ROAD_STAGE = new PIXI.Container();
 MAP_STAGE.addChild(ROAD_STAGE);
@@ -85,37 +54,16 @@ var road_straight = new MapPartsGenerator(selects_x,selects_y+tile_size*4.5,'ass
 var road_t = new MapPartsGenerator(selects_x,selects_y+tile_size*6,'assets/Newburg/road_t.png','t',0,3);
 var road_tree = new MapPartsGenerator(selects_x,selects_y+tile_size*7.5,'assets/Newburg/rock.png','tree',0,3); 
 
+// utility buttons, function defined in buttonfunctions.js
+start_button = createButton(180,550,'assets/spt_inst_start.png',start_function);
+next_stage_button = createButton(180,500,'assets/spt_inst_start.png',to_instruction_part);
+last_stage_button = createButton(180,460,'assets/spt_inst_start.png',to_map_part);
 
-// create start button
-start_button = createStartButton(180,550,'assets/spt_inst_start.png');
 
 // create player
-var player_right = PIXI.Texture.fromImage('assets/Newburg/monkey/right.png');
-var player_left = PIXI.Texture.fromImage('assets/Newburg/monkey/left.png');
-var player_back = PIXI.Texture.fromImage('assets/Newburg/monkey/back.png');
-var player_front = PIXI.Texture.fromImage('assets/Newburg/monkey/front.png');
-var player = new PIXI.Sprite(player_right);
-// position and size
-player.x = tile_size*1;
-player.y = tile_size*1;
-player.width = tile_size;
-player.height = tile_size;
+var player = Player();
 
-// position on map, only descrete numbers
-player.pos_x = 1;
-player.pos_y = 1;
-player.face_dir = 1;
-
-
-// used in main loop for moving on canvas
-player.xmov = 0;
-player.ymov = 0;
-player.speed = tile_size/60;
-player.wait = 0;
-
-MAP_STAGE.addChild(player);
-
-
+//show_msg(inst_dict[1]);
 // instructions waiting to be read
 var instQueue = [];
 var instPointer = 0;
@@ -123,31 +71,32 @@ var step = 0;
 
 // stage for instructions stacks, not buttons
 var INSTRUCT_STAGE = new PIXI.Container();
-
 stage.addChild(INSTRUCT_STAGE);
-
-var queue_x = 800;
-var queue_y = 10;
 
 INSTRUCT_STAGE.x = queue_x;
 INSTRUCT_STAGE.y = queue_y;
 
-
-undo_button = createUndoButton(700,200,'assets/undo.png');
-reset_button = createResetButton(310,510,'assets/reset.png');
+undo_button = createButton(700,200,'assets/undo.png',stack_undo);
+reset_button = createButton(310,510,'assets/reset.png',game_reset);
 
 var INST_BUTTON_STAGE = new PIXI.Container();
-stage.addChild(INST_BUTTON_STAGE);
+var INST_BUTTON_TXT_STAGE = new PIXI.Container();
+INST_BUTTON_STAGE.addChild(INST_BUTTON_TXT_STAGE);
+//stage.addChild(INST_BUTTON_STAGE);
 
 var turn_left = new inst_button(selects_x+200,10,10);
 var turn_right = new inst_button(selects_x+200, 60,10);
 var move_forward = new inst_button(selects_x+200, 110,10);
 var loop_start = new inst_drop_down_button(selects_x+200, 160, 10);
 
-turn_left.gen('assets/spt_inst_left.png',1);
-turn_right.gen('assets/spt_inst_right.png',2);
-move_forward.gen('assets/spt_inst_forward.png',0);
+turn_left.gen('assets/spt_inst_left.png',inst_dict.left);
+turn_right.gen('assets/spt_inst_right.png',inst_dict.right);
+move_forward.gen('assets/spt_inst_forward.png',inst_dict.forward);
 loop_start.gen('assets/spt_inst_repeat_time.png',3);
+
+
+var ERROR_STAGE = new PIXI.Container();
+stage.addChild(ERROR_STAGE);
 
 // boolean for start executing instructions
 var start = false;
@@ -176,26 +125,7 @@ function animate(){
 
     // when player are moving or turning
     if((player.xmov != 0) || (player.ymov != 0) || (player.wait != 0)){
-      var cur = instQueue[step-1];
-      var last = instQueue[step-2];
-
-      //move up and scale
-      cur.y -= 1;
-      cur.height += 1;
-      cur.x -= 0.5;
-      cur.width += 1;
-
-      // random changing color, need better animation here
-      if(count % 5 == 0){
-        cur.tint = Math.random()* 0xF1FFFF;
-      }
-
-      // last instruction restore to original size
-      if(last){
-        last.height -= 1;
-        last.width -= 1;
-        last.x += 0.5;
-      }
+      instruction_animation();
     }
 
     //when one step is finished, read next instruction
@@ -204,7 +134,7 @@ function animate(){
       && player.wait == 0 && instQueue.length != 0 && (count - store)>65) {
 
       store = count;
-      player_start();
+      execute_inst_queue();
       step++;
     }
 
@@ -212,118 +142,6 @@ function animate(){
 }
 
 
-var ERROR_STAGE = new PIXI.Container();
-stage.addChild(ERROR_STAGE);
 
-
-// used for printing message on screen
-function show_msg(msg){
-    var spinningText = new PIXI.Text(msg, { font: 'bold 60px Arial', fill: '#cc00ff', align: 'center', stroke: '#FFFFFF', strokeThickness: 6 });
-
-    spinningText.anchor.set(0.5);
-    spinningText.x = 500+Math.random()*200;
-    spinningText.y = 200+Math.random()*200;
-    ERROR_STAGE.addChild(spinningText);
-}
-
-
-
-/* @dir is the direction player moves, 0 notrh and clockwise inc
-*  first check whether the road player stands on has this dir
-*  then check boundries
-*/
-function player_move(dir){
-
-  // get direction!
-  // can only be +1, -1
-  var xmov = (2-dir)*dir%2;
-  var ymov = (dir-1)*(1-dir%2);
-
-  var cur = player.pos_y*map_size+player.pos_x;
-  var dst = (player.pos_y+ymov)*map_size + player.pos_x+xmov;
-
-  //opsite direction
-  var op = (dir+2)%4;
-
-  
-  var on_road = false;
-  var has_path = false;
-  if(map[cur] && map[cur].indexOf(dir)!=-1){
-    on_road = true;
-
-    
-  }
-    
-  if(map[dst] && map[dst].indexOf(op)!=-1){
-    has_path = true;
-  }
-
-  // check road condition
-  if(dst<map_size*map_size && on_road
-    && has_path){
-
-    player.xmov = xmov*tile_size;
-    player.ymov = ymov*tile_size;
-
-    player.pos_x += xmov;
-    player.pos_y += ymov;
-
-  }else{
-    show_msg('wrong direction!!');
-    if(!on_road){
-      show_msg('wrong direction on current road');
-    }
-    if(!has_path){
-      show_msg('no road to your destination');
-    }
-    
-    start = false;
-    start_button.interactive = false;
-
-  }
-}
-
-
-function instruction_animation(){
-  var cur = instQueue[step-1];
-  var last = instQueue[step-2];
-
-  //move up and scale
-  cur.y -= 1;
-  cur.height += 1;
-  cur.x -= 0.5;
-  cur.width += 1;
-  
-  // random changing color, need better animation here
-  if(count % 5 == 0){
-    cur.tint = Math.random()* 0xF1FFFF;
-  }
-
-  // last instruction restore to original size
-  if(last){
-    last.height -= 1;
-    last.width -= 1;
-    last.x += 0.5;
-  }
-}
-
-function turn_animation(dir){
-  switch(dir){
-    case 0:
-        player.texture = player_back;
-    case 1:
-        player.texture = player_right;
-        break;
-    case 2:
-        player.texture = player_front;
-        break;
-    case 3:
-        player.texture = player_left;
-        break;
-    default:
-        break;
-  }
-  
-}
 
 
