@@ -43,7 +43,7 @@ function show_msg(msg){
 
     spinningText.anchor.set(0.5);
     spinningText.x = 500;
-    spinningText.y = 100 + msg_rec*50;
+    spinningText.y = 100 + msg_rec*30;
     msg_rec ++;
     ERROR_STAGE.addChild(spinningText);
 }

@@ -84,6 +84,7 @@ function get_level_data(data){
 }
 
 function validation(){
+show_msg(find_road(2,3,3));
 
   if(on_map_corner(player.pos_x,player.pos_y)){
     return false;
@@ -98,63 +99,53 @@ function validation(){
     //show_msg('not on map pieces');
     return false;
   }
-  var xmov = (2-dir)*dir%2;
-  var ymov = (dir-1)*(1-dir%2);
 
   var p = {x:player.pos_x, y:player.pos_y};
-  p.x += xmov;
-  p.y += ymov;
-  return find_road(p,dir);
+  if(find_road(player.pos_x,player.pos_y,dir)){
+    show_msg('find')
+  }
 
-  show_msg('valid');
   return true;
 }
 
-function find_road(p,dir){
-  //show_msg('in find road');
 
-  show_msg( p.x + ':'+ p.y);
+
+function find_road(x,y,dir){
+
   var xmov = (2-dir)*dir%2;
   var ymov = (dir-1)*(1-dir%2);
-
-  dirs = map[p.x + p.y*map_size];
-  p.x += xmov;
-  p.y += ymov;
+  
+  var x = x+xmov;
+  var y = y+ymov;
   // get dirs available in new position
-
-  show_msg(dirs);
+  var dirs = map[x + y*map_size];
   //opsite direction
-  var op = (dir)//%4;
+  var op = (dir+2)%4;
 
-  //player not on any map position
-  if(dir==null||dirs==null){
-    //show_msg('not on map ');
+  //player not on a road
+  if(dirs==undefined || dirs==[]){
     return false;
   }
 
-  if(on_map_boarder(p.x,p.y)){
-    //show_msg('find!');
+  if(on_map_boarder(x,y)){
     return true;
   }
   // remove the dir just come from
-  show_msg('op: '+op+' dir:'+dir);
   var index = dirs.indexOf(op);
   if(index > -1){
     dirs.splice(index,1);
-    show_msg(dirs);
-  }
-
-  if(dirs==[]){
-    //show_msg('no road to go');
-    return false;
+    show_msg('remain dirs:'+ dirs);
   }else{
-    res = false;
-    //show_msg('in recursion: dir length:'+dirs.length);
-    for(var i = 0; i < dirs.length; i++){
-      res = res || find_road(p,dirs[i]);
-    }
+    // comming road is not valid 
+    return false;
+  }
+  
+  res = false;
+  //show_msg('in recursion: dir length:'+dirs.length);
+  for(var i = 0; i < dirs.length; i++){
+    res = res ||arguments.callee(x,y,dirs[i]);
   }
 
-  show_msg(dirs);
+  //show_msg(dirs);
   return res;
 }
