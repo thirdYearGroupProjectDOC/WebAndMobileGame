@@ -16,7 +16,6 @@ var stage = new PIXI.Container();
 
 // for messages
 var ERROR_STAGE = new PIXI.Container();
-stage.addChild(ERROR_STAGE);
 
 // map base, put all tiles into one container
 var MAP_STAGE = new PIXI.Container();
@@ -54,7 +53,7 @@ start_button = createButton(180,550,'assets/spt_inst_start.png',start_function);
 
 set_level_button = createButton(250,450,'assets/spt_inst_start.png',set_level_data);
 
-//show_msg(levelData.player);
+//show_msg(levelData.data.player);
 
 
 instruction_stage_button = createButton(180,500,'assets/spt_inst_start.png',to_instruction_part);
@@ -64,7 +63,10 @@ stage.removeChild(map_stage_button);
 // create player
 var player = Player();
 
-//show_msg(inst_dict[1]);
+if(!create_level){
+  get_level_data(levelData.data);
+}
+
 // instructions waiting to be read
 var instQueue = [];
 var instPointer = 0;
@@ -96,6 +98,7 @@ loop_start.gen('assets/spt_inst_repeat_time.png',3);
 
 
 
+stage.addChild(ERROR_STAGE);
 
 // boolean for start executing instructions
 var start = false;

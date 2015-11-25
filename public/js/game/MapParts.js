@@ -26,7 +26,13 @@ function check_in_map(x,y,name){
 
 // tiling map region, x, y are real position on canvas
 function check_tiling_region(x,y,name){
-  if(name=='end'){
+  if(name == 'player'){
+    return x > 0 && x < map_size*tile_size &&
+            y > 0 && y < map_size*tile_size && 
+            !(x > tile_size && x < (map_size-1)*tile_size &&
+            y > tile_size && y < (map_size-1)*tile_size)
+
+  } else if(name=='end'){
     return x > 0 && x < map_size*tile_size &&
             y > 0 && y < map_size*tile_size
   }else{

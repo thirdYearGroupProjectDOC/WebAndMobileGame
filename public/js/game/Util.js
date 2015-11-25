@@ -36,24 +36,25 @@ function map_bg_init(){
 	}
 }
 
-
+var msg_rec = 0;
 // used for printing message on screen
 function show_msg(msg){
-    var spinningText = new PIXI.Text(msg, { font: 'bold 60px Arial', fill: '#cc00ff', align: 'center', stroke: '#FFFFFF', strokeThickness: 6 });
+    var spinningText = new PIXI.Text(msg, { font: 'bold 60px Arial', fill: '#cc00ff', align: 'center', stroke: '#FFFFFF', strokeThickness: 5 });
 
     spinningText.anchor.set(0.5);
-    spinningText.x = 500+Math.random()*200;
-    spinningText.y = 200+Math.random()*200;
+    spinningText.x = 500;
+    spinningText.y = 100 + msg_rec*50;
+    msg_rec ++;
     ERROR_STAGE.addChild(spinningText);
 }
 
 
 function game_reset(){
 
-    player.x = tile_size;
-    player.y = tile_size;
-    player.pos_x = 1;
-    player.pos_y = 1;
+    player.x = tile_size/2;
+    player.y = tile_size/2;
+    player.pos_x = 0;
+    player.pos_y = 0;
     player.face_dir = 1;
     turn_animation(player,player.face_dir);
     start = false;
@@ -113,4 +114,15 @@ function execute_inst_queue() {
 	    default:
 	        break;
 	    }
+}
+
+function on_map_boarder(x,y){
+    return (x == 0 || x == map_size-1 || y == 0 || y == map_size-1);
+}
+
+function on_map_corner(x,y){
+    var check_x = (x==0 || x==map_size-1);
+    var check_y = (y==0 || y==map_size-1);
+    return check_y&&check_x;
+
 }

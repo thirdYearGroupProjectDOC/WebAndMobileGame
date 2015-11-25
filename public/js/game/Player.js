@@ -6,15 +6,34 @@ var player_front = PIXI.Texture.fromImage('assets/Newburg/monkey/front.png');
 // 'Constructer for player'
 function Player(){
 	var player =  new PIXI.Sprite(player_right);
+  //used in checking tiling
+  player.name = 'player';
+  player.anchor.set(0.5);
+  if(create_level){
+    player.interactive = true;
+  }
+  player
+    .on('mousedown', playerDragStart)
+    .on('touchstart', playerDragStart)
+    // events for drag end
+    .on('mouseup', playerDragEnd)
+    .on('mouseupoutside', playerDragEnd)
+    .on('touchend', playerDragEnd)
+    .on('touchendoutside', playerDragEnd)
+    // events for drag move
+    .on('mousemove', playerDragMove)
+    .on('touchmove', playerDragMove);
+  
+
 	// position and size
-	player.x = tile_size*1;
-	player.y = tile_size*1;
+	player.x = tile_size/2;
+	player.y = tile_size/2;
 	player.width = tile_size;
 	player.height = tile_size;
 
 	// position on map, only descrete numbers
-	player.pos_x = 1;
-	player.pos_y = 1;
+	player.pos_x = 0;
+	player.pos_y = 0;
 	player.face_dir = 1;
 
 	// used in main loop for moving on canvas
@@ -97,4 +116,53 @@ function turn_animation(player,dir){
         break;
   }
   
+}
+
+
+function playerDragStart(event){
+    this.data = event.data;
+    this.started = true;
+    this.alpha = 0.8;
+    this.dragging = true;
+}
+
+function playerDragEnd(){
+  if(this.started){
+      this.alpha = 1;
+      this.dragging = false;
+      // set the interaction data to null
+      this.data = null;
+
+      if(!check_tiling_region(this.x,this.y,this.name)){
+        this.x = tile_size/2;
+        this.y = tile_size/2;
+      }
+
+      this.pos_x = toTilePos(this.x);
+      this.pos_y = toTilePos(this.y);
+    }
+
+    this.started = false;
+        
+}
+
+function playerDragMove(){
+  if (this.dragging)
+    {
+        this.dragged = true;
+        
+        var newPosition = this.data.getLocalPosition(this.parent);
+        // enter tiling region ( MAP )
+        if(check_tiling_region(this.x,this.y,this.name)){
+
+          this.x = newPosition.x - newPosition.x%tile_size + tile_size/2;
+          this.y = newPosition.y - newPosition.y%tile_size + tile_size/2;
+
+        // put it to where mouse is
+        }else{
+          this.x = newPosition.x;
+          this.y = newPosition.y;
+        }
+    
+    }
 }
