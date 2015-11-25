@@ -5,6 +5,7 @@ console.log(levelData);//configuration of level in JSON format
 
 $("#saveButton").click(function(event) { // when save button clicked
   event.preventDefault(); //prevent page from reload
+  set_level_data();
   console.log(levelInfo);
   $.post( '/test',{author:'Sam',LevelInfo:JSON.stringify(levelInfo)}, function(data) { // post the parameter a2 to test.js
     alert(data); //alert the data after getting reply
@@ -51,7 +52,7 @@ var road_tree = new MapPartsGenerator(selects_x,selects_y+tile_size*7.5,'assets/
 // utility buttons, function defined in buttonfunctions.js
 start_button = createButton(180,550,'assets/spt_inst_start.png',start_function);
 
-set_level_button = createButton(250,450,'assets/spt_inst_start.png',set_level_data);
+//set_level_button = createButton(250,450,'assets/spt_inst_start.png',set_level_data);
 
 //show_msg(levelData.data.player);
 
@@ -61,7 +62,12 @@ map_stage_button = createButton(180,460,'assets/spt_inst_start.png',to_map_part)
 stage.removeChild(map_stage_button);
 
 // create player
+
 var player = Player();
+// used in game reset
+player.ox = player.pos_x;
+player.oy = player.pos_y;
+player.odir = player.face_dir;
 
 if(!create_level){
   get_level_data(levelData.data);
