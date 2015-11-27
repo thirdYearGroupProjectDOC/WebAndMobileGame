@@ -98,6 +98,7 @@ INST_BUTTON_STAGE.addChild(INSTRUCT_STAGE);
 var move_forward = new instructionGenerator(0, 50,'assets/spt_inst_forward.png', inst_dict.forward, 3 );
 var turn_right = new instructionGenerator(0, 130, 'assets/spt_inst_right.png', inst_dict.right, 3);
 var turn_left = new instructionGenerator(0, 210, 'assets/spt_inst_left.png', inst_dict.left, 3);
+var for_loop = new instructionGenerator(0, 280, 'assets/spt_inst_repeat_time.png', inst_dict.for_loop, 3);
 
 
 stage.addChild(ERROR_STAGE);
@@ -122,6 +123,12 @@ start_frame.height = tile_size;
 start_frame.width = tile_size*2;;
 start_frame.anchor.set(0.5);
 stage.addChild(start_frame);
+
+var inst_frame = new PIXI.Sprite(start_frame_tex);
+inst_frame.height = tile_size;
+inst_frame.width = tile_size*2;;
+inst_frame.anchor.set(0.5);
+//stage.addChild(inst_frame);
 
 
 //stage.addChild(graphics);
@@ -165,15 +172,23 @@ function animate(){
     if (execute && player.xmov == 0 && player.ymov == 0 && cur_inst != null
           && player.wait == 0 && instQueue.length != 0 && (count - store)>65) {
       store = count;
+      
+      INST_BUTTON_STAGE.addChild(inst_frame);
+      inst_frame.x = cur_inst.value.x;
+      inst_frame.y = cur_inst.value.y;
 
       execute_inst_queue();
     }
 
     if(execute){
       start_frame.tint = Math.random()* 0xF1FFFF;
+    }else{
+      INST_BUTTON_STAGE.removeChild(inst_frame);
     }
-    //text.text = instQueue.length + ' execute: ' + execute
-      //       +' player.xmov '+ player.xmov +' player.ymov ' + player.ymov;
+
+
+   /* text.text = cur_inst.value.inst + ', execute: ' + execute
+             +' player.xmov '+ player.xmov +' player.ymov ' + player.ymov;*/
     /*else{
       show_msg(start);
       show_msg(instQueue.length);

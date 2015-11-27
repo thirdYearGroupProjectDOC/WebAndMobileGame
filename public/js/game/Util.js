@@ -21,7 +21,7 @@ var map = [];
 
 // setting directions of road pieces according to image's default direction
 dir_dict = {'monster':[-1], 'corner':[2,3], 'end':[2], 'straight':[1,3], 't':[1,2,3], 'tree':[]};
-inst_dict = {forward: 0, right: 1, left: 2};
+inst_dict = {forward: 0, right: 1, left: 2, for_loop: 3, if_stmt: 4};
 
 function map_bg_init(){
 	for (var j = 1; j < map_size-1; j++) {
@@ -88,18 +88,6 @@ function game_reset(){
     step = 0;
 }
 
-// undo the most recent instruction
-/*function stack_undo() {
-  if(instPointer>0){
-    instPointer--;
-    instQueue[instPointer] = -1;
-
-    cur = INSTRUCT_STAGE.children[instPointer]
-    INSTRUCT_STAGE.removeChild(cur);
-    cur.button.generator.count++;
-    cur.button.generator.update();
-  }
-}*/
 
 // reading instQueue instructions
 function execute_inst_queue() {
@@ -123,6 +111,7 @@ function execute_inst_queue() {
 
     last_inst = cur_inst;
     cur_inst = cur_inst.next;
+
 }
 
 function on_map_boarder(x,y){

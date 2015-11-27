@@ -147,7 +147,9 @@ function instructionGenerator(x,y,img,inst,num){
 function createInstructionParts(x,y,img, inst, active){
   var tex_instruct = PIXI.Texture.fromImage(img);
   var part = new PIXI.Sprite(tex_instruct);
-  
+  // so it appear before loop count or if statement
+  INST_BUTTON_STAGE.addChild(part);
+
   part.interactive = active;
   part.buttonMode = true;
   part.anchor.set(0.5);
@@ -165,13 +167,6 @@ function createInstructionParts(x,y,img, inst, active){
   part.pos_x = -1;
   part.pos_y = -1;
   part.inst = inst;
-  //part.dir = dir_dict[name];
-
-  // these variables are only used for creating 
-  // another road
-  //part.img = img;
-  //part.ox = x;
-  //part.oy = y;
 
 
   part
@@ -186,8 +181,19 @@ function createInstructionParts(x,y,img, inst, active){
     // events for drag move
     .on('mousemove', onInstDragMove)
     .on('touchmove', onInstDragMove);//haha
-  INST_BUTTON_STAGE.addChild(part);
   
+  if(inst==inst_dict.for_loop){
+    this.loop_count = 3;
+    var countTxt = new PIXI.Text(':'+this.loop_count);
+    countTxt.width *= 0.8;
+    countTxt.height *= 0.8;
+    countTxt.x = part.x - 5 ;//
+    countTxt.y = part.y - 5;
+    INST_BUTTON_STAGE.addChild(countTxt);
+
+    
+  }
+
   return part;
 }
 
