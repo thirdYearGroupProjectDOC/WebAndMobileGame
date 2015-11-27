@@ -58,8 +58,8 @@ start_button = createButton(180,550,'assets/spt_inst_start.png',start_function);
 
 
 
-instruction_stage_button = createButton(180,500,'assets/spt_inst_start.png',to_instruction_part);
-map_stage_button = createButton(180,460,'assets/spt_inst_start.png',to_map_part);
+instruction_stage_button = createButton(180,460,'assets/to_inst.png',to_instruction_part);
+map_stage_button = createButton(180,460,'assets/to_map.png',to_map_part);
 stage.removeChild(map_stage_button);
 
 
@@ -74,17 +74,8 @@ if(!create_level){
   get_level_data(levelData.data);
 }
 
-// instructions waiting to be read
-/* OLD
-var instQueue = [];
-var instPointer = 0;
-*/
-
-//  new
-//var LinkedList = require('linkedlist');
+// executing instructions from this list
 var instQueue = new LinkedList();
-
-var step = 0;
 
 
 
@@ -104,15 +95,15 @@ INST_BUTTON_STAGE.addChild(INSTRUCT_STAGE);
 
 
 // new
-var move_forward = new instructionGenerator(0, 50,'assets/spt_inst_forward.png', 'forward', 3 );
-var turn_right = new instructionGenerator(0, 130, 'assets/spt_inst_right.png', 'right', 3);
-var turn_left = new instructionGenerator(0, 210, 'assets/spt_inst_left.png', 'left', 3);
+var move_forward = new instructionGenerator(0, 50,'assets/spt_inst_forward.png', inst_dict.forward, 3 );
+var turn_right = new instructionGenerator(0, 130, 'assets/spt_inst_right.png', inst_dict.right, 3);
+var turn_left = new instructionGenerator(0, 210, 'assets/spt_inst_left.png', inst_dict.left, 3);
 
 
 stage.addChild(ERROR_STAGE);
 
 
-
+/*
 graphics = new PIXI.Graphics();
 
 graphics.lineStyle(2, 0xFF00FF, 1);
@@ -120,13 +111,22 @@ graphics.beginFill(0xFF00BB, 0.25);
 graphics.drawRoundedRect(inst_x+tile_size*3, inst_y+tile_size/2, tile_size*2, tile_size, 15);
 //graphics.drawRoundedRect, 250, 200, 120, 5);
 
-graphics.endFill();
-stage.addChild(INST_BUTTON_STAGE);
+graphics.endFill();*/
+//stage.addChild(INST_BUTTON_STAGE);
+
+var start_frame_tex = PIXI.Texture.fromImage('assets/execute_frame.png');
+var start_frame = new PIXI.Sprite(start_frame_tex);
+start_frame.x = start_button.x;
+start_frame.y = start_button.y;
+start_frame.height = tile_size;
+start_frame.width = tile_size*2;;
+start_frame.anchor.set(0.5);
+stage.addChild(start_frame);
 
 
-stage.addChild(graphics);
+//stage.addChild(graphics);
 // boolean for start executing instructions
-var start = false;
+var execute = false;
 // for slower step animation
 var count = 0;
 // store count,
@@ -135,6 +135,18 @@ var store = 0;
 // intervel between reading instructions
 // size/speed is the time each instruction takes
 var intervel = tile_size/player.speed + 5;
+
+// current instruction, last instruction
+// cur_inst is currently updated at every instruction onInstEnd method
+cur_inst = null;
+last_inst = null;
+
+// this text is used for getting run time updated values, for debugging purpose only
+var text = new PIXI.Text(' ');
+text.x= 300;
+text.y= 100;
+stage.addChild(text);
+
 animate();
 function animate(){
     player.x += player.speed*Math.sign(player.xmov);
@@ -149,19 +161,23 @@ function animate(){
     requestAnimationFrame(animate);
     renderer.render(stage);
 
-
-    // when player are moving or turning
-    if((player.xmov != 0) || (player.ymov != 0) || (player.wait != 0)){
-      instruction_animation();
-    }
-
     //when one step is finished, read next instruction
-    if (start && player.xmov == 0 && player.ymov == 0 
-      && player.wait == 0 && instQueue.length != 0 && (count - store)>65) {
+    if (execute && player.xmov == 0 && player.ymov == 0 && cur_inst != null
+          && player.wait == 0 && instQueue.length != 0 && (count - store)>65) {
       store = count;
+
       execute_inst_queue();
-      step++;
     }
+
+    if(execute){
+      start_frame.tint = Math.random()* 0xF1FFFF;
+    }
+    //text.text = instQueue.length + ' execute: ' + execute
+      //       +' player.xmov '+ player.xmov +' player.ymov ' + player.ymov;
+    /*else{
+      show_msg(start);
+      show_msg(instQueue.length);
+    }*/
 
     count += 1;
 }

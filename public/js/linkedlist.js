@@ -14,7 +14,7 @@ LinkedList.prototype.push = function(val){
        down: false
     }
     if(!this.head){
-      this.head = node;      
+      this.head = node;  
     }
     else{
       current = this.head;
@@ -61,13 +61,18 @@ LinkedList.prototype.remove = function(val){
 
 }  
 
-LinkedList.prototype.removeAll = function(){
-  
-    while (this.head) {
-      this.remove(this.head.value);
-  
-    }
-      return 0;
+LinkedList.prototype.clear = function(){
+    // not sure how to collect garbages in js
+    /*var h = this.head;
+
+    while (h) {
+      h = h.next;
+      var t = h;
+      delete t;
+    }*/
+    this.head = null;
+    this.length = 0;
+    return 0;
 }
 
 // getter function , provide position, get node
@@ -133,7 +138,7 @@ LinkedList.prototype.update = function(){
   var i = 0;
   var cur = this.head;
   while(cur){
-    cur.value.y = INSTRUCT_STAGE.y + (i+1)*tile_size;
+    cur.value.y = (i+1)*(tile_size+2);
     cur = cur.next;
     i++;
   }

@@ -91,7 +91,7 @@ function player_move(dir){
     }
     
     // pause the game!
-    start = false;
+    execute = false;
     start_button.interactive = false;
 
   }

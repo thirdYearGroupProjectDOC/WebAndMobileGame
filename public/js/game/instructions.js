@@ -17,7 +17,7 @@ function check_inst_region(x,y,length){
 
 function to_Inst_pos(y){
 
-   return ( Math.floor((y-INSTRUCT_STAGE.y + tile_size/2)/tile_size)-1);
+   return ( Math.floor((y + tile_size/2)/tile_size)-1);
 }
 
 
@@ -39,7 +39,6 @@ function onInstDragEnd(event){
     this.dragging = false;
     this.started = false;
     this.alpha = 1;
-
   }
 
   // drag instruction piece to outside will make it be returned to deck
@@ -55,8 +54,9 @@ function onInstDragEnd(event){
     INST_BUTTON_STAGE.removeChild(this);
     delete(this);
   }
-  
 
+  cur_inst = instQueue.head;
+//  show_msg('get here: execute: '+execute);
 }
 
 
@@ -99,12 +99,12 @@ function onInstDragMove(){
 
 
 //create instruction button
-function instructionGenerator(x,y,img,name,num){
+function instructionGenerator(x,y,img,inst,num){
   // used by createMapParts function
   this.x = x;
   this.y = y;
   this.img = img;
-  this.name = name;
+  this.inst = inst;
   // number of parts
   if(num){
     this.count = num;
@@ -112,10 +112,10 @@ function instructionGenerator(x,y,img,name,num){
     this.count = 1;
   }
 
-  indicate = createInstructionParts(this.x,this.y,this.img,this.name,false);
+  indicate = createInstructionParts(this.x,this.y,this.img,this.inst,false);
+  indicate.indicate = true;
 
-
-  var f = createInstructionParts(this.x,this.y,this.img,this.name,true); 
+  var f = createInstructionParts(this.x,this.y,this.img,this.inst,true); 
   f.generator = this;
 
 
@@ -128,7 +128,7 @@ function instructionGenerator(x,y,img,name,num){
     // this is called when moving top pieces
     // when count is one, don't generate a new piece, 
     if(this.count > 1){
-      var m = createInstructionParts(this.x,this.y,this.img,this.name,true);
+      var m = createInstructionParts(this.x,this.y,this.img,this.inst,true);
       m.generator = this;
       this.count --;
     }else{
@@ -141,7 +141,56 @@ function instructionGenerator(x,y,img,name,num){
     countTxt.setText(':'+this.count);
   }
 
+
 }
+
+function createInstructionParts(x,y,img, inst, active){
+  var tex_instruct = PIXI.Texture.fromImage(img);
+  var part = new PIXI.Sprite(tex_instruct);
+  
+  part.interactive = active;
+  part.buttonMode = true;
+  part.anchor.set(0.5);
+  part.width = tile_size*2;
+  part.height = tile_size;
+  part.position.x = x;
+  part.position.y = y;
+  // to distinguish between turning road and dragging road 
+  part.dragged = false;
+  // when it is being created, the piece is fresh,
+  // used to maintain the counts for same type of piece
+  part.fresh = true;
+  part.started = false;
+  // position on map
+  part.pos_x = -1;
+  part.pos_y = -1;
+  part.inst = inst;
+  //part.dir = dir_dict[name];
+
+  // these variables are only used for creating 
+  // another road
+  //part.img = img;
+  //part.ox = x;
+  //part.oy = y;
+
+
+  part
+    // events for drag start
+    .on('mousedown', onInstDragStart)
+    .on('touchstart', onInstDragStart)
+    // events for drag end
+    .on('mouseup', onInstDragEnd)
+    .on('mouseupoutside', onInstDragEnd)
+    .on('touchend', onInstDragEnd)
+    .on('touchendoutside', onInstDragEnd)
+    // events for drag move
+    .on('mousemove', onInstDragMove)
+    .on('touchmove', onInstDragMove);//haha
+  INST_BUTTON_STAGE.addChild(part);
+  
+  return part;
+}
+
 
 /*
 <<<<<<< HEAD
@@ -292,50 +341,5 @@ function instruction_animation(){
     last.x += 0.5;
   }
 }
-=======*/
-function createInstructionParts(x,y,img, name, active){
-  var tex_instruct = PIXI.Texture.fromImage(img);
-  var part = new PIXI.Sprite(tex_instruct);
- 
-  part.interactive = active;
-  part.buttonMode = true;
-  part.anchor.set(0.5);
-  part.width = tile_size*2;
-  part.height = tile_size;
-  part.position.x = x;
-  part.position.y = y;
-  // to distinguish between turning road and dragging road 
-  part.dragged = false;
-  // when it is being created, the piece is fresh,
-  // used to maintain the counts for same type of piece
-  part.fresh = true;
-  part.started = false;
-  // position on map
-  part.pos_x = -1;
-  part.pos_y = -1;
-  part.name = name;
-  //part.dir = dir_dict[name];
 
-  // these variables are only used for creating 
-  // another road
-  //part.img = img;
-  //part.ox = x;
-  //part.oy = y;
-
-
-  part
-    // events for drag start
-    .on('mousedown', onInstDragStart)
-    .on('touchstart', onInstDragStart)
-    // events for drag end
-    .on('mouseup', onInstDragEnd)
-    .on('mouseupoutside', onInstDragEnd)
-    .on('touchend', onInstDragEnd)
-    .on('touchendoutside', onInstDragEnd)
-    // events for drag move
-    .on('mousemove', onInstDragMove)
-    .on('touchmove', onInstDragMove);//haha
-  INST_BUTTON_STAGE.addChild(part);
-  
-  return part;
-}
+*/

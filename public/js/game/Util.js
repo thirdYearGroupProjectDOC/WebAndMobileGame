@@ -21,7 +21,7 @@ var map = [];
 
 // setting directions of road pieces according to image's default direction
 dir_dict = {'monster':[-1], 'corner':[2,3], 'end':[2], 'straight':[1,3], 't':[1,2,3], 'tree':[]};
-//inst_dict = {forward: 0, right: 1, left: 2};
+inst_dict = {forward: 0, right: 1, left: 2};
 
 function map_bg_init(){
 	for (var j = 1; j < map_size-1; j++) {
@@ -54,7 +54,6 @@ function show_msg(msg){
 
 
 function game_reset(){
-
     player.pos_x = player.ox;
     player.pos_y = player.oy;
     player.x = tile_size/2 + tile_size*player.pos_x;
@@ -63,7 +62,7 @@ function game_reset(){
     player.face_dir = player.odir;
     turn_animation(player,player.face_dir);
 
-    start = false;
+    execute = false;
     // road pieces can be moved again
     for(var i = 0; i < ROAD_STAGE.children.length; i++){
         ROAD_STAGE.children[i].interactive = true;
@@ -71,24 +70,26 @@ function game_reset(){
 
     // restore instructions buttons's count
     for(var i = 0; i < INST_BUTTON_STAGE.children.length; i++){
-      if(INST_BUTTON_STAGE.children[i].generator){
+      /*if(INST_BUTTON_STAGE.children[i].generator){
 
         INST_BUTTON_STAGE.children[i].generator.reset();
+      }*/
+      var c = INST_BUTTON_STAGE.children[i];
+      if(!c.indicate ){
+        c.interactive = true;
       }
-      INST_BUTTON_STAGE.children[i].interactive = true;
+      
     }
 
     ERROR_STAGE.removeChildren();
     
     start_button.interactive = true;
-    INSTRUCT_STAGE.removeChildren();
-    instQueue = [];
-    instPointer = 0;
+    //instQueue.clear();
     step = 0;
 }
 
 // undo the most recent instruction
-function stack_undo() {
+/*function stack_undo() {
   if(instPointer>0){
     instPointer--;
     instQueue[instPointer] = -1;
@@ -98,21 +99,20 @@ function stack_undo() {
     cur.button.generator.count++;
     cur.button.generator.update();
   }
-}
+}*/
 
 // reading instQueue instructions
 function execute_inst_queue() {
-    switch (instQueue[step].dir) {
-	    case 0:
+    switch (cur_inst.value.inst) {
+	    case inst_dict.forward:
 	        player_move(player.face_dir);
 	        break;
-	    case 1:
+	    case inst_dict.left:
 	        player.wait = tile_size/player.speed;
 	        player.face_dir = (player.face_dir + 3) % 4;
-	        show_msg(player.face_dir);
 	        turn_animation(player,player.face_dir);
 	        break;
-	    case 2:
+	    case inst_dict.right:
 	        player.wait = tile_size/player.speed;
 	        player.face_dir = (player.face_dir + 1) % 4;
 	        turn_animation(player,player.face_dir);
@@ -120,6 +120,9 @@ function execute_inst_queue() {
 	    default:
 	        break;
 	    }
+
+    last_inst = cur_inst;
+    cur_inst = cur_inst.next;
 }
 
 function on_map_boarder(x,y){

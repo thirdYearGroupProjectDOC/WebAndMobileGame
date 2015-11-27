@@ -113,7 +113,7 @@ function onDragMove(){
         }
         var newPosition = this.data.getLocalPosition(this.parent);
         // enter tiling region ( MAP )
-        if(check_tiling_region(this.x,this.y,this.name)){
+        if(check_tiling_region(newPosition.x,newPosition.y,this.name)){
 
           this.x = newPosition.x - newPosition.x%tile_size + tile_size/2;
           this.y = newPosition.y - newPosition.y%tile_size + tile_size/2;
