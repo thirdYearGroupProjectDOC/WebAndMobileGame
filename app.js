@@ -13,6 +13,7 @@ var mongoose = require('mongoose');
 var bcrypt = require('bcrypt');
 
 var users = require('./models/user');
+var levelData = require('./models/levelData');
 
 var game = require('./routes/game');
 var login = require('./routes/login');
@@ -21,6 +22,8 @@ var routes = require('./routes/welcome');
 var register = require('./routes/register');
 var about = require('./routes/about');
 var home = require('./routes/home');
+var levels = require('./routes/levels');
+var createLevel = require('./routes/createLevel');
 var profile_view = require('./routes/profile-view');
 var profile_edit = require('./routes/profile-edit');
 var delete_account = require('./routes/delete-account');
@@ -50,7 +53,9 @@ app.use('/login', login);
 app.use('/logout', logout);
 app.use('/about', about);
 app.use('/home', home);
+app.use('/levels', levels);
 app.use('/register', register);
+app.use('/createLevel', createLevel);
 app.use('/profile-view', profile_view);
 app.use('/profile-edit', profile_edit);
 app.use('/delete-account', delete_account);
