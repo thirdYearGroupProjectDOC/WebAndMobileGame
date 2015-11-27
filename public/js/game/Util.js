@@ -4,13 +4,13 @@ tile_size = 60;
 zero_x = 80;
 zero_y = 60;
 
-// beginning point of selections of instruction buttons
+// beginning point of selections of road pieces
 selects_x = 500;
 selects_y = 0;
 
 // beginning point of instruction queue
-var queue_x = 800;
-var queue_y = 30;
+var inst_x = selects_x+tile_size*5;
+var inst_y = selects_y;
 
 
 // size of the actuall game size
@@ -37,14 +37,18 @@ function map_bg_init(){
 }
 
 var msg_rec = 0;
+var msg_rec_x = 100;
 // used for printing message on screen
 function show_msg(msg){
-    var spinningText = new PIXI.Text(msg, { font: 'bold 30px Arial', align: 'center', stroke: '#FFFFFF', strokeThickness: 5 });
+    var spinningText = new PIXI.Text(msg, { font: 'bold 25px Arial', align: 'center', stroke: '#FFFFFF', strokeThickness: 5 });
 
     spinningText.anchor.set(0.5);
-    spinningText.x = 500;
-    spinningText.y = 100 + msg_rec*30;
+    spinningText.x = msg_rec_x;
+    spinningText.y = 100 + (msg_rec%20)*30;
     msg_rec ++;
+    if(msg_rec %20 == 0){
+      msg_rec_x += 40;
+    }
     ERROR_STAGE.addChild(spinningText);
 }
 

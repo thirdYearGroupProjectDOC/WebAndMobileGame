@@ -1,12 +1,17 @@
-// new instruction buttons 
-// followed by map parts
-
+// defines distance bwtween generator ( pile of instructions)
+// and where the execution stack lives
+var gap = tile_size * 3;
 
 //check if it is in the instruction region
 function check_inst_region(x,y,length){
-     return x > INSTRUCT_STAGE.x && x < INSTRUCT_STAGE.x+tile_size &&
-            y > INSTRUCT_STAGE.y+tile_size/2 &&
-            y < INSTRUCT_STAGE.y+tile_size/2+tile_size*(instQueue.length+1);
+
+     var res = (x > gap) && (x < gap+tile_size*2) &&
+            (y > tile_size/2) &&
+            (y < tile_size/2+tile_size*(length+1));
+      if(res){
+        //show_msg('x :' +x+ 'y: '+y);
+      }
+      return res;
 }
 
 
@@ -64,10 +69,10 @@ function onInstDragMove(){
           this.generator.gen();
         }
         var newPosition = this.data.getLocalPosition(this.parent);
-
-        if(check_inst_region(this.x,this.y,instQueue.length)){
-          this.x = newPosition.x - newPosition.x%(tile_size*2) + tile_size;
-          this.y = newPosition.y - newPosition.y%tile_size + tile_size/2;
+        if(check_inst_region(newPosition.x,this.y,instQueue.length)){
+          //show_msg('h');
+          this.x = gap+tile_size;//newPosition.x - newPosition.x % (tile_size) + tile_size;
+          this.y = newPosition.y ;//- newPosition.y%tile_size + tile_size/2;
 
           // find position to insert in
           var temp_pos = to_Inst_pos(this.y);

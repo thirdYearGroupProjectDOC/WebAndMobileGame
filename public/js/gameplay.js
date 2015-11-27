@@ -86,12 +86,7 @@ var instQueue = new LinkedList();
 
 var step = 0;
 
-// stage for instructions stacks, not buttons
-var INSTRUCT_STAGE = new PIXI.Container();
-stage.addChild(INSTRUCT_STAGE);
 
-INSTRUCT_STAGE.x = queue_x;
-INSTRUCT_STAGE.y = queue_y;
 
 //undo_button = createButton(700,200,'assets/undo.png',stack_undo);
 reset_button = createButton(310,510,'assets/reset.png',game_reset);
@@ -99,22 +94,35 @@ reset_button = createButton(310,510,'assets/reset.png',game_reset);
 var INST_BUTTON_STAGE = new PIXI.Container();
 var INST_BUTTON_TXT_STAGE = new PIXI.Container();
 INST_BUTTON_STAGE.addChild(INST_BUTTON_TXT_STAGE);
+INST_BUTTON_STAGE.x = inst_x;
+INST_BUTTON_STAGE.y = inst_y;
+
+// stage for instructions stacks, not buttons
+var INSTRUCT_STAGE = new PIXI.Container();
+INST_BUTTON_STAGE.addChild(INSTRUCT_STAGE);
+
 
 
 // new
-var move_forward = new instructionGenerator(selects_x+250, 50,'assets/spt_inst_forward.png', 'forward', 3 );
-var turn_right = new instructionGenerator(selects_x+250, 130, 'assets/spt_inst_right.png', 'right', 3);
-var turn_left = new instructionGenerator(selects_x+250, 210, 'assets/spt_inst_left.png', 'left', 3);
+var move_forward = new instructionGenerator(0, 50,'assets/spt_inst_forward.png', 'forward', 3 );
+var turn_right = new instructionGenerator(0, 130, 'assets/spt_inst_right.png', 'right', 3);
+var turn_left = new instructionGenerator(0, 210, 'assets/spt_inst_left.png', 'left', 3);
+
+
 stage.addChild(ERROR_STAGE);
+
+
 
 graphics = new PIXI.Graphics();
 
 graphics.lineStyle(2, 0xFF00FF, 1);
 graphics.beginFill(0xFF00BB, 0.25);
-graphics.drawRoundedRect(INSTRUCT_STAGE.x, INSTRUCT_STAGE.y, tile_size*2, tile_size, 15);
+graphics.drawRoundedRect(inst_x+tile_size*3, inst_y+tile_size/2, tile_size*2, tile_size, 15);
 //graphics.drawRoundedRect, 250, 200, 120, 5);
 
 graphics.endFill();
+stage.addChild(INST_BUTTON_STAGE);
+
 
 stage.addChild(graphics);
 // boolean for start executing instructions
