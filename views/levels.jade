@@ -8,6 +8,11 @@ block content
   <a href="/createLevel" class="btn btn-primary">Create my own level</a>
   <a href="/rank" class="btn btn-info">Go see the ranks</a>
   p ===
+  form(method="post", action="/levels")
+    input(type="text", class="form-control", placeholder="id of level to be deleted", name ="deleteId")
+    div(style="margin: 0 auto; display: table;")
+      button(type="submit", class='button', style="float:initial") Delete
+  p ===
   form(name="selectLvls" action="/levels" method="post")
     <div class="lvls">
     .list-group
@@ -32,4 +37,4 @@ block content
       each item in dss
         a.list-group-item(href="/game?level="+item.id)
           h4.list-group-item-heading #{item.title}
-          p.list-group-item-text #{item.description}
+          p.list-group-item-text #{item.description} id = #{item.id}

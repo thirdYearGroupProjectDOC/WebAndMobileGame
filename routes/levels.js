@@ -48,6 +48,30 @@ router.get('/', function(req, res, next) {
 */
 router.post('/', function(req, res) {
     console.log("levels post called");
+    var deleteId = req.param("deleteId");
+    if (!(isNaN(deleteId) ? !1 : (x = parseFloat(deleteId), (0 | x) === x))) {
+      console.log("deleteId is not an integer");
+    } else {
+      console.log("deleteId is an integer");
+      levelDatas.levelData.count({}, function(err, count){ // counting number of record
+        if (count) {
+          console.log( "Number of levels:", count );
+          if (deleteId <= 0 || deleteId > count) {
+            console.log("deleteId is not in correct range");
+          } else {
+            levelDatas.levelData.remove({id: deleteId}, function(error){
+              if (!error) {
+                console.log("remove success");
+              } else {
+                console.log("remove error");
+              }
+            });
+          }
+
+        }
+      });
+    }
+    console.log(deleteId);
   /*  levelDatas.levelData.count({}, function( err, count){ // insert record
       console.log( "Number of levels:", count );
       levelDatas.levelData.create({
