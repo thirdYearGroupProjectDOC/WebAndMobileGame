@@ -57,12 +57,13 @@ start_button = createButton(180,550,'assets/spt_inst_start.png',start_function);
 //show_msg(levelData.data.player);
 
 
+
 instruction_stage_button = createButton(180,500,'assets/spt_inst_start.png',to_instruction_part);
 map_stage_button = createButton(180,460,'assets/spt_inst_start.png',to_map_part);
 stage.removeChild(map_stage_button);
 
-// create player
 
+// create player
 var player = Player();
 // used in game reset
 player.ox = player.pos_x;
@@ -74,8 +75,15 @@ if(!create_level){
 }
 
 // instructions waiting to be read
+/* OLD
 var instQueue = [];
 var instPointer = 0;
+*/
+
+//  new
+//var LinkedList = require('linkedlist');
+var instQueue = new LinkedList();
+
 var step = 0;
 
 // stage for instructions stacks, not buttons
@@ -92,20 +100,23 @@ var INST_BUTTON_STAGE = new PIXI.Container();
 var INST_BUTTON_TXT_STAGE = new PIXI.Container();
 INST_BUTTON_STAGE.addChild(INST_BUTTON_TXT_STAGE);
 
-var turn_left = new inst_button(selects_x+200,10,10);
-var turn_right = new inst_button(selects_x+200, 60,10);
-var move_forward = new inst_button(selects_x+200, 110,10);
-var loop_start = new inst_drop_down_button(selects_x+200, 160, 10);
 
-turn_left.gen('assets/spt_inst_left.png',1);
-turn_right.gen('assets/spt_inst_right.png',2);
-move_forward.gen('assets/spt_inst_forward.png',0);
-loop_start.gen('assets/spt_inst_repeat_time.png',3);
-
-
-
+// new
+var move_forward = new instructionGenerator(selects_x+250, 50,'assets/spt_inst_forward.png', 'forward', 3 );
+var turn_right = new instructionGenerator(selects_x+250, 130, 'assets/spt_inst_right.png', 'right', 3);
+var turn_left = new instructionGenerator(selects_x+250, 210, 'assets/spt_inst_left.png', 'left', 3);
 stage.addChild(ERROR_STAGE);
 
+graphics = new PIXI.Graphics();
+
+graphics.lineStyle(2, 0xFF00FF, 1);
+graphics.beginFill(0xFF00BB, 0.25);
+graphics.drawRoundedRect(INSTRUCT_STAGE.x, INSTRUCT_STAGE.y, tile_size*2, tile_size, 15);
+//graphics.drawRoundedRect, 250, 200, 120, 5);
+
+graphics.endFill();
+
+stage.addChild(graphics);
 // boolean for start executing instructions
 var start = false;
 // for slower step animation
@@ -130,16 +141,15 @@ function animate(){
     requestAnimationFrame(animate);
     renderer.render(stage);
 
+
     // when player are moving or turning
     if((player.xmov != 0) || (player.ymov != 0) || (player.wait != 0)){
       instruction_animation();
     }
 
     //when one step is finished, read next instruction
-
     if (start && player.xmov == 0 && player.ymov == 0 
       && player.wait == 0 && instQueue.length != 0 && (count - store)>65) {
-
       store = count;
       execute_inst_queue();
       step++;
@@ -147,8 +157,5 @@ function animate(){
 
     count += 1;
 }
-
-
-
 
 

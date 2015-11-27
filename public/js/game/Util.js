@@ -10,7 +10,7 @@ selects_y = 0;
 
 // beginning point of instruction queue
 var queue_x = 800;
-var queue_y = 10;
+var queue_y = 30;
 
 
 // size of the actuall game size

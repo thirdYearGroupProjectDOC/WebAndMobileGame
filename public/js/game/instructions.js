@@ -1,130 +1,152 @@
-// text counter for instruction button
-function inst_button(x,y,count){
-  this.count = count;
-  this.max = count;
+// new instruction buttons 
+// followed by map parts
+
+
+//check if it is in the instruction region
+function check_inst_region(x,y,length){
+     return x > INSTRUCT_STAGE.x && x < INSTRUCT_STAGE.x+tile_size &&
+            y > INSTRUCT_STAGE.y+tile_size/2 &&
+            y < INSTRUCT_STAGE.y+tile_size/2+tile_size*(instQueue.length+1);
+}
+
+
+function to_Inst_pos(y){
+
+   return ( Math.floor((y-INSTRUCT_STAGE.y + tile_size/2)/tile_size)-1);
+}
+
+
+function onInstDragStart(event){
+
+    this.data = event.data;
+    this.started = true;
+    this.alpha = 0.8;
+    this.dragging = true;
+    /*
+    INSTRUCT_STAGE.addChild(this);
+    INST_BUTTON_STAGE.remove(this);
+*/
+}
+
+function onInstDragEnd(event){
+
+  if(this.started){
+    this.dragging = false;
+    this.started = false;
+    this.alpha = 1;
+
+  }
+
+  // drag instruction piece to outside will make it be returned to deck
+  if(!check_inst_region(this.x,this.y,instQueue.length)
+      && this.x!=this.generator.x && this.y != this.generator.y){
+    if (this.generator.count == 0) {
+          this.generator.count = 2;
+          this.generator.gen();
+    } else {
+        this.generator.count ++;
+        this.generator.update();
+    }
+    INST_BUTTON_STAGE.removeChild(this);
+    delete(this);
+  }
+  
+
+}
+
+
+function onInstDragMove(){
+    if (this.dragging)
+    {
+        this.dragged = true;
+        if(this.fresh){
+          this.fresh = false;
+          this.generator.gen();
+        }
+        var newPosition = this.data.getLocalPosition(this.parent);
+
+        if(check_inst_region(this.x,this.y,instQueue.length)){
+          this.x = newPosition.x - newPosition.x%(tile_size*2) + tile_size;
+          this.y = newPosition.y - newPosition.y%tile_size + tile_size/2;
+
+          // find position to insert in
+          var temp_pos = to_Inst_pos(this.y);
+          //remove and insert => update position
+          if(instQueue.contain(this)){
+            instQueue.remove(this);
+          }
+          instQueue.insert(temp_pos,this);
+          
+        }else{
+          // remove, if not find , nothing happens
+          instQueue.remove(this);
+          this.x = newPosition.x;
+          this.y = newPosition.y;
+        }
+        //update pixel position based on instQueue
+        instQueue.update();
+    }
+}
+
+
+
+
+
+
+//create instruction button
+function instructionGenerator(x,y,img,name,num){
+  // used by createMapParts function
   this.x = x;
   this.y = y;
+  this.img = img;
+  this.name = name;
+  // number of parts
+  if(num){
+    this.count = num;
+  }else{
+    this.count = 1;
+  }
 
-  var countTxt = new PIXI.Text(':'+count);
-  countTxt.x = this.x + tile_size+ 45;
+  indicate = createInstructionParts(this.x,this.y,this.img,this.name,false);
+
+
+  var f = createInstructionParts(this.x,this.y,this.img,this.name,true); 
+  f.generator = this;
+
+
+  var countTxt = new PIXI.Text(':'+this.count);
+  countTxt.x = this.x + 60;
   countTxt.y = this.y;
-  INST_BUTTON_TXT_STAGE.addChild(countTxt);
+  INST_BUTTON_STAGE.addChild(countTxt);
 
+  this.gen = function(){
+    // this is called when moving top pieces
+    // when count is one, don't generate a new piece, 
+    if(this.count > 1){
+      var m = createInstructionParts(this.x,this.y,this.img,this.name,true);
+      m.generator = this;
+      this.count --;
+    }else{
+      this.count = 0;
+    }
+    this.update();
+  }
+  
   this.update = function(){
     countTxt.setText(':'+this.count);
   }
 
-  this.reset = function(){
-    this.count = this.max;
-    this.update();
-  }
-
-  this.gen = function(img,inst){
-    var ib = createInstructions(this.x,this.y,img,inst);
-    ib.generator = this;
-  }
 }
 
-// create instructions button
-function createInstructions(x,y,img,inst) {
-
-  var instruct_tex = PIXI.Texture.fromImage(img);
-  var instruction = new PIXI.Sprite(instruct_tex);
-
-  instruction.dir = inst;
-
-  instruction.width = tile_size*2;
-  instruction.height = tile_size/2;
-  instruction.buttonMode = true;
-  instruction.interactive = true;
-  instruction.x = x;
-  instruction.y = y;
-  
-  instruction
-    .on('mousedown', instructionButtonDown)
-    .on('touchstart', instructionButtonDown)
-
-      // set the mouseup and touchend callback...
-    .on('mouseup', instructionButtonUp)
-    .on('touchend', instructionButtonUp)
-
-    .on('mouseupoutside', instructionButtonUpOutside)
-    .on('touchendoutside', instructionButtonUpOutside)
-
-      // set the mouseover callback...
-    .on('mouseover', instructionButtonOver)
-
-      // set the mouseout callback...
-    .on('mouseout', instructionButtonOut);
-
-
-  instruction.tap = null;
-  instruction.click = null; 
-   INST_BUTTON_STAGE.addChild(instruction); 
-   return instruction;
-}
-
-
-function instructionButtonDown() {
-   this.down = true;
-}
-
-function instructionButtonUp() {
-  this.down = false;
-  if(this.generator.count>0){
-    // dec count and update text
-    this.generator.count--;
-    this.generator.update();
-
-    //put instruction symbol in the stack
-    if (this.dir == 2) {
-      instr = PIXI.Sprite.fromImage('assets/spt_inst_right.png');
-    } else if (this.dir == 0) {
-      instr = PIXI.Sprite.fromImage('assets/spt_inst_forward.png');
-    } else if (this.dir == 1) {
-      instr = PIXI.Sprite.fromImage('assets/spt_inst_left.png');
-    }
-      instr.dir = this.dir;
-      instr.x = 50;
-      instr.y = tile_size + 50*(instPointer);
-      instr.height = tile_size/2;
-      instr.width = tile_size*2;
-      // used for undo button, inc instruction count
-      instr.button = this;
-
-      instQueue[instPointer] = instr;
-      instPointer++;
-      INSTRUCT_STAGE.addChild(instr);
-  }else{
-    // TODO: add another stage for error messages
-    show_msg('hahaha');
-  }
-}
-
-
+/*
+<<<<<<< HEAD
 function instructionButtonUpOutside() {
    this.down = false;
 } 
 
-
-function instructionButtonOver() {
-  this.isOver = true;
-    if (this.isdown){
-        return;
-    }
+function instructionButtonDown() {
+   this.down = true;
 }
-
-function instructionButtonOut()
-{
-    this.isOver = false;
-    if (this.isdown){
-        return;
-    }
-}
-
-
-
-
 
 // text counter for drop_down_button
 function inst_drop_down_button(x,y,count) {
@@ -264,4 +286,51 @@ function instruction_animation(){
     last.width -= 1;
     last.x += 0.5;
   }
+}
+=======*/
+function createInstructionParts(x,y,img, name, active){
+  var tex_instruct = PIXI.Texture.fromImage(img);
+  var part = new PIXI.Sprite(tex_instruct);
+ 
+  part.interactive = active;
+  part.buttonMode = true;
+  part.anchor.set(0.5);
+  part.width = tile_size*2;
+  part.height = tile_size;
+  part.position.x = x;
+  part.position.y = y;
+  // to distinguish between turning road and dragging road 
+  part.dragged = false;
+  // when it is being created, the piece is fresh,
+  // used to maintain the counts for same type of piece
+  part.fresh = true;
+  part.started = false;
+  // position on map
+  part.pos_x = -1;
+  part.pos_y = -1;
+  part.name = name;
+  //part.dir = dir_dict[name];
+
+  // these variables are only used for creating 
+  // another road
+  //part.img = img;
+  //part.ox = x;
+  //part.oy = y;
+
+
+  part
+    // events for drag start
+    .on('mousedown', onInstDragStart)
+    .on('touchstart', onInstDragStart)
+    // events for drag end
+    .on('mouseup', onInstDragEnd)
+    .on('mouseupoutside', onInstDragEnd)
+    .on('touchend', onInstDragEnd)
+    .on('touchendoutside', onInstDragEnd)
+    // events for drag move
+    .on('mousemove', onInstDragMove)
+    .on('touchmove', onInstDragMove);//haha
+  INST_BUTTON_STAGE.addChild(part);
+  
+  return part;
 }
