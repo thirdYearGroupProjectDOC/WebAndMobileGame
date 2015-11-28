@@ -137,7 +137,7 @@ LinkedList.prototype.insert = function(pos,val){
 LinkedList.prototype.update = function(){
   var i = 0;
   var cur = this.head;
-  while(cur){
+  while(cur.value!=undefined){
     cur.value.y = (i+1)*(tile_size+2);
     cur = cur.next;
     i++;

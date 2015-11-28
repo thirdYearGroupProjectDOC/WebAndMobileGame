@@ -21,7 +21,7 @@ var map = [];
 
 // setting directions of road pieces according to image's default direction
 dir_dict = {'monster':[-1], 'corner':[2,3], 'end':[2], 'straight':[1,3], 't':[1,2,3], 'tree':[]};
-inst_dict = {forward: 0, right: 1, left: 2, for_loop: 3, if_stmt: 4};
+inst_dict = {forward: 0, right: 1, left: 2, for_loop: 3, if_stmt: 4, for_end:5};
 
 function map_bg_init(){
 	for (var j = 1; j < map_size-1; j++) {
@@ -63,6 +63,7 @@ function game_reset(){
     turn_animation(player,player.face_dir);
 
     execute = false;
+    cur_inst = instQueue.head;
     // road pieces can be moved again
     for(var i = 0; i < ROAD_STAGE.children.length; i++){
         ROAD_STAGE.children[i].interactive = true;
@@ -105,11 +106,27 @@ function execute_inst_queue() {
 	        player.face_dir = (player.face_dir + 1) % 4;
 	        turn_animation(player,player.face_dir);
 	        break;
+        case inst_dict.for_loop:
+            var s = cur_inst.value.dec();
+            if(s==0){
+                //show_msg('hhh');
+                for_start = cur_inst;
+            }else{
+                cur_inst = for_end.next;
+                return;
+            }
+            //show_msg(s);
+            break;
+        case inst_dict.for_end:
+            for_end = cur_inst;
+            cur_inst = for_start;
+            return;
+
 	    default:
 	        break;
 	    }
 
-    last_inst = cur_inst;
+//    last_inst = cur_inst;
     cur_inst = cur_inst.next;
 
 }

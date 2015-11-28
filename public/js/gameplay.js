@@ -99,6 +99,7 @@ var move_forward = new instructionGenerator(0, 50,'assets/spt_inst_forward.png',
 var turn_right = new instructionGenerator(0, 130, 'assets/spt_inst_right.png', inst_dict.right, 3);
 var turn_left = new instructionGenerator(0, 210, 'assets/spt_inst_left.png', inst_dict.left, 3);
 var for_loop = new instructionGenerator(0, 280, 'assets/spt_inst_repeat_time.png', inst_dict.for_loop, 3);
+var for_end = new instructionGenerator(0, 350, 'assets/spt_inst_repeat_end.png', inst_dict.for_end, 3);
 
 
 stage.addChild(ERROR_STAGE);
@@ -135,10 +136,10 @@ inst_frame.anchor.set(0.5);
 // boolean for start executing instructions
 var execute = false;
 // for slower step animation
-var count = 0;
+count = 0;
 // store count,
 // used for set time intervel between read instructions
-var store = 0;
+store = 0;
 // intervel between reading instructions
 // size/speed is the time each instruction takes
 var intervel = tile_size/player.speed + 5;
@@ -147,6 +148,8 @@ var intervel = tile_size/player.speed + 5;
 // cur_inst is currently updated at every instruction onInstEnd method
 cur_inst = null;
 last_inst = null;
+for_start = null;
+for_end = null;
 
 // this text is used for getting run time updated values, for debugging purpose only
 var text = new PIXI.Text(' ');
@@ -176,7 +179,8 @@ function animate(){
       INST_BUTTON_STAGE.addChild(inst_frame);
       inst_frame.x = cur_inst.value.x;
       inst_frame.y = cur_inst.value.y;
-
+      text.text = cur_inst.value.inst + ', queue: ' + instQueue.length
+             +' player.xmov '+ player.xmov +' player.ymov ' + player.ymov;
       execute_inst_queue();
     }
 
@@ -187,8 +191,7 @@ function animate(){
     }
 
 
-   /* text.text = cur_inst.value.inst + ', execute: ' + execute
-             +' player.xmov '+ player.xmov +' player.ymov ' + player.ymov;*/
+    
     /*else{
       show_msg(start);
       show_msg(instQueue.length);

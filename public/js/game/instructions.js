@@ -27,6 +27,8 @@ function onInstDragStart(event){
     this.started = true;
     this.alpha = 0.8;
     this.dragging = true;
+
+    this.dragged = false;
     /*
     INSTRUCT_STAGE.addChild(this);
     INST_BUTTON_STAGE.remove(this);
@@ -41,6 +43,26 @@ function onInstDragEnd(event){
     this.alpha = 1;
   }
 
+  if(!this.dragged){
+    // used only for loop and if instruction
+    if (this.loop_txt!=null&&this.menuShown == false) {
+      this.menuShown = true;
+      for (var i = 0; i < 9; i++) {
+        var txt = new PIXI.Text(i+1, {font: '20px bold'});
+        txt.x = 0;
+        txt.y = 15+(i+1)*20;
+        txt.interactive = true;
+        txt.value = i + 1;
+        txt.on('mousedown', dropDownTxtClicked);
+        txt.on('touchstart', dropDownTxtClicked);
+        txt.drop_parent = this.drop_down;
+        this.drop_down.addChild(txt);
+      }
+    } else {
+      this.menuShown = false;
+    }
+  }
+
   // drag instruction piece to outside will make it be returned to deck
   if(!check_inst_region(this.x,this.y,instQueue.length)
       && this.x!=this.generator.x && this.y != this.generator.y){
@@ -52,6 +74,8 @@ function onInstDragEnd(event){
         this.generator.update();
     }
     INST_BUTTON_STAGE.removeChild(this);
+    INST_BUTTON_STAGE.removeChild(this.loop_txt);
+    this.drop_down.removeChildren();    
     delete(this);
   }
 
@@ -88,8 +112,21 @@ function onInstDragMove(){
           this.x = newPosition.x;
           this.y = newPosition.y;
         }
+
         //update pixel position based on instQueue
         instQueue.update();
+
+
+        // drop down menu and looptime text follow instructions
+        if(this.loop_txt!=undefined){
+          this.loop_txt.x = this.x;
+          this.loop_txt.y = this.y;
+        }
+
+        if(this.drop_down!=undefined){
+          this.drop_down.x = this.x;
+          this.drop_down.y = this.y;
+        }
     }
 }
 
@@ -183,20 +220,48 @@ function createInstructionParts(x,y,img, inst, active){
     .on('touchmove', onInstDragMove);//haha
   
   if(inst==inst_dict.for_loop){
-    this.loop_count = 3;
-    var countTxt = new PIXI.Text(':'+this.loop_count);
+    var drop = new PIXI.Container();
+    drop.x = part.x;
+    drop.y = part.y;
+    INST_BUTTON_STAGE.addChild(drop);
+    part.drop_down = drop;
+    drop.button_parent = part;
+
+    // indicate drop down menu
+    part.menuShown = false;
+    // text to indicate loop time
+    part.loop_count = 3;
+    var countTxt = new PIXI.Text(''+part.loop_count);
     countTxt.width *= 0.8;
     countTxt.height *= 0.8;
     countTxt.x = part.x - 5 ;//
     countTxt.y = part.y - 5;
+    part.loop_txt = countTxt;
     INST_BUTTON_STAGE.addChild(countTxt);
+    part.dec = function(){
+      if(this.loop_count>0){
+        this.loop_count--;
+        this.loop_txt.setText(''+this.loop_count); 
 
+//        show_msg('in dec:'+this.loop_count)
+        return 0;
+      }else{
+        return -1;
+      }
+    }
     
   }
 
   return part;
 }
 
+function dropDownTxtClicked() {
+  var b_parent = this.drop_parent.button_parent;
+  b_parent.menuShown = false;
+  b_parent.loop_txt.setText(this.value);
+  b_parent.loop_count = this.value;
+  this.drop_parent.removeChildren();
+}
 
 /*
 <<<<<<< HEAD
