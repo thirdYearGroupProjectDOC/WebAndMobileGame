@@ -166,7 +166,7 @@ function MapPartsGenerator(x,y,img,name,turn,num){
   ROAD_STAGE.removeChild(indicate);
   ROAD_INDICATOR_STAGE.addChild(indicate);
 
-  /*var f = createMapParts(this.x,this.y,this.img,this.name,true,this.turn); 
+  /*var f = createMapParts(this.x,this.y,this.img,this.name,true,this.turn);
   f.generator = this;*/
   
 
