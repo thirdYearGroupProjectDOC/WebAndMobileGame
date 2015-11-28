@@ -1,6 +1,6 @@
 var express = require('express');
 var expressSession = require('express-session');
-var connectEnsure = require('connect-ensure-login');
+var ensureLoggedIn = require('connect-ensure-login').ensureLoggedIn;
 var connectFlash = require('connect-flash');
 var path = require('path');
 var favicon = require('serve-favicon');
@@ -27,8 +27,10 @@ var createLevel = require('./routes/createLevel');
 var profile_view = require('./routes/profile-view');
 var profile_edit = require('./routes/profile-edit');
 var delete_account = require('./routes/delete-account');
+var admin = require('./routes/admin');
 
 var app = express();
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -59,6 +61,7 @@ app.use('/createLevel', createLevel);
 app.use('/profile-view', profile_view);
 app.use('/profile-edit', profile_edit);
 app.use('/delete-account', delete_account);
+app.use('/admin', admin);
 
 mongoose.connect('mongodb://localhost/initLabDatabase');
 
@@ -99,6 +102,8 @@ passport.deserializeUser(function(id, cb) {
      cb(null, user);
    });
 });
+
+
 
 
 // catch 404 and forward to error handler
