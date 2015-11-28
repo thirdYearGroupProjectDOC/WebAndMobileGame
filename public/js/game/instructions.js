@@ -1,6 +1,6 @@
 // defines distance bwtween generator ( pile of instructions)
 // and where the execution stack lives
-var gap = tile_size * 3;
+var gap = tile_size * 1.5;
 
 //check if it is in the instruction region
 function check_inst_region(x,y,length){
@@ -43,7 +43,8 @@ function onInstDragEnd(event){
     this.alpha = 1;
   }
 
-  if(!this.dragged){
+  // this.fresh would prevent changing loop time after moved
+  if(!this.dragged&& this.fresh){
     // used only for loop and if instruction
     if (this.loop_txt!=null&&this.menuShown == false) {
       this.menuShown = true;
@@ -230,6 +231,7 @@ function createInstructionParts(x,y,img, inst, active){
     // indicate drop down menu
     part.menuShown = false;
     // text to indicate loop time
+    part.o_loop_count = 3;
     part.loop_count = 3;
     var countTxt = new PIXI.Text(''+part.loop_count);
     countTxt.width *= 0.8;
@@ -260,6 +262,8 @@ function dropDownTxtClicked() {
   b_parent.menuShown = false;
   b_parent.loop_txt.setText(this.value);
   b_parent.loop_count = this.value;
+  b_parent.o_loop_count = this.value;
+  
   this.drop_parent.removeChildren();
 }
 

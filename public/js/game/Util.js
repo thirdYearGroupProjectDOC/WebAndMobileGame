@@ -5,12 +5,12 @@ zero_x = 80;
 zero_y = 60;
 
 // beginning point of selections of road pieces
-selects_x = 500;
+selects_x = 600;
 selects_y = 0;
 
 // beginning point of instruction queue
-var inst_x = selects_x+tile_size*5;
-var inst_y = selects_y;
+inst_x = selects_x+tile_size*3;
+inst_y = selects_y;
 
 
 // size of the actuall game size
@@ -54,6 +54,7 @@ function show_msg(msg){
 
 
 function game_reset(){
+
     player.pos_x = player.ox;
     player.pos_y = player.oy;
     player.x = tile_size/2 + tile_size*player.pos_x;
@@ -63,7 +64,9 @@ function game_reset(){
     turn_animation(player,player.face_dir);
 
     execute = false;
+
     cur_inst = instQueue.head;
+
     // road pieces can be moved again
     for(var i = 0; i < ROAD_STAGE.children.length; i++){
         ROAD_STAGE.children[i].interactive = true;
@@ -80,6 +83,17 @@ function game_reset(){
         c.interactive = true;
       }
       
+    }
+    var temp_cur = instQueue.head;
+    show_msg(temp_cur.value.inst);
+    while(temp_cur!=null){
+        var inst = temp_cur.value;
+        if(inst.loop_count!=null){
+            //show_msg('has loop count'+temp_cur.value.o_loop_count);
+            inst.loop_count = inst.o_loop_count; 
+            inst.loop_txt.setText(inst.loop_count);  
+        }
+        temp_cur = temp_cur.next;
     }
 
     ERROR_STAGE.removeChildren();
