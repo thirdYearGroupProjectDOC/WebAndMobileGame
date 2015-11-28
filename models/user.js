@@ -5,7 +5,8 @@ var Schema = mongoose.Schema;
 var UserDetail = new Schema({
         username: String,
         password: String,
-        displayName: String
+        displayName: String,
+        pointsGet: Number
       }, {
         collection: 'userInfo'
       }

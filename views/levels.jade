@@ -6,6 +6,22 @@ block content
   h2 Welcome!  #{uname}
   h3 There are #{levelCount} levels
   <a href="/createLevel" class="btn btn-primary">Create my own level</a>
+  <a href="/rank" class="btn btn-info">Go see the ranks</a>
+  p ===
+  input(type="text", class="form-control", placeholder="id of level to be deleted", name = 'deleteId', id = 'deleteId')
+  div(style="margin: 0 auto; display: table;")
+      a(class='button', href='#', id='deleteButton') Delete
+  script(type="text/javascript", src="http://code.jquery.com/jquery-1.7.1.min.js")
+  script.
+    $("#deleteButton").click(function(event) { // when save button clicked
+      event.preventDefault(); //prevent page from reload
+      var v = $('#deleteId').val();
+      console.log(v);
+      $.post( '/levels',{did: v}, function(data) { //
+        alert(data); // alert the data
+        location.reload();
+      });
+    });
   p ===
   form(name="selectLvls" action="/levels" method="post")
     <div class="lvls">
@@ -22,4 +38,13 @@ block content
       a.list-group-item( href="/game?level=4" )
           h4.list-group-item-heading Fourth Level
           p.list-group-item-text Some thing
-  canvas#map(width=500, height=400)
+      - var list = [{l: 11, h: "head1", d: "dex1"}, {l: 12, h: "head2",d: "dex2"}];
+      - var dss = ds;
+      each item in list
+        a.list-group-item(href="#")
+          h4.list-group-item-heading #{item.h}
+          p.list-group-item-text #{item.d}
+      each item in dss
+        a.list-group-item(href="/game?level="+item.id)
+          h4.list-group-item-heading #{item.title}
+          p.list-group-item-text #{item.description} id = #{item.id}
