@@ -79,9 +79,9 @@ function game_reset(){
         INST_BUTTON_STAGE.children[i].generator.reset();
       }*/
       var c = INST_BUTTON_STAGE.children[i];
-      if(!c.indicate ){
+      
         c.interactive = true;
-      }
+      
       
     }
     var temp_cur = instQueue.head;

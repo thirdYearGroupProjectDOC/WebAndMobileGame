@@ -133,12 +133,20 @@ LinkedList.prototype.insert = function(pos,val){
   this.length++;
 }
 
+// used only for instructions! shouldn't be a function call 
+// belong to linkedlist, may change later
 // update pixel position depends on position in linkedlist
 LinkedList.prototype.update = function(){
   var i = 0;
   var cur = this.head;
-  while(cur.value!=undefined){
+
+  while(cur!=null&&cur.value!=null){
     cur.value.y = (i+1)*(tile_size+2);
+    // drop down menu and looptime text follow instructions
+    if(cur.value.loop_txt!=null){
+      cur.value.loop_txt.x = cur.value.x;
+      cur.value.loop_txt.y = cur.value.y;
+    }
     cur = cur.next;
     i++;
   }

@@ -119,15 +119,11 @@ function onInstDragMove(){
 
 
         // drop down menu and looptime text follow instructions
-        if(this.loop_txt!=undefined){
+        if(this.loop_txt!=null){
           this.loop_txt.x = this.x;
           this.loop_txt.y = this.y;
         }
 
-        if(this.drop_down!=undefined){
-          this.drop_down.x = this.x;
-          this.drop_down.y = this.y;
-        }
     }
 }
 
@@ -150,8 +146,9 @@ function instructionGenerator(x,y,img,inst,num){
     this.count = 1;
   }
 
-  indicate = createInstructionParts(this.x,this.y,this.img,this.inst,false);
-  indicate.indicate = true;
+  indicate = createInstructionParts(this.x,this.y,this.img,0,false);
+  INST_BUTTON_STAGE.removeChild(indicate);
+  INST_INDICATOR_STAGE.addChild(indicate);
 
   var f = createInstructionParts(this.x,this.y,this.img,this.inst,true); 
   f.generator = this;
@@ -186,7 +183,7 @@ function createInstructionParts(x,y,img, inst, active){
   var tex_instruct = PIXI.Texture.fromImage(img);
   var part = new PIXI.Sprite(tex_instruct);
   // so it appear before loop count or if statement
-  INST_BUTTON_STAGE.addChild(part);
+  INST_BUTTON_STAGE.addChild(part); 
 
   part.interactive = active;
   part.buttonMode = true;
@@ -221,6 +218,7 @@ function createInstructionParts(x,y,img, inst, active){
     .on('touchmove', onInstDragMove);//haha
   
   if(inst==inst_dict.for_loop){
+
     var drop = new PIXI.Container();
     drop.x = part.x;
     drop.y = part.y;
@@ -240,6 +238,7 @@ function createInstructionParts(x,y,img, inst, active){
     countTxt.y = part.y - 5;
     part.loop_txt = countTxt;
     INST_BUTTON_STAGE.addChild(countTxt);
+    INST_BUTTON_STAGE.setChildIndex(countTxt,INST_BUTTON_STAGE.children.length-1);
     part.dec = function(){
       if(this.loop_count>0){
         this.loop_count--;

@@ -92,7 +92,8 @@ INST_BUTTON_STAGE.y = inst_y;
 var INSTRUCT_STAGE = new PIXI.Container();
 INST_BUTTON_STAGE.addChild(INSTRUCT_STAGE);
 
-
+INST_INDICATOR_STAGE = new PIXI.Container();
+INST_BUTTON_STAGE.addChild(INST_INDICATOR_STAGE);
 
 // new
 var move_forward = new instructionGenerator(0, 50,'assets/spt_inst_forward.png', inst_dict.forward, 3 );
