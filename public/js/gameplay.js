@@ -179,8 +179,8 @@ function animate(){
       INST_BUTTON_STAGE.addChild(inst_frame);
       inst_frame.x = cur_inst.value.x;
       inst_frame.y = cur_inst.value.y;
-      text.text = cur_inst.value.inst + ', queue: ' + instQueue.length
-             +' player.xmov '+ player.xmov +' player.ymov ' + player.ymov;
+      /*text.text = cur_inst.value.inst + ', queue: ' + instQueue.length
+             +' player.xmov '+ player.xmov +' player.ymov ' + player.ymov;*/
       execute_inst_queue();
     }
 
