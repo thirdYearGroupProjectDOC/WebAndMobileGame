@@ -10,7 +10,7 @@ for(var i = 0; i<Math.pow(map_size,2); i++){
     map[i] = null;
 }
 
-levelData = JSON.parse(levelData);
+//levelData = JSON.parse(levelData);
 console.log(levelData);//configuration of level in JSON format
 var levelInfo = {
   "author": "Sam",
