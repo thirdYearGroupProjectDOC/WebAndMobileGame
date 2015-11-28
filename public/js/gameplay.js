@@ -10,28 +10,26 @@ for(var i = 0; i<Math.pow(map_size,2); i++){
     map[i] = null;
 }
 
+levelData = JSON.parse(levelData);
 console.log(levelData);//configuration of level in JSON format
 var levelInfo = {
-  id: 1,
-  data: {
   "author": "Sam",
   "title": "Easy Level",
   "description": "This is an entry level",
   "dimen": 5,
   "start":[{"Coor":[1,0], "Dir":[1]}],
   "end":[{"Coor":[5,6], "Dir":[3]}],
-
-"straight": 5,
-"endPoint": 5,
-"threeWay": 5,
-"turn": 5,
-
-"snake":[{"Coor":"2,2", "Dir":"0"}],
-"tree":[{"Coor":"3,3", "Dir":"0"}]
-}};
+  "rank":[],
+  "straight": 5,
+  "endPoint": 5,
+  "threeWay": 5,
+  "turn": 5,
+  "snake":[{"Coor":[2,2], "Dir":"0"}],
+  "tree":[{"Coor":[3,2], "Dir":"0"}]
+};
 $("#saveButton").click(function(event) { // when save button clicked
   event.preventDefault(); //prevent page from reload
-  $.post( '/test',{author:'Sam',LevelInfo:levelInfo}, function(data) { // post the parameter a2 to test.js
+  $.post( '/test',{author:'Sam',LevelInfo:JSON.stringify(levelInfo)}, function(data) { // post the parameter a2 to test.js
     alert(data); //alert the data after getting reply
   });
 });

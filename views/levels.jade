@@ -8,10 +8,20 @@ block content
   <a href="/createLevel" class="btn btn-primary">Create my own level</a>
   <a href="/rank" class="btn btn-info">Go see the ranks</a>
   p ===
-  form(method="post", action="/levels")
-    input(type="text", class="form-control", placeholder="id of level to be deleted", name ="deleteId")
-    div(style="margin: 0 auto; display: table;")
-      button(type="submit", class='button', style="float:initial") Delete
+  input(type="text", class="form-control", placeholder="id of level to be deleted", name = 'deleteId', id = 'deleteId')
+  div(style="margin: 0 auto; display: table;")
+      a(class='button', href='#', id='deleteButton') Delete
+  script(type="text/javascript", src="http://code.jquery.com/jquery-1.7.1.min.js")
+  script.
+    $("#deleteButton").click(function(event) { // when save button clicked
+      event.preventDefault(); //prevent page from reload
+      var v = $('#deleteId').val();
+      console.log(v);
+      $.post( '/levels',{did: v}, function(data) { //
+        alert(data); // alert the data
+        location.reload();
+      });
+    });
   p ===
   form(name="selectLvls" action="/levels" method="post")
     <div class="lvls">

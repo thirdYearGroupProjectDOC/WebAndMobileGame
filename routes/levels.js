@@ -25,7 +25,8 @@ router.get('/', function(req, res, next) {
           console.log(result);
           var ds = [];
           for (i = 0; i < levelCount; i++) {
-            ds.push({id:Result[i].id,title:Result[i].data.title,description:Result[i].data.description});
+            var thisResult = JSON.parse(Result[i].data);
+            ds.push({id:Result[i].id,title:thisResult.title,description:thisResult.description});
           }
           console.log(ds);
           //var levelCount = 4;
@@ -36,7 +37,8 @@ router.get('/', function(req, res, next) {
             } else {
                 displayName = req.user.displayName;
             }
-          res.render('levels', { title: 'Select Levels', levelCount: levelCount, uname: displayName, displayName: displayName, ds:ds});//uname: req.query.uname,
+          console.log(ds);
+          res.render('levels', { title: 'Select Levels', levelCount: levelCount, uname: displayName, displayName: displayName, ds:ds});
       }
   });
 
@@ -47,10 +49,13 @@ router.get('/', function(req, res, next) {
 
 */
 router.post('/', function(req, res) {
+    require('connect-ensure-login').ensureLoggedIn();
     console.log("levels post called");
-    var deleteId = req.param("deleteId");
+    var deleteId = req.param("did");
+    console.log(deleteId);
     if (!(isNaN(deleteId) ? !1 : (x = parseFloat(deleteId), (0 | x) === x))) {
       console.log("deleteId is not an integer");
+      res.send('deleteId is not an integer');
     } else {
       console.log("deleteId is an integer");
       levelDatas.levelData.count({}, function(err, count){ // counting number of record
@@ -58,12 +63,15 @@ router.post('/', function(req, res) {
           console.log( "Number of levels:", count );
           if (deleteId <= 0 || deleteId > count) {
             console.log("deleteId is not in correct range");
+            res.send('deleteId is not in correct range');
           } else {
             levelDatas.levelData.remove({id: deleteId}, function(error){
               if (!error) {
                 console.log("remove success");
+                res.send('remove success');
               } else {
                 console.log("remove error");
+                res.send('remove error');
               }
             });
           }
