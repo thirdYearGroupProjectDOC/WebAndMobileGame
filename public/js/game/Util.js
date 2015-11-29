@@ -174,9 +174,10 @@ function set_level_data(){
   map_to_pass = [];
   for(i = 0; i<ROAD_ON_MAP_STAGE.children.length; i++){
     r = ROAD_ON_MAP_STAGE.children[i];
-    if(r.name =='monster' || r.name =='tree'){
+    if(r.name =='monster' || r.name =='tree' || r.name == 'end'){
       map_to_pass[r.pos_x+map_size*r.pos_y] = { x:r.x,
                                                 y:r.y,
+                                                turn:r.turn,
                                                 img:r.img,
                                                 name:r.name};
     }
@@ -208,7 +209,7 @@ function get_level_data(data){
   //show_msg('get_level_data: ' + data.map.length);
   for(i = 0; i < data.map.length; i++){
     if(m = data.map[i]){
-      createMapParts(m.x, m.y, m.img, m.name, false,0);
+      createMapParts(m.x, m.y, m.img, m.name, false, m.turn);
     }
   }
 
