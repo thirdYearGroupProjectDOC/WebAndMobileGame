@@ -37,7 +37,7 @@ function map_bg_init(){
 }
 
 var msg_rec = 0;
-var msg_rec_x = 100;
+var msg_rec_x = 200;
 // used for printing message on screen
 function show_msg(msg){
     var spinningText = new PIXI.Text(msg, { font: 'bold 25px Arial', align: 'center', stroke: '#FFFFFF', strokeThickness: 5 });
@@ -215,7 +215,6 @@ function get_level_data(data){
 }
 
 function validation(){
-
   if(on_map_corner(player.pos_x,player.pos_y)){
     return false;
   }
@@ -239,22 +238,25 @@ function validation(){
 
 // recursive function to validate road conditions
 function find_road(x,y,dir){
-  //show_msg('calling');
+
+//  show_msg('calling ' + x + ' '+y);
   var xmov = (2-dir)*dir%2;
   var ymov = (dir-1)*(1-dir%2);
   
   var x = x+xmov;
   var y = y+ymov;
+
   // get dirs available in new position
-  var dirs = map[x + y*map_size];
+  var dirs_t = map[x + y*map_size];
 
   var op = (dir+2)%4;
-
   //player not on a road
-  if(dirs==undefined || dirs==[]){
+  if(dirs_t==undefined || dirs_t==[]){
     show_msg('not on road');
     return false;
   }
+    
+  var dirs = (dirs_t.slice());
 
   if(on_map_boarder(x,y)){
     //show_msg('x: ' + x + 'y: ' + y + 'dir'+dir);
@@ -268,6 +270,7 @@ function find_road(x,y,dir){
     var removed = dirs.splice(index,1);
     //show_msg('dirs remain:'+ dirs);
   }else{
+    show_msg('pos: '+ x+y +'coming road: '+op + 'cur road: '+dirs);
     show_msg('not valid comming road');
     // comming road is not valid 
     return false;
@@ -284,7 +287,7 @@ function find_road(x,y,dir){
 
   // may find a better way to solve splice modify map ,
   // idea: use slice, but this leads to other bugs.. check types next time
-  dirs.push(removed[0]);
+  //
   //show_msg(dirs);
   return res;
 }
