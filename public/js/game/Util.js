@@ -59,6 +59,8 @@ function game_reset(){
     player.pos_y = player.oy;
     player.x = tile_size/2 + tile_size*player.pos_x;
     player.y = tile_size/2 + tile_size*player.pos_y;
+    player.xmov = 0;
+    player.ymov = 0;
 
     player.face_dir = player.odir;
     turn_animation(player,player.face_dir);
@@ -85,10 +87,11 @@ function game_reset(){
       
     }
     var temp_cur = instQueue.head;
-    show_msg(temp_cur.value.inst);
-    while(temp_cur!=null){
+    while(temp_cur!=null&&temp_cur.value!=null){
+        //show_msg('hh');
         var inst = temp_cur.value;
         if(inst.loop_count!=null){
+            //show_msg('h')
             //show_msg('has loop count'+temp_cur.value.o_loop_count);
             inst.loop_count = inst.o_loop_count; 
             inst.loop_txt.setText(inst.loop_count);  
