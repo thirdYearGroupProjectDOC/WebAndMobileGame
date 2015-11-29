@@ -99,7 +99,7 @@ var instQueue = new LinkedList();
 
 var step = null;
 
-var instId = 0;
+//var instId = 0;
 
 // stage for instructions stacks, not buttons
 var INSTRUCT_STAGE = new PIXI.Container();

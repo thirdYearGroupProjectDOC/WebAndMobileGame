@@ -123,8 +123,24 @@ function game_reset() {
     }
       
       //clear instQueue
-     // instQueue.removeAll();
-      //INSTRUCT_STAGE.removeChildren();
+      var cur = instQueue.head;
+      while (cur != null) {
+        //add 1 back to instruction count
+        if (cur.value.generator.count == 0) {
+          cur.value.generator.count = 2;
+          cur.value.generator.gen();
+        } else {
+          cur.value.generator.count ++;
+          cur.value.generator.update();
+        }
+        //remove this instruction
+        INST_BUTTON_STAGE.removeChild(cur.value);
+        instQueue.remove(cur.value);
+        cur = cur.next;
+        
+      }
+      
+
 
     // restore instructions buttons's count
     for(var i = 0; i < INST_BUTTON_STAGE.children.length; i++){
@@ -137,7 +153,7 @@ function game_reset() {
     instPointer = 0;
     */
 
-    instId = 0;
+    //instId = 0;
     step = null;
 
   
