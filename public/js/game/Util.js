@@ -209,7 +209,9 @@ function get_level_data(data){
   //show_msg('get_level_data: ' + data.map.length);
   for(i = 0; i < data.map.length; i++){
     if(m = data.map[i]){
-      createMapParts(m.x, m.y, m.img, m.name, false, m.turn);
+      var a = createMapParts(m.x, m.y, m.img, m.name, false, m.turn);
+      ROAD_STAGE.removeChild(a);
+      ROAD_ON_MAP_STAGE.addChild(a);
     }
   }
 
