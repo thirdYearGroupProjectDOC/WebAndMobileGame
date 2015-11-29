@@ -6,7 +6,12 @@ block content
       // Filtered inline output
       p.
         Welcome, #{user.displayName}, this is level #{level}
+      <a href="/levels" class="btn btn-info">Back to level Selection</a>
   p
       a(class='button', href='/logout') Log out
-
+  script.
+    var levelData = !{JSON.stringify(levelData)};
+    levelData = JSON.parse(levelData);
+    var create_level = false;
+  script(type="text/javascript", src="http://code.jquery.com/jquery-1.7.1.min.js")
   script(type="text/javascript",src="js/gameplay.js")
