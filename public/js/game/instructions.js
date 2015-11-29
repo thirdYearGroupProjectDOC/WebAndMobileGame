@@ -136,6 +136,7 @@ function game_reset() {
     instQueue = [];
     instPointer = 0;
     */
+
     instId = 0;
     step = null;
 
@@ -182,16 +183,17 @@ function onInstDragEnd(event){
   }
 
   // drag instruction piece to outside will make it be returned to deck
-  if(!check_inst_region(this.x,this.y,instQueue.length)){
+  if(!check_inst_region(this.x,this.y,instQueue.length)
+      && this.x!=this.generator.x && this.y != this.generator.y){
     if (this.generator.count == 0) {
           this.generator.count = 2;
           this.generator.gen();
-        } else {
+    } else {
         this.generator.count ++;
         this.generator.update();
-      }
-        INST_BUTTON_STAGE.removeChild(this);
-        delete(this);
+    }
+    INST_BUTTON_STAGE.removeChild(this);
+    delete(this);
   }
   
 
@@ -250,11 +252,9 @@ function instructionGenerator(x,y,img,name,num){
     this.count = 1;
   }
 
-  indicate = createInstructionParts(this.x,this.y,this.img,this.name,false, instId);
-  instId ++;
+  indicate = createInstructionParts(this.x,this.y,this.img,this.name,false);
 
-  var f = createInstructionParts(this.x,this.y,this.img,this.name,true, instId); 
-  instId ++;
+  var f = createInstructionParts(this.x,this.y,this.img,this.name,true); 
   f.generator = this;
 
 
@@ -267,8 +267,7 @@ function instructionGenerator(x,y,img,name,num){
     // this is called when moving top pieces
     // when count is one, don't generate a new piece, 
     if(this.count > 1){
-      var m = createInstructionParts(this.x,this.y,this.img,this.name,true, instId);
-      instId ++; 
+      var m = createInstructionParts(this.x,this.y,this.img,this.name,true);
       m.generator = this;
       this.count --;
     }else{
@@ -284,7 +283,7 @@ function instructionGenerator(x,y,img,name,num){
 }
 
 
-function createInstructionParts(x,y,img, name, active, idnum){
+function createInstructionParts(x,y,img, name, active){
   var tex_instruct = PIXI.Texture.fromImage(img);
   var part = new PIXI.Sprite(tex_instruct);
  
@@ -295,7 +294,6 @@ function createInstructionParts(x,y,img, name, active, idnum){
   part.height = tile_size;
   part.position.x = x;
   part.position.y = y;
-  part.idnumber = idnum;
   // to distinguish between turning road and dragging road 
   part.dragged = false;
   // when it is being created, the piece is fresh,
