@@ -14,6 +14,25 @@ function onButtonUp()
 
 */
 
+function player_start() {
+  switch (step.value.name) {
+    case "forward":
+        player_move(player_dir);
+        break;
+    case "right":
+        player.wait = tile_size/player.speed;
+        player_dir = (player_dir + 1) % 4;
+        break;
+    case "left":
+        player.wait = tile_size/player.speed;
+        player_dir = (player_dir + 3) % 4;
+        break;
+    default:
+         break;
+  }
+}
+
+
 
 // create reset button
 function createResetButton(x,y,img){
@@ -118,7 +137,7 @@ function game_reset() {
     instPointer = 0;
     */
     instId = 0;
-    step = 0;
+    step = null;
 
   
 }

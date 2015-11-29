@@ -43,8 +43,9 @@ function onButtonUp()
 {
     this.isdown = false;
 
-
     start = true;
+
+    step = instQueue.head;
 
     if (this.isOver){
     }

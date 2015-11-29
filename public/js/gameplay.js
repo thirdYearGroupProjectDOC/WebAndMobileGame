@@ -97,9 +97,9 @@ var instPointer = 0;
 //var LinkedList = require('linkedlist');
 var instQueue = new LinkedList();
 
-var instId = 0;
+var step = null;
 
-var step = 0;
+var instId = 0;
 
 // stage for instructions stacks, not buttons
 var INSTRUCT_STAGE = new PIXI.Container();
@@ -137,9 +137,9 @@ stage.addChild(INST_BUTTON_STAGE);
 
 
 // new
-var move_forward = new instructionGenerator(selects_x+250, 50,'assets/spt_inst_forward.png', 'forward', 3 );
-var turn_right = new instructionGenerator(selects_x+250, 130, 'assets/spt_inst_right.png', 'right', 3);
-var turn_left = new instructionGenerator(selects_x+250, 210, 'assets/spt_inst_left.png', 'left', 3);
+var move_forward = new instructionGenerator(selects_x+250, 50,'assets/spt_inst_forward.png', "forward", 3 );
+var turn_right = new instructionGenerator(selects_x+250, 130, 'assets/spt_inst_right.png', "right", 3);
+var turn_left = new instructionGenerator(selects_x+250, 210, 'assets/spt_inst_left.png', "left", 3);
 
 
 // boolean for start executing instructions
@@ -168,12 +168,13 @@ function animate(){
     renderer.render(stage);
 
     //when one step is finished, read next instruction
-    if (start && player.xmov == 0 && player.ymov == 0  && player.wait == 0 && 
+    if (start && step != null && player.xmov == 0 && player.ymov == 0  && player.wait == 0 && 
   //    instQueue.length != 0 &&
        count - store>65) {
       store = count;
       player_start();
-      step++;
+      step = step.next;
+      
 
       // while executing instructions, can't move road pieces,
       // can only be set back by reset button
