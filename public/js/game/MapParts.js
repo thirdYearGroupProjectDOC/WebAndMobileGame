@@ -124,15 +124,19 @@ function onDragMove(){
             if(toTilePos(this.x)==map_size-1){
               this.dir = [3];
               this.rotation = Math.PI/2;
+              this.turn = 1;
             }else if(toTilePos(this.x)==0){
               this.dir = [1];
               this.rotation = Math.PI/2*3;
+              this.turn = 3;
             }else if(toTilePos(this.y)==0){
               this.dir = [2];
               this.rotation = 0;
+              this.turn = 0;
             }else if(toTilePos(this.y)==map_size-1){
               this.dir = [0];
               this.rotation = Math.PI/2*2;
+              this.turn = 2;
             }
           }
         // put it to where mouse is
@@ -179,7 +183,7 @@ function MapPartsGenerator(x,y,img,name,turn,num){
     // this is called when moving top pieces
     // when count is one, don't generate a new piece, 
     if(this.count > 1){
-      var m = createMapParts(this.x,this.y,this.img,this.name,true,this.turn); 
+      var m = createMapParts(this.x,this.y,this.img,this.name,true,this.turn);
       m.generator = this;
       this.count --;
     }else{
@@ -226,6 +230,8 @@ function createMapParts(x,y,img, name, active, turn){
   part.pos_y = -1;
   part.name = name;
   part.dir = dir_dict[name];
+
+
 
   // these variables are only used for creating 
   // another road
