@@ -10,7 +10,8 @@ block content
     if errormsg
       div(class="alert alert-danger")
         p #{errormsg}
-    input(type="text", class="form-control", placeholder="Display name", name ="displayName", required, autofocus)
+    input(type="text", class="form-control", placeholder="Display name", name
+     ="displayName", id="displayName", required, autofocus)
     input(type="text", class="form-control", placeholder="Username", name="username", required)
     input(type="password", class="form-control", placeholder="Password (More than 4 characters)", name="password", pattern="\\S{4}\\S*",required)
     input(type="password", class="form-control", placeholder="Confirm password", name="password2", required)

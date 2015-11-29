@@ -1,15 +1,18 @@
-function createStartButton(x,y,img){
+function createButton(x,y,img,func){
   var start_tex = PIXI.Texture.fromImage(img);
-  var start_button = new PIXI.Sprite(start_tex);
-  start_button.width = tile_size*2;
-  start_button.height = tile_size;
-  start_button.buttonMode = true;
-  start_button.anchor.set(0.5);
-  start_button.position.x = x;
-  start_button.position.y = y;
+  var button = new PIXI.Sprite(start_tex);
+  button.width = tile_size*2;
+  button.height = tile_size;
+  button.buttonMode = true;
+  button.anchor.set(0.5);
+  button.position.x = x;
+  button.position.y = y;
   // make the button interactive...
-  start_button.interactive = true;
-  start_button
+  button.interactive = true;
+
+  button.func = func;
+
+  button
       // set the mousedown and touchstart callback...
       .on('mousedown', onButtonDown)
       .on('touchstart', onButtonDown)
@@ -26,31 +29,26 @@ function createStartButton(x,y,img){
       // set the mouseout callback...
       .on('mouseout', onButtonOut)
       
-  start_button.tap = null;
-  start_button.click = null;
+  button.tap = null;
+  button.click = null;
   // add it to the stage
-  stage.addChild(start_button);
-  return start_button;
+  stage.addChild(button);
+  return button;
 }
 
 function onButtonDown()
 {
     this.isdown = true;
     this.alpha = 1;
+
+  
+    
 }
 
 function onButtonUp()
 {
     this.isdown = false;
-
-    start = true;
-
-    step = instQueue.head;
-
-    if (this.isOver){
-    }
-    else{
-    }
+   this.func();
 }
 
 function onButtonOver()

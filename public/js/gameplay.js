@@ -1,157 +1,165 @@
 var renderer = PIXI.autoDetectRenderer(1200, 800,{backgroundColor : 0x1099bb});
 document.body.appendChild(renderer.view);
 
-// size of the actuall game size
-var map_size = 5;
-// for start and end point
-map_size +=2;
-var map = [];
-for(var i = 0; i<Math.pow(map_size,2); i++){
-    map[i] = null;
-}
+console.log(levelData);//configuration of level in JSON format
 
-// tile size , depends on screen later
-var tile_size = 60;
-// where the first road begin
-var zero_x = 80;
-var zero_y = 60;
-
-var selects_x = 500;
-var selects_y = 0;
+$("#saveButton").click(function(event) { // when save button clicked
+  event.preventDefault(); //prevent page from reload
+  set_level_data();
+  console.log(levelInfo);
+  $.post( '/test',{author:'Sam',LevelInfo:JSON.stringify(levelInfo)}, function(data) { // post the parameter a2 to test.js
+    alert(data); //alert the data after getting reply
+  });
+});
 
 // create the root of the scene graph
 var stage = new PIXI.Container();
+
+// for messages
+var ERROR_STAGE = new PIXI.Container();
+
 // map base, put all tiles into one container
 var MAP_STAGE = new PIXI.Container();
-
 stage.addChild(MAP_STAGE);
 
 // create background
-for (var j = 1; j < map_size-1; j++) {
-    for (var i = 1; i < map_size-1; i++) {
-        var bg = PIXI.Sprite.fromImage('assets/background.png');
-        bg.x = tile_size * i;
-        bg.y = tile_size * j;
-        bg.height = tile_size;
-        bg.width = tile_size;
-        MAP_STAGE.addChild(bg);
-    };
-};
+map_bg_init();
+
+// setting map to reletive zero position
 MAP_STAGE.x = zero_x;
 MAP_STAGE.y = zero_y;
-
-// setting directions of road pieces according to image's default direction
-// for detail and usage see the comments below
-dir_dict = {'monster':[-1], 'corner':[0,3], 'end':[2], 'straight':[0,2], 't':[1,2,3], 'tree':[]};
-
-
+// store map pieces to be selected
 ROAD_STAGE = new PIXI.Container();
 MAP_STAGE.addChild(ROAD_STAGE);
+// store map pieces on map
+ROAD_ON_MAP_STAGE = new PIXI.Container();
+MAP_STAGE.addChild(ROAD_ON_MAP_STAGE);
+
+ROAD_INDICATOR_STAGE = new PIXI.Container();
+ROAD_STAGE.addChild(ROAD_INDICATOR_STAGE);
 
 
 // create road part from image, can be dragged to fit on map,
 // for detail of each parameter, see createMapParts&&generator in MapParts.js
 var road_monster = new MapPartsGenerator(selects_x,selects_y,'assets/spt_monster.png','monster',0,3);
-var road_corner = new MapPartsGenerator(selects_x,selects_y+tile_size*1.5,'assets/spt_road_corner.png','corner',0,3);
+var road_corner = new MapPartsGenerator(selects_x,selects_y+tile_size*1.5,'assets/Newburg/road_turn.png','corner',0,3);
 var road_end = new MapPartsGenerator(selects_x,selects_y+tile_size*3,'assets/spt_road_end.png','end',0,3);
-var road_straight = new MapPartsGenerator(selects_x,selects_y+tile_size*4.5,'assets/spt_road_straight.png','straight',0,3);
-var road_t = new MapPartsGenerator(selects_x,selects_y+tile_size*6,'assets/spt_road_t.png','t',0,3);
-var road_tree = new MapPartsGenerator(selects_x,selects_y+tile_size*7.5,'assets/spt_tree.png','tree',0,3); 
 
-// create start button
-start_button = createStartButton(180,550,'assets/spt_inst_start.png');
+var road_straight = new MapPartsGenerator(selects_x,selects_y+tile_size*4.5,'assets/Newburg/road_straight.png','straight',0,3);
+var road_t = new MapPartsGenerator(selects_x,selects_y+tile_size*6,'assets/Newburg/road_t.png','t',0,3);
+var road_tree = new MapPartsGenerator(selects_x,selects_y+tile_size*7.5,'assets/Newburg/rock.png','tree',0,3); 
+
+// utility buttons, function defined in buttonfunctions.js
+start_button = createButton(180,550,'assets/spt_inst_start.png',start_function);
+
+//set_level_button = createButton(250,450,'assets/spt_inst_start.png',set_level_data);
+
+//show_msg(levelData.data.player);
+
+
+
+instruction_stage_button = createButton(180,460,'assets/to_inst.png',to_instruction_part);
+map_stage_button = createButton(180,460,'assets/to_map.png',to_map_part);
+stage.removeChild(map_stage_button);
+
 
 // create player
-var player_tex = PIXI.Texture.fromImage('assets/spt_boy.png');
-var player = new PIXI.Sprite(player_tex);
-// position and size
+var player = Player();
+// used in game reset
+player.ox = player.pos_x;
+player.oy = player.pos_y;
+player.odir = player.face_dir;
 
-player.x = tile_size*1;
-player.y = tile_size*1;
+if(!create_level){
+  get_level_data(levelData.data);
+}
 
-player.width = tile_size;
-player.height = tile_size;
-
-// position on map, only descrete numbers
-player.pos_x = 1;
-player.pos_y = 1;
-var player_dir = 1;
-player.isWalking = false;
-
-// used in main loop for moving on canvas
-player.xmov = 0;
-player.ymov = 0;
-player.speed = tile_size/60;
-player.wait = 0;
-
-MAP_STAGE.addChild(player); 
-
-
-// instructions waiting to be read
-/* OLD
-var instQueue = [];
-var instPointer = 0;
-*/
-
-//  new
-//var LinkedList = require('linkedlist');
+// executing instructions from this list
 var instQueue = new LinkedList();
+
 
 var step = null;
 
-//var instId = 0;
+
+//undo_button = createButton(700,200,'assets/undo.png',stack_undo);
+reset_button = createButton(310,510,'assets/reset.png',game_reset);
+
+var INST_BUTTON_STAGE = new PIXI.Container();
+var INST_BUTTON_TXT_STAGE = new PIXI.Container();
+INST_BUTTON_STAGE.addChild(INST_BUTTON_TXT_STAGE);
+INST_BUTTON_STAGE.x = inst_x;
+INST_BUTTON_STAGE.y = inst_y;
+
 
 // stage for instructions stacks, not buttons
 var INSTRUCT_STAGE = new PIXI.Container();
+INST_BUTTON_STAGE.addChild(INSTRUCT_STAGE);
 
-stage.addChild(INSTRUCT_STAGE);
-
-
-// create instruction background
-/*
-for (var j = 1; j < 10; j++) {
-        var instbg = PIXI.Sprite.fromImage('assets/background.png');
-        instbg.x = 150;
-        instbg.y = tile_size * j;
-        instbg.height = tile_size;
-        instbg.width = tile_size*2;
-        INSTRUCT_STAGE.addChild(instbg);
-    };
-*/
-
-var queue_x = 890;
-var queue_y = 30;
-
-INSTRUCT_STAGE.x = queue_x;
-INSTRUCT_STAGE.y = queue_y;
-
-/*
-var instruct_region_x = 890;
-var instruct_region_y = 30;
-*/
-//undo_button = createUndoButton(700,250,'assets/undo.png');
-reset_button = createResetButton(310,510,'assets/reset.png');
-
-var INST_BUTTON_STAGE = new PIXI.Container();
-stage.addChild(INST_BUTTON_STAGE);
-
+INST_INDICATOR_STAGE = new PIXI.Container();
+INST_BUTTON_STAGE.addChild(INST_INDICATOR_STAGE);
 
 // new
-var move_forward = new instructionGenerator(selects_x+250, 50,'assets/spt_inst_forward.png', "forward", 3 );
-var turn_right = new instructionGenerator(selects_x+250, 130, 'assets/spt_inst_right.png', "right", 3);
-var turn_left = new instructionGenerator(selects_x+250, 210, 'assets/spt_inst_left.png', "left", 3);
+var move_forward = new instructionGenerator(0, 50,'assets/spt_inst_forward.png', inst_dict.forward, 3 );
+var turn_right = new instructionGenerator(0, 130, 'assets/spt_inst_right.png', inst_dict.right, 3);
+var turn_left = new instructionGenerator(0, 210, 'assets/spt_inst_left.png', inst_dict.left, 3);
+var for_loop = new instructionGenerator(0, 280, 'assets/spt_inst_repeat_time.png', inst_dict.for_loop, 3);
+var for_end = new instructionGenerator(0, 350, 'assets/spt_inst_repeat_end.png', inst_dict.for_end, 3);
 
 
+stage.addChild(ERROR_STAGE);
+
+
+/*
+graphics = new PIXI.Graphics();
+
+graphics.lineStyle(2, 0xFF00FF, 1);
+graphics.beginFill(0xFF00BB, 0.25);
+graphics.drawRoundedRect(inst_x+tile_size*3, inst_y+tile_size/2, tile_size*2, tile_size, 15);
+//graphics.drawRoundedRect, 250, 200, 120, 5);
+
+graphics.endFill();*/
+//stage.addChild(INST_BUTTON_STAGE);
+
+var start_frame_tex = PIXI.Texture.fromImage('assets/execute_frame.png');
+var start_frame = new PIXI.Sprite(start_frame_tex);
+start_frame.x = start_button.x;
+start_frame.y = start_button.y;
+start_frame.height = tile_size;
+start_frame.width = tile_size*2;;
+start_frame.anchor.set(0.5);
+stage.addChild(start_frame);
+
+var inst_frame = new PIXI.Sprite(start_frame_tex);
+inst_frame.height = tile_size;
+inst_frame.width = tile_size*2;;
+inst_frame.anchor.set(0.5);
+//stage.addChild(inst_frame);
+
+
+//stage.addChild(graphics);
 // boolean for start executing instructions
-var start = false;
+var execute = false;
 // for slower step animation
-var count = 0;
+count = 0;
 // store count,
 // used for set time intervel between read instructions
-var store = 0;
+store = 0;
 // intervel between reading instructions
 // size/speed is the time each instruction takes
 var intervel = tile_size/player.speed + 5;
+
+// current instruction, last instruction
+// cur_inst is currently updated at every instruction onInstEnd method
+cur_inst = null;
+last_inst = null;
+for_start = null;
+for_end = null;
+
+// this text is used for getting run time updated values, for debugging purpose only
+var text = new PIXI.Text(' ');
+text.x= 300;
+text.y= 100;
+stage.addChild(text);
 
 animate();
 function animate(){
@@ -159,7 +167,7 @@ function animate(){
     player.y += player.speed*Math.sign(player.ymov);
     player.xmov = Math.sign(player.xmov) * (Math.abs(player.xmov)-player.speed);
     player.ymov = Math.sign(player.ymov) * (Math.abs(player.ymov)-player.speed);
-    
+
     if(player.wait != 0){
       player.wait --;
     }
@@ -168,6 +176,8 @@ function animate(){
     renderer.render(stage);
 
     //when one step is finished, read next instruction
+    // before merge to master
+/*
     if (start && step != null && player.xmov == 0 && player.ymov == 0  && player.wait == 0 && 
   //    instQueue.length != 0 &&
        count - store>65) {
@@ -181,60 +191,35 @@ function animate(){
       for(var i = 0; i < MAP_STAGE.children.length; i++){
         ROAD_STAGE.children[i].interactive = false;
       }
+*/
+
+    if (execute && player.xmov == 0 && player.ymov == 0 && cur_inst != null
+          && player.wait == 0 && instQueue.length != 0 && (count - store)>65) {
+      store = count;
+      
+      INST_BUTTON_STAGE.addChild(inst_frame);
+      inst_frame.x = cur_inst.value.x;
+      inst_frame.y = cur_inst.value.y;
+      /*text.text = cur_inst.value.inst + ', queue: ' + instQueue.length
+             +' player.xmov '+ player.xmov +' player.ymov ' + player.ymov;*/
+      execute_inst_queue();
 
     }
+
+    if(execute){
+      start_frame.tint = Math.random()* 0xF1FFFF;
+    }else{
+      INST_BUTTON_STAGE.removeChild(inst_frame);
+    }
+
+
     
+    /*else{
+      show_msg(start);
+      show_msg(instQueue.length);
+    }*/
+
     count += 1;
-}
-
-
-
-// used for printing message on screen
-function show_msg(msg){
-    var spinningText = new PIXI.Text(msg, { font: 'bold 60px Arial', fill: '#cc00ff', align: 'center', stroke: '#FFFFFF', strokeThickness: 6 });
-
-    spinningText.anchor.set(0.5);
-    spinningText.x = 500+Math.random()*200;
-    spinningText.y = 200+Math.random()*200;
-    stage.addChild(spinningText);
-}
-
-
-
-/* @dir is the direction player moves, 0 notrh and clockwise inc
-*  first check whether the road player stands on has this dir
-*  then check boundries
-*/
-function player_move(dir){
-
-  // get direction!
-  // can only be +1, -1
-  var xmov = (2-dir)*dir%2;
-  var ymov = (dir-1)*(1-dir%2);
-
-  var cur = player.pos_y*map_size+player.pos_x;
-  var dst = (player.pos_y+ymov)*map_size + player.pos_x+xmov;
-
-  //opsite direction
-  var op = (dir+2)%4;
-  // check road condition
-  if(dst<map_size*map_size && map[cur].indexOf(dir)!=-1
-    && map[dst].indexOf(op)!=-1){
-
-    player.xmov = xmov*tile_size;
-    player.ymov = ymov*tile_size;
-
-
-
-    player.pos_x += xmov;
-    player.pos_y += ymov;
-
-  }
-  
-
-  player.aim_x += xmov*tile_size;
-  player.aim_y += ymov*tile_size;
-
 }
 
 
