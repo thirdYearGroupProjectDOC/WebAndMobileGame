@@ -35,3 +35,33 @@ function to_instruction_part() {
   stage.addChild(map_stage_button);
   stage.removeChild(instruction_stage_button);
 } 
+
+function map_clear() {
+    player.pos_x = player.ox;
+    player.pos_y = player.oy;
+    player.x = tile_size/2 + tile_size*player.pos_x;
+    player.y = tile_size/2 + tile_size*player.pos_y;
+    player.face_dir = player.odir;
+    turn_animation(player,player.face_dir);
+
+    ERROR_STAGE.removeChildren();
+
+    for (var i = ROAD_ON_MAP_STAGE.children.length - 1; i >= 0; i--) {
+      var piece = ROAD_ON_MAP_STAGE.children[i];
+      if(piece.generator.count == 0){
+            piece.generator.count = 2;
+            piece.generator.gen();
+          }else{
+            piece.generator.count ++;
+            piece.generator.update();
+          }
+      map[piece.pos_y*map_size+piece.pos_x] = null;
+      ROAD_ON_MAP_STAGE.removeChild(piece);
+    };
+    
+}
+
+function continue_editing() {
+   ERROR_STAGE.removeChildren();
+}
+
