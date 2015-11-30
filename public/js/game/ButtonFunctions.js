@@ -60,8 +60,3 @@ function map_clear() {
     };
     
 }
-
-function continue_editing() {
-   ERROR_STAGE.removeChildren();
-}
-

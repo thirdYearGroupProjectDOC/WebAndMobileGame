@@ -70,8 +70,7 @@ player.odir = player.face_dir;
 //DIVIDE FUNCTIONALITIES
 if (create_level) {
   stage.removeChild(INST_BUTTON_STAGE);
-  continue_button = createButton(180,510,'assets/continue_editing.png', continue_editing);
-  clear_button = createButton(360,510,'assets/map_clear.png', map_clear);
+  clear_button = createButton(210,510,'assets/map_clear.png', map_clear);
 } else {
   get_level_data(levelData.data);
   // STAGE TRANSFORM BUTTON

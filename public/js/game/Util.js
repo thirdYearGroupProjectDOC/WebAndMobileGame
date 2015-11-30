@@ -165,7 +165,7 @@ function on_map_corner(x,y){
 function set_level_data(){
 
   if(validation()==false){
-    show_msg('not valid road, can\'t save');
+    alert('not valid road, can\'t save');
     return -1;
   }else{
     show_msg('find');
