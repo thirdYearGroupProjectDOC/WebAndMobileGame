@@ -165,10 +165,10 @@ function on_map_corner(x,y){
 function set_level_data(){
 
   if(validation()==false){
-    show_msg('not valid road, can\'t save');
+    alert('not valid road, can\'t save');
     return -1;
   }else{
-    show_msg('find');
+    //show_msg('find');
   }
 
   map_to_pass = [];
@@ -210,6 +210,10 @@ function get_level_data(data){
   for(i = 0; i < data.map.length; i++){
     if(m = data.map[i]){
       var a = createMapParts(m.x, m.y, m.img, m.name, false, m.turn);
+      a.pos_x = i % map_size;
+      a.pos_y = Math.floor(i / map_size);
+      map[i] = a.dir;
+      a.never_active = true;
       ROAD_STAGE.removeChild(a);
       ROAD_ON_MAP_STAGE.addChild(a);
     }
@@ -228,7 +232,7 @@ function validation(){
 
   //player not on any map position
   if(dir==null){
-    show_msg('not on map pieces');
+    //show_msg('not on map pieces');
     return false;
   }
 
@@ -255,7 +259,7 @@ function find_road(x,y,dir){
   var op = (dir+2)%4;
   //player not on a road
   if(dirs_t==undefined || dirs_t==[]){
-    show_msg('not on road');
+    //show_msg('not on road');
     return false;
   }
     
@@ -273,8 +277,8 @@ function find_road(x,y,dir){
     var removed = dirs.splice(index,1);
     //show_msg('dirs remain:'+ dirs);
   }else{
-    show_msg('pos: '+ x+y +'coming road: '+op + 'cur road: '+dirs);
-    show_msg('not valid comming road');
+   //show_msg('pos: '+ x+y +'coming road: '+op + 'cur road: '+dirs);
+    //show_msg('not valid comming road');
     // comming road is not valid 
     return false;
   }

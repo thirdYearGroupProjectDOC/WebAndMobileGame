@@ -231,6 +231,8 @@ function createMapParts(x,y,img, name, active, turn){
   part.name = name;
   part.dir = dir_dict[name];
 
+  // used for parts that never become interactive
+  part.never_active = false;
 
 
   // these variables are only used for creating 

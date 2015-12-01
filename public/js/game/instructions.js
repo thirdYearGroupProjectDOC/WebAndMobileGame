@@ -1,6 +1,8 @@
+
 // defines distance bwtween generator ( pile of instructions)
 // and where the execution stack lives
 var gap = tile_size * 1.5;
+
 
 //check if it is in the instruction region
 function check_inst_region(x,y,length){

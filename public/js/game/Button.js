@@ -41,13 +41,14 @@ function onButtonDown()
     this.isdown = true;
     this.alpha = 1;
 
-    this.func();
+  
     
 }
 
 function onButtonUp()
 {
     this.isdown = false;
+   this.func();
 }
 
 function onButtonOver()

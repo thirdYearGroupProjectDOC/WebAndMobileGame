@@ -8,8 +8,10 @@ $("#saveButton").click(function(event) { // when save button clicked
   set_level_data();
   console.log(levelInfo);
   $.post( '/test',{author:'Sam',LevelInfo:JSON.stringify(levelInfo)}, function(data) { // post the parameter a2 to test.js
-    alert(data); //alert the data after getting reply
+    alert('succesfully created level!'); //alert the data after getting reply
   });
+  // prevent game board becomes invalid again
+  LevelInfo = null;
 });
 
 // create the root of the scene graph
@@ -49,18 +51,14 @@ var road_straight = new MapPartsGenerator(selects_x,selects_y+tile_size*4.5,'ass
 var road_t = new MapPartsGenerator(selects_x,selects_y+tile_size*6,'assets/Newburg/road_t.png','t',0,3);
 var road_tree = new MapPartsGenerator(selects_x,selects_y+tile_size*7.5,'assets/Newburg/rock.png','tree',0,3); 
 
-// utility buttons, function defined in buttonfunctions.js
-start_button = createButton(180,550,'assets/spt_inst_start.png',start_function);
+
+
 
 //set_level_button = createButton(250,450,'assets/spt_inst_start.png',set_level_data);
 
 //show_msg(levelData.data.player);
 
 
-
-instruction_stage_button = createButton(180,460,'assets/to_inst.png',to_instruction_part);
-map_stage_button = createButton(180,460,'assets/to_map.png',to_map_part);
-stage.removeChild(map_stage_button);
 
 
 // create player
@@ -70,23 +68,45 @@ player.ox = player.pos_x;
 player.oy = player.pos_y;
 player.odir = player.face_dir;
 
-if(!create_level){
+
+//DIVIDE FUNCTIONALITIES
+if (create_level) {
+  stage.removeChild(INST_BUTTON_STAGE);
+  clear_button = createButton(210,510,'assets/map_clear.png', map_clear);
+} else {
   get_level_data(levelData.data);
+  // STAGE TRANSFORM BUTTON
+  instruction_stage_button = createButton(180,460,'assets/to_inst.png',to_instruction_part);
+  map_stage_button = createButton(180,460,'assets/to_map.png',to_map_part);
+  stage.removeChild(map_stage_button);
+  //RESET BUTTON
+  reset_button = createButton(310,510,'assets/reset.png',game_reset);
+  //START BUTTON
+  start_button = createButton(180,550,'assets/spt_inst_start.png',start_function);
+  //START FRAME
+  var start_frame_tex = PIXI.Texture.fromImage('assets/execute_frame.png');
+  var start_frame = new PIXI.Sprite(start_frame_tex);
+  start_frame.x = start_button.x;
+  start_frame.y = start_button.y;
+  start_frame.height = tile_size;
+  start_frame.width = tile_size*2;;
+  start_frame.anchor.set(0.5);
+  stage.addChild(start_frame);
 }
 
 // executing instructions from this list
 var instQueue = new LinkedList();
 
 
+var step = null;
 
-//undo_button = createButton(700,200,'assets/undo.png',stack_undo);
-reset_button = createButton(310,510,'assets/reset.png',game_reset);
 
 var INST_BUTTON_STAGE = new PIXI.Container();
 var INST_BUTTON_TXT_STAGE = new PIXI.Container();
 INST_BUTTON_STAGE.addChild(INST_BUTTON_TXT_STAGE);
 INST_BUTTON_STAGE.x = inst_x;
 INST_BUTTON_STAGE.y = inst_y;
+
 
 // stage for instructions stacks, not buttons
 var INSTRUCT_STAGE = new PIXI.Container();
@@ -117,14 +137,7 @@ graphics.drawRoundedRect(inst_x+tile_size*3, inst_y+tile_size/2, tile_size*2, ti
 graphics.endFill();*/
 //stage.addChild(INST_BUTTON_STAGE);
 
-var start_frame_tex = PIXI.Texture.fromImage('assets/execute_frame.png');
-var start_frame = new PIXI.Sprite(start_frame_tex);
-start_frame.x = start_button.x;
-start_frame.y = start_button.y;
-start_frame.height = tile_size;
-start_frame.width = tile_size*2;;
-start_frame.anchor.set(0.5);
-stage.addChild(start_frame);
+
 
 var inst_frame = new PIXI.Sprite(start_frame_tex);
 inst_frame.height = tile_size;
@@ -158,6 +171,10 @@ text.x= 300;
 text.y= 100;
 stage.addChild(text);
 
+
+
+
+
 animate();
 function animate(){
     player.x += player.speed*Math.sign(player.xmov);
@@ -173,6 +190,23 @@ function animate(){
     renderer.render(stage);
 
     //when one step is finished, read next instruction
+    // before merge to master
+/*
+    if (start && step != null && player.xmov == 0 && player.ymov == 0  && player.wait == 0 && 
+  //    instQueue.length != 0 &&
+       count - store>65) {
+      store = count;
+      player_start();
+      step = step.next;
+      
+
+      // while executing instructions, can't move road pieces,
+      // can only be set back by reset button
+      for(var i = 0; i < MAP_STAGE.children.length; i++){
+        ROAD_STAGE.children[i].interactive = false;
+      }
+*/
+
     if (execute && player.xmov == 0 && player.ymov == 0 && cur_inst != null
           && player.wait == 0 && instQueue.length != 0 && (count - store)>65) {
       store = count;
@@ -183,6 +217,7 @@ function animate(){
       /*text.text = cur_inst.value.inst + ', queue: ' + instQueue.length
              +' player.xmov '+ player.xmov +' player.ymov ' + player.ymov;*/
       execute_inst_queue();
+
     }
 
     if(execute){
