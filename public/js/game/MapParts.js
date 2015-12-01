@@ -152,6 +152,9 @@ function onDragMove(){
 // so using this would assume the piece will be activated 
 // param : num is number of pieces, others is for constructing mapParts
 function MapPartsGenerator(x,y,img,name,turn,num){
+  if(num==0){
+    return;
+  }
   // used by createMapParts function
   this.x = x;
   this.y = y;

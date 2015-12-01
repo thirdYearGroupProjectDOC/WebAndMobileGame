@@ -1,6 +1,7 @@
 var renderer = PIXI.autoDetectRenderer(1200, 800,{backgroundColor : 0x1099bb});
 document.body.appendChild(renderer.view);
 
+
 console.log(levelData);//configuration of level in JSON format
 
 $("#saveButton").click(function(event) { // when save button clicked
@@ -40,16 +41,28 @@ MAP_STAGE.addChild(ROAD_ON_MAP_STAGE);
 ROAD_INDICATOR_STAGE = new PIXI.Container();
 ROAD_STAGE.addChild(ROAD_INDICATOR_STAGE);
 
-
+// for setting numbers of road pieces
+pieces = {corner:9, straight:9, t:9 };
 // create road part from image, can be dragged to fit on map,
 // for detail of each parameter, see createMapParts&&generator in MapParts.js
-var road_monster = new MapPartsGenerator(selects_x,selects_y,'assets/spt_monster.png','monster',0,3);
-var road_corner = new MapPartsGenerator(selects_x,selects_y+tile_size*1.5,'assets/Newburg/road_turn.png','corner',0,3);
-var road_end = new MapPartsGenerator(selects_x,selects_y+tile_size*3,'assets/spt_road_end.png','end',0,3);
+if(create_level){
+  var road_monster = new MapPartsGenerator(selects_x,selects_y,
+    'assets/spt_monster.png','monster',0,9);
+  var road_tree = new MapPartsGenerator(selects_x,selects_y+tile_size*7.5,
+    'assets/Newburg/rock.png','tree',0,9);
+  var road_end = new MapPartsGenerator(selects_x,selects_y+tile_size*3,
+    'assets/spt_road_end.png','end',0,9);
 
-var road_straight = new MapPartsGenerator(selects_x,selects_y+tile_size*4.5,'assets/Newburg/road_straight.png','straight',0,3);
-var road_t = new MapPartsGenerator(selects_x,selects_y+tile_size*6,'assets/Newburg/road_t.png','t',0,3);
-var road_tree = new MapPartsGenerator(selects_x,selects_y+tile_size*7.5,'assets/Newburg/rock.png','tree',0,3); 
+}else{
+  pieces = levelData.data.pieces;
+}
+
+var road_corner = new MapPartsGenerator(selects_x,selects_y+tile_size*1.5,
+  'assets/Newburg/road_turn.png','corner',0,pieces.corner);
+var road_straight = new MapPartsGenerator(selects_x,selects_y+tile_size*4.5,
+  'assets/Newburg/road_straight.png','straight',0,pieces.straight);
+var road_t = new MapPartsGenerator(selects_x,selects_y+tile_size*6,
+  'assets/Newburg/road_t.png','t',0,pieces.t);
 
 
 
@@ -192,13 +205,13 @@ function animate(){
     //when one step is finished, read next instruction
     // before merge to master
 /*
-    if (start && step != null && player.xmov == 0 && player.ymov == 0  && player.wait == 0 && 
+    if (start && step != null && player.xmov == 0 && player.ymov == 0  && player.wait == 0 &&
   //    instQueue.length != 0 &&
        count - store>65) {
       store = count;
       player_start();
       step = step.next;
-      
+
 
       // while executing instructions, can't move road pieces,
       // can only be set back by reset button
@@ -210,7 +223,7 @@ function animate(){
     if (execute && player.xmov == 0 && player.ymov == 0 && cur_inst != null
           && player.wait == 0 && instQueue.length != 0 && (count - store)>65) {
       store = count;
-      
+
       INST_BUTTON_STAGE.addChild(inst_frame);
       inst_frame.x = cur_inst.value.x;
       inst_frame.y = cur_inst.value.y;
@@ -227,7 +240,7 @@ function animate(){
     }
 
 
-    
+
     /*else{
       show_msg(start);
       show_msg(instQueue.length);
@@ -235,5 +248,3 @@ function animate(){
 
     count += 1;
 }
-
-

@@ -81,10 +81,10 @@ function game_reset(){
         INST_BUTTON_STAGE.children[i].generator.reset();
       }*/
       var c = INST_BUTTON_STAGE.children[i];
-      
+
         c.interactive = true;
-      
-      
+
+
     }
     var temp_cur = instQueue.head;
     while(temp_cur!=null&&temp_cur.value!=null){
@@ -93,14 +93,14 @@ function game_reset(){
         if(inst.loop_count!=null){
             //show_msg('h')
             //show_msg('has loop count'+temp_cur.value.o_loop_count);
-            inst.loop_count = inst.o_loop_count; 
-            inst.loop_txt.setText(inst.loop_count);  
+            inst.loop_count = inst.o_loop_count;
+            inst.loop_txt.setText(inst.loop_count);
         }
         temp_cur = temp_cur.next;
     }
 
     ERROR_STAGE.removeChildren();
-    
+
     start_button.interactive = true;
     //instQueue.clear();
     step = 0;
@@ -172,14 +172,34 @@ function set_level_data(){
   }
 
   map_to_pass = [];
+  pieces = {corner:0, straight:0, t:0 };
   for(i = 0; i<ROAD_ON_MAP_STAGE.children.length; i++){
     r = ROAD_ON_MAP_STAGE.children[i];
+    console.log(r);
     if(r.name =='monster' || r.name =='tree' || r.name == 'end'){
+
       map_to_pass[r.pos_x+map_size*r.pos_y] = { x:r.x,
                                                 y:r.y,
                                                 turn:r.turn,
                                                 img:r.img,
                                                 name:r.name};
+
+    }else{
+      // this switch, mapParts.name and  dit_dict should be improved later 
+      // to make it more readable and maintainable
+      switch(r.name){
+        case 'straight':
+          pieces.straight++;
+          break;
+        case 'corner':
+          pieces.corner++;
+          break;
+        case 't':
+          pieces.t++;
+          break;
+        default:
+          break;
+      }
     }
   }
 
@@ -190,7 +210,8 @@ function set_level_data(){
       "title": "Easy Level",
       "description": "This is an entry level",
     "player": {x:player.pos_x, y:player.pos_y, face_dir:player.face_dir},
-    "map":map_to_pass
+    "map":map_to_pass,
+    "pieces":pieces
 
     }};
 }
@@ -225,9 +246,9 @@ function validation(){
   if(on_map_corner(player.pos_x,player.pos_y)){
     return false;
   }
-  
+
   var cur = player.pos_y*map_size+player.pos_x;
-  
+
   var dir = map[cur][0];
 
   //player not on any map position
@@ -249,7 +270,7 @@ function find_road(x,y,dir){
 //  show_msg('calling ' + x + ' '+y);
   var xmov = (2-dir)*dir%2;
   var ymov = (dir-1)*(1-dir%2);
-  
+
   var x = x+xmov;
   var y = y+ymov;
 
@@ -262,7 +283,7 @@ function find_road(x,y,dir){
     //show_msg('not on road');
     return false;
   }
-    
+
   var dirs = (dirs_t.slice());
 
   if(on_map_boarder(x,y)){
@@ -279,17 +300,17 @@ function find_road(x,y,dir){
   }else{
    //show_msg('pos: '+ x+y +'coming road: '+op + 'cur road: '+dirs);
     //show_msg('not valid comming road');
-    // comming road is not valid 
+    // comming road is not valid
     return false;
   }
-  
+
   var res = false;
   //show_msg('in recursion: dir length:'+dirs.length);
   for(var i = 0; i < dirs.length; i++){
     //show_msg('i: ' + i +'length'+  dirs.length);
     //show_msg(dirs.push(removed);
     res = res || arguments.callee(x,y,dirs[i]);
-    
+
   }
 
   // may find a better way to solve splice modify map ,

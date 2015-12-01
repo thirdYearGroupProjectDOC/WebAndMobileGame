@@ -4,6 +4,7 @@ var levelDatas = require('../models/levelData');
 
 
 router.post('/', function(req, res, next) {
+  // save data pass in to db
   require('connect-ensure-login').ensureLoggedIn();
   levelDatas.levelData.count({}, function( err, count){ // insert record
     console.log( "Number of levels:", count );
