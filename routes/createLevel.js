@@ -28,7 +28,7 @@ router.get('/', function(req, res, next) {
       "snake":[{"Coor":"2,2", "Dir":"0"}],
       "tree":[{"Coor":"3,3", "Dir":"0"}]
   }};*/
-  res.render('createLevel', { title: 'Create', uname: displayName, displayName:displayName,levelD: levelData});
+  res.render('createLevel', { title: 'Create', uname: displayName, displayName:displayName});
 });
 
 

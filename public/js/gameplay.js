@@ -41,16 +41,28 @@ MAP_STAGE.addChild(ROAD_ON_MAP_STAGE);
 ROAD_INDICATOR_STAGE = new PIXI.Container();
 ROAD_STAGE.addChild(ROAD_INDICATOR_STAGE);
 
-
+// for setting numbers of road pieces
+pieces = {corner:9, straight:9, t:9 };
 // create road part from image, can be dragged to fit on map,
 // for detail of each parameter, see createMapParts&&generator in MapParts.js
-var road_monster = new MapPartsGenerator(selects_x,selects_y,'assets/spt_monster.png','monster',0,3);
-var road_corner = new MapPartsGenerator(selects_x,selects_y+tile_size*1.5,'assets/Newburg/road_turn.png','corner',0,3);
-var road_end = new MapPartsGenerator(selects_x,selects_y+tile_size*3,'assets/spt_road_end.png','end',0,3);
+if(create_level){
+  var road_monster = new MapPartsGenerator(selects_x,selects_y,
+    'assets/spt_monster.png','monster',0,9);
+  var road_tree = new MapPartsGenerator(selects_x,selects_y+tile_size*7.5,
+    'assets/Newburg/rock.png','tree',0,9);
+  var road_end = new MapPartsGenerator(selects_x,selects_y+tile_size*3,
+    'assets/spt_road_end.png','end',0,9);
 
-var road_straight = new MapPartsGenerator(selects_x,selects_y+tile_size*4.5,'assets/Newburg/road_straight.png','straight',0,3);
-var road_t = new MapPartsGenerator(selects_x,selects_y+tile_size*6,'assets/Newburg/road_t.png','t',0,3);
-var road_tree = new MapPartsGenerator(selects_x,selects_y+tile_size*7.5,'assets/Newburg/rock.png','tree',0,3);
+}else{
+  pieces = levelData.data.pieces;
+}
+
+var road_corner = new MapPartsGenerator(selects_x,selects_y+tile_size*1.5,
+  'assets/Newburg/road_turn.png','corner',0,pieces.corner);
+var road_straight = new MapPartsGenerator(selects_x,selects_y+tile_size*4.5,
+  'assets/Newburg/road_straight.png','straight',0,pieces.straight);
+var road_t = new MapPartsGenerator(selects_x,selects_y+tile_size*6,
+  'assets/Newburg/road_t.png','t',0,pieces.t);
 
 
 

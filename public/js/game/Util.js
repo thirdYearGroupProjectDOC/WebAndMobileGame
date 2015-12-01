@@ -172,14 +172,34 @@ function set_level_data(){
   }
 
   map_to_pass = [];
+  pieces = {corner:0, straight:0, t:0 };
   for(i = 0; i<ROAD_ON_MAP_STAGE.children.length; i++){
     r = ROAD_ON_MAP_STAGE.children[i];
+    console.log(r);
     if(r.name =='monster' || r.name =='tree' || r.name == 'end'){
+
       map_to_pass[r.pos_x+map_size*r.pos_y] = { x:r.x,
                                                 y:r.y,
                                                 turn:r.turn,
                                                 img:r.img,
                                                 name:r.name};
+
+    }else{
+      // this switch, mapParts.name and  dit_dict should be improved later 
+      // to make it more readable and maintainable
+      switch(r.name){
+        case 'straight':
+          pieces.straight++;
+          break;
+        case 'corner':
+          pieces.corner++;
+          break;
+        case 't':
+          pieces.t++;
+          break;
+        default:
+          break;
+      }
     }
   }
 
@@ -190,7 +210,8 @@ function set_level_data(){
       "title": "Easy Level",
       "description": "This is an entry level",
     "player": {x:player.pos_x, y:player.pos_y, face_dir:player.face_dir},
-    "map":map_to_pass
+    "map":map_to_pass,
+    "pieces":pieces
 
     }};
 }
