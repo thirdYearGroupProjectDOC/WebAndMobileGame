@@ -15,7 +15,7 @@ function turn_dir(dir){
   return res;
 }
 
-// checking for relative position om game map
+// checking for relative position on game map
 function check_in_map(x,y,name){ 
   if(name == 'end'){
     return x>=0 && x<map_size && y >=0 && y<map_size;
@@ -26,7 +26,13 @@ function check_in_map(x,y,name){
 
 // tiling map region, x, y are real position on canvas
 function check_tiling_region(x,y,name){
-  if(name=='end'){
+  if(name == 'player'){
+    return x > 0 && x < map_size*tile_size &&
+            y > 0 && y < map_size*tile_size && 
+            !(x > tile_size && x < (map_size-1)*tile_size &&
+            y > tile_size && y < (map_size-1)*tile_size)
+
+  } else if(name=='end'){
     return x > 0 && x < map_size*tile_size &&
             y > 0 && y < map_size*tile_size
   }else{
@@ -46,6 +52,8 @@ function onDragStart(event){
     this.dragging = true;
     if(check_in_map(this.pos_x,this.pos_y,this.name)){
         map[this.pos_y*map_size+this.pos_x] = null;
+        ROAD_ON_MAP_STAGE.removeChild(this);
+        ROAD_STAGE.addChild(this);
     }
 }
 
@@ -66,9 +74,12 @@ function onDragEnd(){
       this.pos_y = toTilePos(this.y);
       this.dragged = false;
 
+      var gen = this.generator;
       // if the position is being possessed, go back
-      if(map[this.pos_y*map_size+this.pos_x]!=null){
-          var gen = this.generator;
+      if(map[this.pos_y*map_size+this.pos_x]!=null
+        || (!check_tiling_region(this.x,this.y,this.name)
+              &&this.x != gen.x&&this.y!=gen.y )){
+          
           //if there was no active pieces, put one on the pile,
           // else just increase count and update;
           if(gen.count == 0){
@@ -82,6 +93,8 @@ function onDragEnd(){
           delete(this);
       }else if(check_in_map(this.pos_x,this.pos_y,this.name)){
           map[this.pos_y*map_size+this.pos_x] = this.dir;
+          ROAD_STAGE.removeChild(this);
+          ROAD_ON_MAP_STAGE.addChild(this);
       }
     }
 
@@ -100,7 +113,7 @@ function onDragMove(){
         }
         var newPosition = this.data.getLocalPosition(this.parent);
         // enter tiling region ( MAP )
-        if(check_tiling_region(this.x,this.y,this.name)){
+        if(check_tiling_region(newPosition.x,newPosition.y,this.name)){
 
           this.x = newPosition.x - newPosition.x%tile_size + tile_size/2;
           this.y = newPosition.y - newPosition.y%tile_size + tile_size/2;
@@ -111,15 +124,19 @@ function onDragMove(){
             if(toTilePos(this.x)==map_size-1){
               this.dir = [3];
               this.rotation = Math.PI/2;
+              this.turn = 1;
             }else if(toTilePos(this.x)==0){
               this.dir = [1];
               this.rotation = Math.PI/2*3;
+              this.turn = 3;
             }else if(toTilePos(this.y)==0){
               this.dir = [2];
               this.rotation = 0;
+              this.turn = 0;
             }else if(toTilePos(this.y)==map_size-1){
               this.dir = [0];
               this.rotation = Math.PI/2*2;
+              this.turn = 2;
             }
           }
         // put it to where mouse is
@@ -148,11 +165,14 @@ function MapPartsGenerator(x,y,img,name,turn,num){
     this.count = 1;
   }
 
+  // add indicate to stage so it won't be activated by game_reset
   indicate = createMapParts(this.x,this.y,this.img,this.name,false,this.turn);
+  ROAD_STAGE.removeChild(indicate);
+  ROAD_INDICATOR_STAGE.addChild(indicate);
 
-  var f = createMapParts(this.x,this.y,this.img,this.name,true,this.turn); 
+  var f = createMapParts(this.x,this.y,this.img,this.name,true,this.turn);
   f.generator = this;
-
+  
 
   var countTxt = new PIXI.Text(':'+this.count);
   countTxt.x = this.x + 35;
@@ -163,7 +183,7 @@ function MapPartsGenerator(x,y,img,name,turn,num){
     // this is called when moving top pieces
     // when count is one, don't generate a new piece, 
     if(this.count > 1){
-      var m = createMapParts(this.x,this.y,this.img,this.name,true,this.turn); 
+      var m = createMapParts(this.x,this.y,this.img,this.name,true,this.turn);
       m.generator = this;
       this.count --;
     }else{
@@ -210,6 +230,10 @@ function createMapParts(x,y,img, name, active, turn){
   part.pos_y = -1;
   part.name = name;
   part.dir = dir_dict[name];
+
+  // used for parts that never become interactive
+  part.never_active = false;
+
 
   // these variables are only used for creating 
   // another road

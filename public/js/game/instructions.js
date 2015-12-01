@@ -1,229 +1,285 @@
 
-/*
-function onButtonUp()
-{
-    this.isdown = false;
+// defines distance bwtween generator ( pile of instructions)
+// and where the execution stack lives
+var gap = tile_size * 1.5;
 
-    player_start();
 
-    if (this.isOver){
-    }
-    else{
-    }
+//check if it is in the instruction region
+function check_inst_region(x,y,length){
+
+     var res = (x > gap) && (x < gap+tile_size*2) &&
+            (y > tile_size/2) &&
+            (y < tile_size/2+tile_size*(length+1));
+      if(res){
+        //show_msg('x :' +x+ 'y: '+y);
+      }
+      return res;
 }
 
+
+function to_Inst_pos(y){
+
+   return ( Math.floor((y + tile_size/2)/tile_size)-1);
+}
+
+
+function onInstDragStart(event){
+
+    this.data = event.data;
+    this.started = true;
+    this.alpha = 0.8;
+    this.dragging = true;
+
+    this.dragged = false;
+    /*
+    INSTRUCT_STAGE.addChild(this);
+    INST_BUTTON_STAGE.remove(this);
 */
-function player_start() {
-       switch (instQueue[step].dir) {
-        case 0:
-            player_move(player_dir);
-            break;
-        case 1:
-            player.wait = tile_size/player.speed;
-            player_dir = (player_dir + 3) % 4;
-            break;
-        case 2:
-            player.wait = tile_size/player.speed;
-            player_dir = (player_dir + 1) % 4;
-            break;
-        default:
-            break;
-       }
+}
+
+function onInstDragEnd(event){
+
+  if(this.started){
+    this.dragging = false;
+    this.started = false;
+    this.alpha = 1;
+  }
+
+  // this.fresh would prevent changing loop time after moved
+  if(!this.dragged&& this.fresh){
+    // used only for loop and if instruction
+    if (this.loop_txt!=null&&this.menuShown == false) {
+      this.menuShown = true;
+      for (var i = 0; i < 9; i++) {
+        var txt = new PIXI.Text(i+1, {font: '20px bold'});
+        txt.x = 0;
+        txt.y = 15+(i+1)*20;
+        txt.interactive = true;
+        txt.value = i + 1;
+        txt.on('mousedown', dropDownTxtClicked);
+        txt.on('touchstart', dropDownTxtClicked);
+        txt.drop_parent = this.drop_down;
+        this.drop_down.addChild(txt);
+      }
+    } else {
+      this.menuShown = false;
+    }
+  }
+
+  // drag instruction piece to outside will make it be returned to deck
+  if(!check_inst_region(this.x,this.y,instQueue.length)
+      && this.x!=this.generator.x && this.y != this.generator.y){
+    if (this.generator.count == 0) {
+          this.generator.count = 2;
+          this.generator.gen();
+    } else {
+        this.generator.count ++;
+        this.generator.update();
+    }
+    INST_BUTTON_STAGE.removeChild(this);
+    INST_BUTTON_STAGE.removeChild(this.loop_txt);
+    this.drop_down.removeChildren();    
+    delete(this);
+  }
+
+  cur_inst = instQueue.head;
+//  show_msg('get here: execute: '+execute);
+}
+
+
+function onInstDragMove(){
+    if (this.dragging)
+    {
+        this.dragged = true;
+        if(this.fresh){
+          this.fresh = false;
+          this.generator.gen();
+        }
+        var newPosition = this.data.getLocalPosition(this.parent);
+        if(check_inst_region(newPosition.x,this.y,instQueue.length)){
+          //show_msg('h');
+          this.x = gap+tile_size;//newPosition.x - newPosition.x % (tile_size) + tile_size;
+          this.y = newPosition.y ;//- newPosition.y%tile_size + tile_size/2;
+
+          // find position to insert in
+          var temp_pos = to_Inst_pos(this.y);
+          //remove and insert => update position
+          if(instQueue.contain(this)){
+            instQueue.remove(this);
+          }
+          instQueue.insert(temp_pos,this);
+          
+        }else{
+          // remove, if not find , nothing happens
+          instQueue.remove(this);
+          this.x = newPosition.x;
+          this.y = newPosition.y;
+        }
+
+        //update pixel position based on instQueue
+        instQueue.update();
+
+
+        // drop down menu and looptime text follow instructions
+        if(this.loop_txt!=null){
+          this.loop_txt.x = this.x;
+          this.loop_txt.y = this.y;
+        }
+
+    }
+}
+
+
+
+
+
+
+//create instruction button
+function instructionGenerator(x,y,img,inst,num){
+  // used by createMapParts function
+  this.x = x;
+  this.y = y;
+  this.img = img;
+  this.inst = inst;
+  // number of parts
+  if(num){
+    this.count = num;
+  }else{
+    this.count = 1;
+  }
+
+  indicate = createInstructionParts(this.x,this.y,this.img,0,false);
+  INST_BUTTON_STAGE.removeChild(indicate);
+  INST_INDICATOR_STAGE.addChild(indicate);
+
+  var f = createInstructionParts(this.x,this.y,this.img,this.inst,true); 
+  f.generator = this;
+
+
+  var countTxt = new PIXI.Text(':'+this.count);
+  countTxt.x = this.x + 60;
+  countTxt.y = this.y;
+  INST_BUTTON_STAGE.addChild(countTxt);
+
+  this.gen = function(){
+    // this is called when moving top pieces
+    // when count is one, don't generate a new piece, 
+    if(this.count > 1){
+      var m = createInstructionParts(this.x,this.y,this.img,this.inst,true);
+      m.generator = this;
+      this.count --;
+    }else{
+      this.count = 0;
+    }
+    this.update();
+  }
+  
+  this.update = function(){
+    countTxt.setText(':'+this.count);
+  }
+
 
 }
 
+function createInstructionParts(x,y,img, inst, active){
+  var tex_instruct = PIXI.Texture.fromImage(img);
+  var part = new PIXI.Sprite(tex_instruct);
+  // so it appear before loop count or if statement
+  INST_BUTTON_STAGE.addChild(part); 
+
+  part.interactive = active;
+  part.buttonMode = true;
+  part.anchor.set(0.5);
+  part.width = tile_size*2;
+  part.height = tile_size;
+  part.position.x = x;
+  part.position.y = y;
+  // to distinguish between turning road and dragging road 
+  part.dragged = false;
+  // when it is being created, the piece is fresh,
+  // used to maintain the counts for same type of piece
+  part.fresh = true;
+  part.started = false;
+  // position on map
+  part.pos_x = -1;
+  part.pos_y = -1;
+  part.inst = inst;
+
+
+  part
+    // events for drag start
+    .on('mousedown', onInstDragStart)
+    .on('touchstart', onInstDragStart)
+    // events for drag end
+    .on('mouseup', onInstDragEnd)
+    .on('mouseupoutside', onInstDragEnd)
+    .on('touchend', onInstDragEnd)
+    .on('touchendoutside', onInstDragEnd)
+    // events for drag move
+    .on('mousemove', onInstDragMove)
+    .on('touchmove', onInstDragMove);//haha
+  
+  if(inst==inst_dict.for_loop){
+
+    var drop = new PIXI.Container();
+    drop.x = part.x;
+    drop.y = part.y;
+    INST_BUTTON_STAGE.addChild(drop);
+    part.drop_down = drop;
+    drop.button_parent = part;
+
+    // indicate drop down menu
+    part.menuShown = false;
+    // text to indicate loop time
+    part.o_loop_count = 3;
+    part.loop_count = 3;
+    var countTxt = new PIXI.Text(''+part.loop_count);
+    countTxt.width *= 0.8;
+    countTxt.height *= 0.8;
+    countTxt.x = part.x - 5 ;//
+    countTxt.y = part.y - 5;
+    part.loop_txt = countTxt;
+    INST_BUTTON_STAGE.addChild(countTxt);
+    INST_BUTTON_STAGE.setChildIndex(countTxt,INST_BUTTON_STAGE.children.length-1);
+    part.dec = function(){
+      if(this.loop_count>0){
+        this.loop_count--;
+        this.loop_txt.setText(''+this.loop_count); 
+
+//        show_msg('in dec:'+this.loop_count)
+        return 0;
+      }else{
+        return -1;
+      }
+    }
+    
+  }
+
+  return part;
+}
+
+function dropDownTxtClicked() {
+  var b_parent = this.drop_parent.button_parent;
+  b_parent.menuShown = false;
+  b_parent.loop_txt.setText(this.value);
+  b_parent.loop_count = this.value;
+  b_parent.o_loop_count = this.value;
+  
+  this.drop_parent.removeChildren();
+}
 
 /*
+<<<<<<< HEAD
+function instructionButtonUpOutside() {
+   this.down = false;
+} 
 
-*/
-// create undo instruction
-
-
-
-function createUndoButton(x,y,img){
-  var undo_tex = PIXI.Texture.fromImage(img);
-  var undo_button = new PIXI.Sprite(undo_tex);
-  undo_button.width = 65;
-  undo_button.height = 65;
-  undo_button.buttonMode = true;
-  undo_button.position.x = x;
-  undo_button.position.y = y;
-  // make the button interactive...
-  undo_button.interactive = true;
-  undo_button
-      // set the mousedown and touchstart callback...
-      .on('mousedown', undoButtonDown)
-      .on('touchstart', undoButtonDown)
-
-      // set the mouseup and touchend callback...
-      .on('mouseup', undoButtonUp)
-      .on('touchend', undoButtonUp)
-      .on('mouseupoutside', undoButtonUp)
-      .on('touchendoutside', undoButtonUp)
-
-      // set the mouseover callback...
-      .on('mouseover', undoButtonOver)
-
-      // set the mouseout callback...
-      .on('mouseout', undoButtonOut)
-      
-  undo_button.tap = null;
-  undo_button.click = null;
-  // add it to the stage
-  stage.addChild(undo_button);
-  return undo_button;
+function instructionButtonDown() {
+   this.down = true;
 }
 
-
-
-function undoButtonDown()
-{
-    this.isdown = true;
- //   player_move(1);
-    this.alpha = 1;
-}
-
-function undoButtonUp()
-{
-    this.isdown = false;
-
-    if (instPointer > 0) {
-    stack_undo();
-   }
-
-    if (this.isOver){
-    }
-    else{
-    }
-}
-
-function undoButtonOver()
-{
-    this.isOver = true;
-    if (this.isdown){
-        return;
-    }
-}
-
-function undoButtonOut()
-{
-    this.isOver = false;
-    if (this.isdown){
-        return;
-    }
-}
-
-
-// undo the most recent instruction
-function stack_undo() {
-
-  instPointer--;
-  instQueue[instPointer] = -1;
-
-  cur = INSTRUCT_STAGE.children[instPointer]
-  INSTRUCT_STAGE.removeChild(cur);
-  cur.button.generator.count++;
-  cur.button.generator.update();
-}
-
-// create reset button
-function createResetButton(x,y,img){
-  var reset_tex = PIXI.Texture.fromImage(img);
-  var reset_button = new PIXI.Sprite(reset_tex);
-  reset_button.width = tile_size*2;
-  reset_button.height = tile_size;
-  reset_button.x = x;
-  reset_button.y = y;
-  // make the button interactive...
-  reset_button.interactive = true;
-  reset_button.buttonMode = true;
-
-  reset_button
-      // set the mousedown and touchstart callback...
-      .on('mousedown', resetButtonDown)
-      .on('touchstart', resetButtonDown)
-
-      // set the mouseup and touchend callback...
-      .on('mouseup', resetButtonUp)
-      .on('touchend', resetButtonUp)
-      .on('mouseupoutside', resetButtonUp)
-      .on('touchendoutside', resetButtonUp)
-
-      // set the mouseover callback...
-      .on('mouseover', resetButtonOver)
-
-      // set the mouseout callback...
-      .on('mouseout', resetButtonOut)
-      
-  reset_button.tap = null;
-  reset_button.click = null;
-  // add it to the stage
-  stage.addChild(reset_button);
-  return reset_button;
-}
-
-
-function resetButtonDown()
-{
-    this.isdown = true;
- //   player_move(1);
-    this.alpha = 1;
-}
-
-function resetButtonUp()
-{
-    this.isdown = false;
-
-    game_reset();
-
-    if (this.isOver){
-    }
-    else{
-    }
-}
-
-function resetButtonOver()
-{
-    this.isOver = true;
-    if (this.isdown){
-        return;
-    }
-}
-
-function resetButtonOut()
-{
-    this.isOver = false;
-    if (this.isdown){
-        return;
-    }
-}
-
-
-function game_reset() {
-
-    player.x = tile_size;
-    player.y = tile_size;
-    player.pos_x = 1;
-    player.pos_y = 1;
-    player_dir = 1;
-    start = false;
-    // road pieces can be moved again
-    for(var i = 0; i < ROAD_STAGE.children.length; i++){
-        ROAD_STAGE.children[i].interactive = true;
-    }
-
-    // restore instructions buttons's count
-    for(var i = 0; i < INST_BUTTON_STAGE.children.length; i++){
-      INST_BUTTON_STAGE.children[i].generator.reset();
-    }
-
-    INSTRUCT_STAGE.removeChildren();
-    instQueue = [];
-    instPointer = 0;
-    step = 0;
-}
-
-function inst_count(x,y,count){
+// text counter for drop_down_button
+function inst_drop_down_button(x,y,count) {
   this.count = count;
   this.max = count;
   this.x = x;
@@ -244,18 +300,20 @@ function inst_count(x,y,count){
   }
 
   this.gen = function(img,inst){
-    var ib = createInstructions(this.x,this.y,img,inst);
+    var ib = createDropDownInstructions(this.x,this.y,img,inst);
     ib.generator = this;
   }
 }
 
-
-// create instructions button
-function createInstructions(x,y,img,inst) {
-
+// create a button with drop-down menu, i.e. loop start button
+function createDropDownInstructions(x,y,img,inst) {
   var instruct_tex = PIXI.Texture.fromImage(img);
   var instruction = new PIXI.Sprite(instruct_tex);
+  var drop = new PIXI.Container();
+  drop.x = INST_BUTTON_STAGE.x;
+  drop.y = INST_BUTTON_STAGE.y;
 
+  instruction.menuShown = false;
   instruction.dir = inst;
 
   instruction.width = tile_size*2;
@@ -264,13 +322,32 @@ function createInstructions(x,y,img,inst) {
   instruction.interactive = true;
   instruction.x = x;
   instruction.y = y;
+
+  // default repeat time 
+  // this variable is used for executing instrructions.
+  instruction.repeat_time = 3;
+  var loopTimeText = new PIXI.Text(instruction.repeat_time);
+  loopTimeText.width *= 0.8;
+  loopTimeText.height *= 0.8;
+  loopTimeText.x = instruction.x + 55;
+  loopTimeText.y = instruction.y + 5;
+  
+  INST_BUTTON_STAGE.addChild(instruction); 
+  drop.addChild(loopTimeText);
+  
+  //used for update text value
+  instruction.loopTime = loopTimeText;
+  
+  drop.button_parent = instruction;
+  instruction.drop_down = drop;
+  stage.addChild(drop);
   
   instruction
     .on('mousedown', instructionButtonDown)
     .on('touchstart', instructionButtonDown)
 
       // set the mouseup and touchend callback...
-    .on('mouseup', instructionButtonUp)
+    .on('mouseup', instructionDropDownButtonUp)
     .on('touchend', instructionButtonUp)
 
     .on('mouseupoutside', instructionButtonUpOutside)
@@ -285,63 +362,60 @@ function createInstructions(x,y,img,inst) {
 
   instruction.tap = null;
   instruction.click = null; 
-   INST_BUTTON_STAGE.addChild(instruction); 
+   
    return instruction;
 }
 
-function instructionButtonDown() {
-   this.down = true;
-}
 
-function instructionButtonUp() {
-  this.down = false;
-  if(this.generator.count>0){
-    // dec count and update text
-    this.generator.count--;
-    this.generator.update();
-
-    //put instruction symbol in the stack
-    if (this.dir == 2) {
-      instr = PIXI.Sprite.fromImage('assets/spt_inst_right.png');
-    } else if (this.dir == 0) {
-      instr = PIXI.Sprite.fromImage('assets/spt_inst_forward.png');
-    } else if (this.dir == 1) {
-      instr = PIXI.Sprite.fromImage('assets/spt_inst_left.png');
+function instructionDropDownButtonUp() {
+  if (this.menuShown == false) {
+    this.menuShown = true;
+    for (var i = 0; i < 9; i++) {
+      var txt = new PIXI.Text(i+1, {font: '20px bold'});
+      txt.x = this.x + 50;
+      txt.y = this.y + 30+ (i+1)*20;
+      txt.interactive = true;
+      txt.repeat_time = i + 1;
+      txt.on('mousedown', dropDownTxtClicked);
+      txt.on('touchstart', dropDownTxtClicked);
+      txt.drop_parent = this.drop_down;
+      this.drop_down.addChild(txt);
     }
-      instr.dir = this.dir;
-      instr.x = 50;
-      instr.y = tile_size + 50*(instPointer);
-      instr.height = tile_size/2;
-      instr.width = tile_size*2;
-      // used for undo button, inc instruction count
-      instr.button = this;
-
-      instQueue[instPointer] = instr;
-      instPointer++;
-      INSTRUCT_STAGE.addChild(instr);
-  }else{
-    // TODO: add another stage for error messages
-    show_msg('hahaha');
+  } else {
+    this.menuShown = false;
   }
 }
 
-function instructionButtonUpOutside() {
-   this.down = false;
-} 
-
-
-function instructionButtonOver() {
-  this.isOver = true;
-    if (this.isdown){
-        return;
-    }
+function dropDownTxtClicked() {
+  var b_parent = this.drop_parent.button_parent;
+  b_parent.menuShown = false;
+  b_parent.loopTime.setText(this.repeat_time);
+  this.drop_parent.removeChildren();
+  this.drop_parent.addChild(b_parent.loopTime);
 }
 
-function instructionButtonOut()
-{
-    this.isOver = false;
-    if (this.isdown){
-        return;
-    }
+
+function instruction_animation(){
+  var cur = instQueue[step-1];
+  var last = instQueue[step-2];
+
+  //move up and scale
+  cur.y -= 1;
+  cur.height += 1;
+  cur.x -= 0.5;
+  cur.width += 1;
+  
+  // random changing color, need better animation here
+  if(count % 5 == 0){
+    cur.tint = Math.random()* 0xF1FFFF;
+  }
+
+  // last instruction restore to original size
+  if(last){
+    last.height -= 1;
+    last.width -= 1;
+    last.x += 0.5;
+  }
 }
 
+*/

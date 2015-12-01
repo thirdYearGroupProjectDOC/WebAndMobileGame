@@ -4,16 +4,18 @@ var levelDatas = require('../models/levelData');
 
 
 router.post('/', function(req, res, next) {
+  // save data pass in to db
   require('connect-ensure-login').ensureLoggedIn();
   levelDatas.levelData.count({}, function( err, count){ // insert record
     console.log( "Number of levels:", count );
-    var lvd = req.param("LevelInfo");
-    levelDatas.levelData.create({
-      id: count+1,
-      data: lvd
+    var levelData = req.param("LevelInfo");
+    console.log(levelData);
+  levelDatas.levelData.create({
+    id: count+1,
+    data: levelData
   }).then(function(levelData) {
       console.log(" id generated is " + levelData.id);
-      res.send('saved id: ' + levelData.id); // response string with parameter sent
+      res.send('hello world'+ req.param('author') + levelData.id + levelData); // response string with parameter sent
   });
   })
 

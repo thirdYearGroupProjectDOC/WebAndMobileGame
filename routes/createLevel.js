@@ -11,8 +11,10 @@ router.get('/', function(req, res, next) {
     } else {
         displayName = req.user.displayName;
     }
-    var levelData = {
-      "author": "Sam",
+    /*var levelData = {
+      id: 1,
+      data: {
+      "author": "Saaaaaam",
       "title": "Easy Level",
       "description": "This is an entry level",
       "dimen": 5,
@@ -25,7 +27,7 @@ router.get('/', function(req, res, next) {
       "turn": 5,
       "snake":[{"Coor":"2,2", "Dir":"0"}],
       "tree":[{"Coor":"3,3", "Dir":"0"}]
-  };
+  }};*/
   res.render('createLevel', { title: 'Create', uname: displayName, displayName:displayName,levelD: levelData});
 });
 

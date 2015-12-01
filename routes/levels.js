@@ -48,7 +48,7 @@ router.get('/', function(req, res, next) {
 /*
 
 */
-router.post('/', function(req, res) {
+router.post('/', function(req, res) { // delete level
     require('connect-ensure-login').ensureLoggedIn();
     console.log("levels post called");
     var deleteId = req.param("did");

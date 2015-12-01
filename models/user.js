@@ -6,7 +6,8 @@ var UserDetail = new Schema({
         username: String,
         password: String,
         displayName: String,
-        pointsGet: Number
+        pointsGet: Number,
+        isAdmin: { type: Boolean, default: false }
       }, {
         collection: 'userInfo'
       }
