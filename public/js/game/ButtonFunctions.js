@@ -20,7 +20,7 @@ function to_map_part(){
   stage.removeChild(INST_BUTTON_STAGE);
   for(i=0; i < ROAD_ON_MAP_STAGE.children.length;i++){
     var p = ROAD_ON_MAP_STAGE.children[i];
-    if(p.name != 'end'){
+    if(! p.never_active){
       p.interactive = true;
     }
   }
