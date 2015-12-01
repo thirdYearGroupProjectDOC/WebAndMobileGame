@@ -19,7 +19,10 @@ function to_map_part(){
   MAP_STAGE.addChild(ROAD_STAGE);
   stage.removeChild(INST_BUTTON_STAGE);
   for(i=0; i < ROAD_ON_MAP_STAGE.children.length;i++){
-  	ROAD_ON_MAP_STAGE.children[i].interactive = true;
+    var p = ROAD_ON_MAP_STAGE.children[i];
+    if(p.name != 'end'){
+      p.interactive = true;
+    }
   }
   stage.addChild(instruction_stage_button);
   stage.removeChild(map_stage_button);
