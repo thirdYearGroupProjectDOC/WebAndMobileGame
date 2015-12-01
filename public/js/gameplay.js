@@ -8,8 +8,10 @@ $("#saveButton").click(function(event) { // when save button clicked
   set_level_data();
   console.log(levelInfo);
   $.post( '/test',{author:'Sam',LevelInfo:JSON.stringify(levelInfo)}, function(data) { // post the parameter a2 to test.js
-    alert(data); //alert the data after getting reply
+    alert('succesfully created level!'); //alert the data after getting reply
   });
+  // prevent game board becomes invalid again
+  LevelInfo = null;
 });
 
 // create the root of the scene graph
