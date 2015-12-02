@@ -10,7 +10,6 @@ router.get('/', function(req, res, next) {
 });
 
 router.post('/', function(req, res) {
-    console.log(req.body.username);
     if (req.body.password !== req.body.password2) {
       res.render('register', { errormsg: 'Password and confirm password did not match. Try it again :D' });
       return;
