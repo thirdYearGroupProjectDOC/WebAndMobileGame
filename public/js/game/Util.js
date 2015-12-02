@@ -162,7 +162,7 @@ function on_map_corner(x,y){
 
 
 // gather information and make it ready to sent to server
-function set_level_data(){
+function set_level_data(displayName){
 
   if(validation()==false){
     alert('not valid road, can\'t save');
@@ -185,7 +185,7 @@ function set_level_data(){
                                                 name:r.name};
 
     }else{
-      // this switch, mapParts.name and  dit_dict should be improved later 
+      // this switch, mapParts.name and  dit_dict should be improved later
       // to make it more readable and maintainable
       switch(r.name){
         case 'straight':
@@ -203,17 +203,15 @@ function set_level_data(){
     }
   }
 
-    levelInfo = {
-      id: 1,
-      data: {
-      "author": "Sam",
-      "title": "Easy Level",
-      "description": "This is an entry level",
+  console.log(displayName);
+  levelInfo = {
+  	"author": displayName,
+    "title": "Easy Level",
+    "description": "This is an entry level",
     "player": {x:player.pos_x, y:player.pos_y, face_dir:player.face_dir},
     "map":map_to_pass,
     "pieces":pieces
-
-    }};
+	};
 }
 
 // resolve data from server and construct the game board

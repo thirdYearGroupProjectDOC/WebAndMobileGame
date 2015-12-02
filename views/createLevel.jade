@@ -8,9 +8,11 @@ block content
   <a href="/createLevel" class="btn btn-default">Verify this level setting</a>
   <a href="/createLevel" class="btn btn-default">Save this level</a>
   <a href="/createLevel" class="btn btn-default">Publish my own level</a>
-  a(class='button', href='#',id='saveButton') SaveButton
+  a(class='button', href='#',id='saveButton') Save my level
+  a(class='button', href='#',id='saveP') Save and Publish my level
   script.
     create_level = true;
     levelData = null;
+    var dName = "#{displayN}";
   script(type="text/javascript", src="http://code.jquery.com/jquery-1.7.1.min.js")
   script(type="text/javascript", src="js/gameplay.js")

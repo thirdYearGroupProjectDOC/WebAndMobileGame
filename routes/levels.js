@@ -6,6 +6,12 @@ var levelDatas = require('../models/levelData');
 router.get('/', function(req, res, next) {
   require('connect-ensure-login').ensureLoggedIn();
   var levelCount = 0;
+  levelDatas.levelData.count({$or:[{creator: req.user.displayName},{creator:"all"}]}, function(err, count){ // counting number of record
+    if (count) {
+      console.log( "Number of levels:", count );
+      levelCount = count;
+    }
+  });
   levelDatas.levelData.count({}, function(err, count){ // counting number of record
     if (count) {
       console.log( "Number of levels:", count );
@@ -13,31 +19,23 @@ router.get('/', function(req, res, next) {
     }
   });
 
-  levelDatas.levelData.findOne({id : 1}, function(err, result){ // retrieving record
-      if (result) {
-          console.log(result.data);
-      }
-  });
   var Result;
-  levelDatas.levelData.find({}, function(err, result){ // retrieving record
+  levelDatas.levelData.find({$or:[{creator: req.user.displayName},{creator:"all"}]}, function(err, result){ // retrieving record
       if (result) {
           Result = result;
           console.log(result);
           var ds = [];
           for (i = 0; i < levelCount; i++) {
             var thisResult = JSON.parse(Result[i].data);
-            ds.push({id:Result[i].id,title:thisResult.title,description:thisResult.description});
+            ds.push({id:Result[i].id,title:thisResult.title, author:thisResult.author,creator:Result[i].creator,description:thisResult.description});
           }
           console.log(ds);
-          //var levelCount = 4;
-          console.log("hey");
             var displayName = "";
             if(!req.user) {
                 displayName = undefined;
             } else {
                 displayName = req.user.displayName;
             }
-          console.log(ds);
           res.render('levels', { title: 'Select Levels', levelCount: levelCount, uname: displayName, displayName: displayName, ds:ds});
       }
   });
@@ -58,10 +56,9 @@ router.post('/', function(req, res) { // delete level
       res.send('deleteId is not an integer');
     } else {
       console.log("deleteId is an integer");
-      levelDatas.levelData.count({}, function(err, count){ // counting number of record
-        if (count) {
-          console.log( "Number of levels:", count );
-          if (deleteId <= 0 || deleteId > count) {
+      levelDatas.levelData.findOne({$and:[{id: deleteId},{creator: req.user.displayName}]}, function(err, exist){ // counting number of record
+        if (exist) {
+          if (deleteId <= 0) {
             console.log("deleteId is not in correct range");
             res.send('deleteId is not in correct range');
           } else {
@@ -75,35 +72,13 @@ router.post('/', function(req, res) { // delete level
               }
             });
           }
-
+        } else {
+          console.log("level doesnt exist");
+          res.send('level doesnt exist');
         }
       });
     }
     console.log(deleteId);
-  /*  levelDatas.levelData.count({}, function( err, count){ // insert record
-      console.log( "Number of levels:", count );
-      levelDatas.levelData.create({
-        id: 1,
-        data: {
-        "author": "Sam",
-        "title": "Easy Level",
-        "description": "This is an entry level",
-        "dimen": 5,
-        "start":[{"Coor":[1,0], "Dir":[1]}],
-        "end":[{"Coor":[5,6], "Dir":[3]}],
-        "rank":[],
-        "straight": 5,
-        "endPoint": 5,
-        "threeWay": 5,
-        "turn": 5,
-        "snake":[{"Coor":"2,2", "Dir":"0"}],
-        "tree":[{"Coor":"3,3", "Dir":"0"}]
-      }
-      }).then(function(levelData) {
-          console.log(" id generated is " + user.id);
-      });
-    })
-*/
 });
 
 

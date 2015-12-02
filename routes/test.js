@@ -5,47 +5,22 @@ var levelDatas = require('../models/levelData');
 
 router.post('/', function(req, res, next) {
   // save data pass in to db
-  require('connect-ensure-login').ensureLoggedIn();
-  levelDatas.levelData.count({}, function( err, count){ // insert record
-    console.log( "Number of levels:", count );
+  require('connect-ensure-login').ensureLoggedIn();//find({country_id : 10}).sort({score : -1}).limit(1)
+  levelDatas.levelData.find({}).sort({id : -1}).limit(1).exec(function(err, max){ // insert record
+console.log(max[0]);
+    console.log( "max of levels:", max[0].id );
+    var nextId = max[0].id +1;
     var levelData = req.param("LevelInfo");
-    console.log(levelData);
-  levelDatas.levelData.create({
-    id: count+1,
-    data: levelData
-  }).then(function(levelData) {
-      console.log(" id generated is " + levelData.id);
-      res.send('hello world'+ req.param('author') + levelData.id + levelData); // response string with parameter sent
-  });
+    levelDatas.levelData.create({
+      id: nextId,
+      creator: req.param("author"),
+      data: levelData
+    }).then(function(levelData) {
+      var newId =max[0].id +1;
+      console.log(" id generated is " + newId);
+      res.send('hello world'+ req.param('author') + newId + levelData); // response string with parameter sent
+    });
   })
-
-  /*
-// Save json format level data to mongo db
-levelDatas.levelData.count({}, function( err, count){ // insert record
-  console.log( "Number of levels:", count );
-  levelDatas.levelData.create({
-  id: count+1,
-  data: {
-  "author": "Sam",
-  "title": "Easy Level",
-  "description": "This is an entry level",
-  "dimen": 5,
-  "start":[{"Coor":[1,0], "Dir":[1]}],
-  "end":[{"Coor":[5,6], "Dir":[3]}],
-
-  "straight": 5,
-  "endPoint": 5,
-  "threeWay": 5,
-  "turn": 5,
-
-  "snake":[{"Coor":"2,2", "Dir":"0"}],
-  "tree":[{"Coor":"3,3", "Dir":"0"}]
-  }
-  }).then(function(levelData) {
-      console.log(" id generated is " + user.id);
-  });
-})
-  */
 });
 
 module.exports = router;

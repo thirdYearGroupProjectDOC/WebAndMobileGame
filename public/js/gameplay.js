@@ -6,13 +6,32 @@ console.log(levelData);//configuration of level in JSON format
 
 $("#saveButton").click(function(event) { // when save button clicked
   event.preventDefault(); //prevent page from reload
-  set_level_data();
-  console.log(levelInfo);
-  $.post( '/test',{author:'Sam',LevelInfo:JSON.stringify(levelInfo)}, function(data) { // post the parameter a2 to test.js
-    alert('succesfully created level!'); //alert the data after getting reply
-  });
-  // prevent game board becomes invalid again
-  LevelInfo = null;
+  console.log(dName);
+  if (set_level_data(dName) != -1) {
+    console.log(levelInfo);
+    $.post( '/test',{author:dName,LevelInfo:JSON.stringify(levelInfo)}, function(data) { // post the parameter a2 to test.js
+      alert('succesfully created level!'); //alert the data after getting reply
+      alert(data);
+    });
+    // prevent game board becomes invalid again
+    LevelInfo = null;
+    location.reload();
+  }
+});
+
+$("#saveP").click(function(event) { // when save button clicked
+  event.preventDefault(); //prevent page from reload
+  console.log(dName);
+  if (set_level_data(dName) != -1) {
+    console.log(levelInfo);
+    $.post( '/test',{author:"all",LevelInfo:JSON.stringify(levelInfo)}, function(data) { // post the parameter a2 to test.js
+      alert('succesfully created and published level!'); //alert the data after getting reply
+      alert(data);
+    });
+    // prevent game board becomes invalid again
+    LevelInfo = null;
+    location.reload();
+  }
 });
 
 // create the root of the scene graph
@@ -54,7 +73,7 @@ if(create_level){
     'assets/spt_road_end.png','end',0,9);
 
 }else{
-  pieces = levelData.data.pieces;
+  pieces = levelData.pieces;
 }
 
 var road_corner = new MapPartsGenerator(selects_x,selects_y+tile_size*1.5,
@@ -69,7 +88,7 @@ var road_t = new MapPartsGenerator(selects_x,selects_y+tile_size*6,
 
 //set_level_button = createButton(250,450,'assets/spt_inst_start.png',set_level_data);
 
-//show_msg(levelData.data.player);
+//show_msg(levelData.player);
 
 
 
@@ -87,7 +106,7 @@ if (create_level) {
   stage.removeChild(INST_BUTTON_STAGE);
   clear_button = createButton(210,510,'assets/map_clear.png', map_clear);
 } else {
-  get_level_data(levelData.data);
+  get_level_data(levelData);
   // STAGE TRANSFORM BUTTON
   instruction_stage_button = createButton(180,460,'assets/to_inst.png',to_instruction_part);
   map_stage_button = createButton(180,460,'assets/to_map.png',to_map_part);
