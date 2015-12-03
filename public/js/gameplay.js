@@ -9,7 +9,7 @@ $("#saveButton").click(function(event) { // when save button clicked
   console.log(dName);
   if (set_level_data(dName) != -1) {
     console.log(levelInfo);
-    $.post( '/test',{author:dName,LevelInfo:JSON.stringify(levelInfo)}, function(data) { // post the parameter a2 to test.js
+    $.post( '/saveLevel',{author:dName,LevelInfo:JSON.stringify(levelInfo)}, function(data) { // post the parameter a2 to test.js
       alert('succesfully created level!'); //alert the data after getting reply
       alert(data);
     });
