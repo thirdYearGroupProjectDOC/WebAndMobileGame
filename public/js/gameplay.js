@@ -89,8 +89,8 @@ if (create_level) {
 } else {
   get_level_data(levelData.data);
   // STAGE TRANSFORM BUTTON
-  instruction_stage_button = createButton(180,460,'assets/to_inst.png',to_instruction_part);
-  map_stage_button = createButton(180,460,'assets/to_map.png',to_map_part);
+  instruction_stage_button = createButton(180,460,'assets/next.png',to_instruction_part);
+  map_stage_button = createButton(180,460,'assets/previous.png',to_map_part);
   stage.removeChild(map_stage_button);
   //RESET BUTTON
   reset_button = createButton(310,510,'assets/reset.png',game_reset);
@@ -234,7 +234,9 @@ function animate(){
     }
 
     if(execute){
-      start_frame.tint = Math.random()* 0xF1FFFF;
+      if(count % 10 == 0){
+        start_frame.tint = Math.random()* 0xF1FFFF;
+      }
     }else{
       INST_BUTTON_STAGE.removeChild(inst_frame);
     }
