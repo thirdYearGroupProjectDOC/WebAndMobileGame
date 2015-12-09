@@ -89,8 +89,8 @@ if (create_level) {
 } else {
   get_level_data(levelData.data);
   // STAGE TRANSFORM BUTTON
-  instruction_stage_button = createButton(180,460,'assets/to_inst.png',to_instruction_part);
-  map_stage_button = createButton(180,460,'assets/to_map.png',to_map_part);
+  instruction_stage_button = createButton(180,460,'assets/next.png',to_instruction_part);
+  map_stage_button = createButton(180,460,'assets/previous.png',to_map_part);
   stage.removeChild(map_stage_button);
   //RESET BUTTON
   reset_button = createButton(310,510,'assets/reset.png',game_reset);
@@ -132,8 +132,8 @@ INST_BUTTON_STAGE.addChild(INST_INDICATOR_STAGE);
 var move_forward = new instructionGenerator(0, 50,'assets/spt_inst_forward.png', inst_dict.forward, 3 );
 var turn_right = new instructionGenerator(0, 130, 'assets/spt_inst_right.png', inst_dict.right, 3);
 var turn_left = new instructionGenerator(0, 210, 'assets/spt_inst_left.png', inst_dict.left, 3);
-var for_loop = new instructionGenerator(0, 280, 'assets/spt_inst_repeat_time.png', inst_dict.for_loop, 3);
-var for_end = new instructionGenerator(0, 350, 'assets/spt_inst_repeat_end.png', inst_dict.for_end, 3);
+var for_end = new instructionGenerator(0, 280, 'assets/spt_inst_repeat_end.png', inst_dict.for_end, 3);
+var for_loop = new instructionGenerator(0, 350, 'assets/spt_inst_repeat_time.png', inst_dict.for_loop, 3);
 
 
 stage.addChild(ERROR_STAGE);
@@ -234,7 +234,9 @@ function animate(){
     }
 
     if(execute){
-      start_frame.tint = Math.random()* 0xF1FFFF;
+      if(count % 10 == 0){
+        start_frame.tint = Math.random()* 0xF1FFFF;
+      }
     }else{
       INST_BUTTON_STAGE.removeChild(inst_frame);
     }

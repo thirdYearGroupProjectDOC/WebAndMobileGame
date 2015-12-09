@@ -27,13 +27,8 @@ block content
     <div class="lvls">
     .list-group
 
-      - var list = [{l: 11, h: "head1", d: "dex1"}, {l: 12, h: "head2",d: "dex2"}];
       - var dss = ds;
-      each item in list
-        a.list-group-item(href="#")
-          h4.list-group-item-heading #{item.h}
-          p.list-group-item-text #{item.d}
       each item in dss
         a.list-group-item(href="/game?level="+item.id)
           h4.list-group-item-heading #{item.title}
-          p.list-group-item-text #{item.description} id = #{item.id}
+          p.list-group-item-text #{item.description} level  #{item.id}
