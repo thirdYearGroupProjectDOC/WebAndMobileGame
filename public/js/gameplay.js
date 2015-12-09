@@ -132,8 +132,8 @@ INST_BUTTON_STAGE.addChild(INST_INDICATOR_STAGE);
 var move_forward = new instructionGenerator(0, 50,'assets/spt_inst_forward.png', inst_dict.forward, 3 );
 var turn_right = new instructionGenerator(0, 130, 'assets/spt_inst_right.png', inst_dict.right, 3);
 var turn_left = new instructionGenerator(0, 210, 'assets/spt_inst_left.png', inst_dict.left, 3);
-var for_loop = new instructionGenerator(0, 280, 'assets/spt_inst_repeat_time.png', inst_dict.for_loop, 3);
-var for_end = new instructionGenerator(0, 350, 'assets/spt_inst_repeat_end.png', inst_dict.for_end, 3);
+var for_end = new instructionGenerator(0, 280, 'assets/spt_inst_repeat_end.png', inst_dict.for_end, 3);
+var for_loop = new instructionGenerator(0, 350, 'assets/spt_inst_repeat_time.png', inst_dict.for_loop, 3);
 
 
 stage.addChild(ERROR_STAGE);
