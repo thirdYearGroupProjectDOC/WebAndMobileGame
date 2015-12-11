@@ -52,61 +52,6 @@ function show_msg(msg){
     ERROR_STAGE.addChild(spinningText);
 }
 
-
-function game_reset(){
-
-    player.pos_x = player.ox;
-    player.pos_y = player.oy;
-    player.x = tile_size/2 + tile_size*player.pos_x;
-    player.y = tile_size/2 + tile_size*player.pos_y;
-    player.xmov = 0;
-    player.ymov = 0;
-
-    player.face_dir = player.odir;
-    turn_animation(player,player.face_dir);
-
-    execute = false;
-
-    cur_inst = instQueue.head;
-
-    // road pieces can be moved again
-    for(var i = 0; i < ROAD_STAGE.children.length; i++){
-        ROAD_STAGE.children[i].interactive = true;
-    }
-
-    // restore instructions buttons's count
-    for(var i = 0; i < INST_BUTTON_STAGE.children.length; i++){
-      /*if(INST_BUTTON_STAGE.children[i].generator){
-
-        INST_BUTTON_STAGE.children[i].generator.reset();
-      }*/
-      var c = INST_BUTTON_STAGE.children[i];
-
-        c.interactive = true;
-
-
-    }
-    var temp_cur = instQueue.head;
-    while(temp_cur!=null&&temp_cur.value!=null){
-        //show_msg('hh');
-        var inst = temp_cur.value;
-        if(inst.loop_count!=null){
-            //show_msg('h')
-            //show_msg('has loop count'+temp_cur.value.o_loop_count);
-            inst.loop_count = inst.o_loop_count;
-            inst.loop_txt.setText(inst.loop_count);
-        }
-        temp_cur = temp_cur.next;
-    }
-
-    ERROR_STAGE.removeChildren();
-
-    start_button.interactive = true;
-    //instQueue.clear();
-    step = 0;
-}
-
-
 // reading instQueue instructions
 function execute_inst_queue() {
     switch (cur_inst.value.inst) {
