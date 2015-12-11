@@ -92,10 +92,15 @@ if (create_level) {
   instruction_stage_button = createButton(180,460,'assets/next.png',to_instruction_part);
   map_stage_button = createButton(180,460,'assets/previous.png',to_map_part);
   stage.removeChild(map_stage_button);
-  //RESET BUTTON
-  reset_button = createButton(310,510,'assets/reset.png',game_reset);
+  //RESET BUTTON 
+  reset_road_button = createButton(350,550,'assets/map_clear.png',road_reset);
+  reset_game_button = createButton(350,550,'assets/stop_button.png',game_reset);
+  stage.removeChild(reset_game_button);
+  reset_inst_button = createButton(500,550,'assets/inst_clear.png',inst_reset);
+  stage.removeChild(reset_inst_button);
   //START BUTTON
-  start_button = createButton(180,550,'assets/spt_inst_start.png',start_function);
+  start_button = createButton(200,550,'assets/spt_inst_start.png',start_function);
+  stage.removeChild(start_button);
   //START FRAME
   var start_frame_tex = PIXI.Texture.fromImage('assets/execute_frame.png');
   var start_frame = new PIXI.Sprite(start_frame_tex);
@@ -104,7 +109,6 @@ if (create_level) {
   start_frame.height = tile_size;
   start_frame.width = tile_size*2;;
   start_frame.anchor.set(0.5);
-  stage.addChild(start_frame);
 }
 
 // executing instructions from this list
