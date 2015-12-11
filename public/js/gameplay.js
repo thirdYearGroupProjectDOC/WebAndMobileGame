@@ -42,16 +42,16 @@ ROAD_INDICATOR_STAGE = new PIXI.Container();
 ROAD_STAGE.addChild(ROAD_INDICATOR_STAGE);
 
 // for setting numbers of road pieces
-pieces = {corner:9, straight:9, t:9 };
+pieces = {corner:25, straight:25, t:25 };
 // create road part from image, can be dragged to fit on map,
 // for detail of each parameter, see createMapParts&&generator in MapParts.js
 if(create_level){
   var road_monster = new MapPartsGenerator(selects_x,selects_y,
-    'assets/spt_monster.png','monster',0,9);
+    'assets/spt_monster.png','monster',0,25);
   var road_tree = new MapPartsGenerator(selects_x,selects_y+tile_size*7.5,
-    'assets/Newburg/rock.png','tree',0,9);
+    'assets/Newburg/rock.png','tree',0,25);
   var road_end = new MapPartsGenerator(selects_x,selects_y+tile_size*3,
-    'assets/spt_road_end.png','end',0,9);
+    'assets/spt_road_end.png','end',0,25);
 
 }else{
   pieces = levelData.data.pieces;
@@ -133,11 +133,11 @@ INST_INDICATOR_STAGE = new PIXI.Container();
 INST_BUTTON_STAGE.addChild(INST_INDICATOR_STAGE);
 
 // new
-var move_forward = new instructionGenerator(0, 50,'assets/spt_inst_forward.png', inst_dict.forward, 3 );
-var turn_right = new instructionGenerator(0, 130, 'assets/spt_inst_right.png', inst_dict.right, 3);
-var turn_left = new instructionGenerator(0, 210, 'assets/spt_inst_left.png', inst_dict.left, 3);
-var for_end = new instructionGenerator(0, 280, 'assets/spt_inst_repeat_end.png', inst_dict.for_end, 3);
-var for_loop = new instructionGenerator(0, 350, 'assets/spt_inst_repeat_time.png', inst_dict.for_loop, 3);
+var move_forward = new instructionGenerator(0, 50,'assets/spt_inst_forward.png', inst_dict.forward, 9 );
+var turn_right = new instructionGenerator(0, 130, 'assets/spt_inst_right.png', inst_dict.right, 9);
+var turn_left = new instructionGenerator(0, 210, 'assets/spt_inst_left.png', inst_dict.left, 9);
+var for_end = new instructionGenerator(0, 280, 'assets/spt_inst_repeat_end.png', inst_dict.for_end, 9);
+var for_loop = new instructionGenerator(0, 350, 'assets/spt_inst_repeat_time.png', inst_dict.for_loop, 9);
 
 
 stage.addChild(ERROR_STAGE);
