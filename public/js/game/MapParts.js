@@ -83,7 +83,7 @@ function onDragEnd(){
       // and not on existing tiles          
       if(check_in_map(this.pos_x,this.pos_y,this.name) &&
          map[this.pos_y*map_size+this.pos_x] == null){
-          show_msg('not going back, ');
+          //show_msg('not going back, ');
           map[this.pos_y*map_size+this.pos_x] = this.dir;
           ROAD_STAGE.removeChild(this);
           ROAD_ON_MAP_STAGE.addChild(this);
@@ -93,15 +93,15 @@ function onDragEnd(){
           //if there was no active pieces, put one on the pile,
           // else just increase count and update;
           if(gen.count == 0){
-            show_msg('0');
+            //show_msg('0');
             gen.count = 2;
             gen.gen();
           }else{
-            show_msg('1');
+            //show_msg('1');
             gen.count ++;
             gen.update();
           }
-          show_msg('here, go back');
+          //show_msg('here, go back');
           ROAD_STAGE.removeChild(this);
           delete(this);
       }
