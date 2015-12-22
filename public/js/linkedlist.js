@@ -147,6 +147,9 @@ LinkedList.prototype.update = function(){
     if(cur.value.loop_txt!=null){
       cur.value.loop_txt.x = cur.value.x;
       cur.value.loop_txt.y = cur.value.y;
+      cur.value.drop_down.x = cur.value.x;
+      cur.value.drop_down.y = cur.value.y;
+       
     }
     cur = cur.next;
     i++;

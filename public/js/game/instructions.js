@@ -44,13 +44,22 @@ function onInstDragEnd(event){
     this.started = false;
     this.alpha = 1;
   
-  INSTRUCT_STAGE.removeChild(nxt_pos);
+  INST_BUTTON_STAGE.removeChild(nxt_pos);
 
   // this.fresh would prevent changing loop time after moved
   if(!this.dragged){
     // used only for loop and if instruction
     if (this.loop_txt!=null&&this.menuShown == false) {
       this.menuShown = true;
+
+      var box = new PIXI.Graphics();
+
+      box.lineStyle(2, 0xFFFF0B, 1);
+      box.beginFill(0xFFFF0B, 0.85);
+      box.drawRoundedRect(-5, 45, 25, 9*20, 5);
+      box.endFill();
+      this.drop_down.addChild(box);
+
       for (var i = 0; i < 9; i++) {
         var txt = new PIXI.Text(i+1, {font: '20px bold'});
         txt.x = 0;
@@ -59,12 +68,17 @@ function onInstDragEnd(event){
         txt.value = i + 1;
         txt.on('mousedown', dropDownTxtClicked);
         txt.on('touchstart', dropDownTxtClicked);
-        txt.on('')
         txt.drop_parent = this.drop_down;
         this.drop_down.addChild(txt);
       }
+
+      // trying to make drop_down always draw at last, not working for now
+      /*console.log(INST_BUTTON_STAGE);
+      var l = INST_BUTTON_STAGE.children.length-1;
+      INST_BUTTON_STAGE.swapChildren(this,INST_BUTTON_STAGE.children[l]);*/
     } else {
       this.menuShown = false;
+      this.drop_down.removeChildren();
     }
   }
 
@@ -123,13 +137,13 @@ function onInstDragMove(){
         instQueue.update();
         if(instQueue.length == 0){
 
-          INSTRUCT_STAGE.addChild(nxt_pos);
+          INST_BUTTON_STAGE.addChild(nxt_pos);
           nxt_pos.x = gap;
           // uncomment if need the indicater when instqueue longer than 1
           nxt_pos.y = tile_size/2 ;//+ (tile_size+instQueue.gap)*(instQueue.length);
  
         }else{
-          INSTRUCT_STAGE.removeChild(nxt_pos);
+          INST_BUTTON_STAGE.removeChild(nxt_pos);
         }
 
         // drop down menu and looptime text follow instructions
@@ -250,11 +264,11 @@ function createInstructionParts(x,y,img, inst, active){
     var countTxt = new PIXI.Text(''+part.loop_count);
     countTxt.width *= 0.8;
     countTxt.height *= 0.8;
-    countTxt.x = part.x - 5 ;//
+    countTxt.x = part.x - 5;//
     countTxt.y = part.y - 5;
     part.loop_txt = countTxt;
     INST_BUTTON_STAGE.addChild(countTxt);
-    INST_BUTTON_STAGE.setChildIndex(countTxt,INST_BUTTON_STAGE.children.length-1);
+    //INST_BUTTON_STAGE.swapChildren(countTxt,part);
     part.dec = function(){
       if(this.loop_count>0){
         this.loop_count--;

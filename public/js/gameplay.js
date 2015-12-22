@@ -147,18 +147,16 @@ var for_loop = new instructionGenerator(0, tile_size*5+5*4, 'assets/spt_inst_rep
 
 stage.addChild(ERROR_STAGE);
 
-
+// indicater for user to put instructions
 nxt_pos = new PIXI.Graphics();
 
 nxt_pos.lineStyle(2, 0xFF00FF, 1);
 nxt_pos.beginFill(0xFF00BB, 0.25);
 nxt_pos.drawRoundedRect(0, 0, tile_size*2, tile_size, 15);
 nxt_pos.endFill();
-nxt_pos.x = 0;
 
 
-
-
+// indicater of execution of instructions
 var inst_frame = new PIXI.Sprite(start_frame_tex);
 inst_frame.height = tile_size;
 inst_frame.width = tile_size*2;;
