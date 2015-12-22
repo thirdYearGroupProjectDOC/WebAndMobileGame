@@ -188,7 +188,7 @@ function MapPartsGenerator(x,y,img,name,turn,num){
   
 
   var countTxt = new PIXI.Text(':'+this.count);
-  countTxt.x = this.x + 35;
+  countTxt.x = this.x + tile_size/2 + 5;
   countTxt.y = this.y;
   ROAD_STAGE.addChild(countTxt);
 

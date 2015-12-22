@@ -46,22 +46,22 @@ pieces = {corner:25, straight:25, t:25 };
 // create road part from image, can be dragged to fit on map,
 // for detail of each parameter, see createMapParts&&generator in MapParts.js
 if(create_level){
-  var road_monster = new MapPartsGenerator(selects_x,selects_y,
+  var road_monster = new MapPartsGenerator(selects_x,selects_y+tile_size*1.5 ,
     'assets/spt_monster.png','monster',0,25);
-  var road_tree = new MapPartsGenerator(selects_x,selects_y+tile_size*7.5,
+  var road_tree = new MapPartsGenerator(selects_x,selects_y+tile_size*3,
     'assets/Newburg/rock.png','tree',0,25);
-  var road_end = new MapPartsGenerator(selects_x,selects_y+tile_size*3,
+  var road_end = new MapPartsGenerator(selects_x,selects_y+tile_size*4.5,
     'assets/spt_road_end.png','end',0,25);
 
 }else{
   pieces = levelData.data.pieces;
 }
 
-var road_corner = new MapPartsGenerator(selects_x,selects_y+tile_size*1.5,
+var road_corner = new MapPartsGenerator(selects_x + tile_size*2 ,selects_y+tile_size*1.5,
   'assets/Newburg/road_turn.png','corner',0,pieces.corner);
-var road_straight = new MapPartsGenerator(selects_x,selects_y+tile_size*4.5,
+var road_straight = new MapPartsGenerator(selects_x+ tile_size*2,selects_y+tile_size*3,
   'assets/Newburg/road_straight.png','straight',0,pieces.straight);
-var road_t = new MapPartsGenerator(selects_x,selects_y+tile_size*6,
+var road_t = new MapPartsGenerator(selects_x+ tile_size*2,selects_y+tile_size*4.5,
   'assets/Newburg/road_t.png','t',0,pieces.t);
 
 
@@ -85,7 +85,7 @@ player.odir = player.face_dir;
 //DIVIDE FUNCTIONALITIES
 if (create_level) {
   stage.removeChild(INST_BUTTON_STAGE);
-  clear_button = createButton(210,510,'assets/map_clear.png', map_clear);
+  clear_button = createButton(selects_x+tile_size*2,selects_y+tile_size*7,'assets/map_clear.png', map_clear);
 } else {
   get_level_data(levelData.data);
   // STAGE TRANSFORM BUTTON

@@ -1,22 +1,24 @@
+// size of the actuall game size
+var map_size = 5;
+// for start and end point
+map_size +=2;
+
 // tile size , depends on screen later
-tile_size = 60;
+tile_size = 100;
 // where the first road begin
 zero_x = 80;
 zero_y = 60;
 
 // beginning point of selections of road pieces
-selects_x = 600;
+selects_x = zero_x + map_size*tile_size;
 selects_y = 0;
 
 // beginning point of instruction queue
-inst_x = selects_x+tile_size*3;
+inst_x = selects_x;
 inst_y = selects_y;
 
 
-// size of the actuall game size
-var map_size = 5;
-// for start and end point
-map_size +=2;
+
 var map = [];
 
 // setting directions of road pieces according to image's default direction
