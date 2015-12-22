@@ -1,18 +1,32 @@
 var renderer = PIXI.autoDetectRenderer(1400, 800,{backgroundColor : 0x1099bb});
 document.body.appendChild(renderer.view);
 
+verified = false;
 
 console.log(levelData);//configuration of level in JSON format
 
 $("#saveButton").click(function(event) { // when save button clicked
-  event.preventDefault(); //prevent page from reload
-  set_level_data();
-  console.log(levelInfo);
-  $.post( '/test',{author:'Sam',LevelInfo:JSON.stringify(levelInfo)}, function(data) { // post the parameter a2 to test.js
-    alert('succesfully created level!'); //alert the data after getting reply
-  });
-  // prevent game board becomes invalid again
-  LevelInfo = null;
+  if(verified){
+    set_level_data();
+    console.log(levelInfo);
+    $.post( '/test',{author:'Sam',LevelInfo:JSON.stringify(levelInfo)}, function(data) { // post the parameter a2 to test.js
+      alert('succesfully created level!'); //alert the data after getting reply
+    });
+    // prevent game board becomes invalid again
+    LevelInfo = null;
+  }else{
+    alert('veryfy level first');   
+  }
+});
+
+
+$("#verifyButton").click(function(event) { // when save button clicked
+  if(validation()){
+    verified = true;
+    alert('The road is valid! \n you can now publish the level ');
+  }else{
+    alert('Can\'t find valid road :( ');   
+  }
 });
 
 // create the root of the scene graph

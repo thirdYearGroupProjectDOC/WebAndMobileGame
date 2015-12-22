@@ -111,13 +111,6 @@ function on_map_corner(x,y){
 // gather information and make it ready to sent to server
 function set_level_data(){
 
-  if(validation()==false){
-    alert('not valid road, can\'t save');
-    return -1;
-  }else{
-    //show_msg('find');
-  }
-
   map_to_pass = [];
   pieces = {corner:0, straight:0, t:0 };
   for(i = 0; i<ROAD_ON_MAP_STAGE.children.length; i++){
