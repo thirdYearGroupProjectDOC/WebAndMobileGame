@@ -4,7 +4,7 @@ var map_size = 5;
 map_size +=2;
 
 // tile size , depends on screen later
-tile_size = 100;
+tile_size = 90;
 // where the first road begin
 zero_x = 80;
 zero_y = 60;
@@ -14,8 +14,8 @@ selects_x = zero_x + map_size*tile_size;
 selects_y = 0;
 
 // beginning point of instruction queue
-inst_x = selects_x;
-inst_y = selects_y;
+inst_x = selects_x+tile_size/2;
+inst_y = selects_y+tile_size/2;
 
 
 

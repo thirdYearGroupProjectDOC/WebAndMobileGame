@@ -1,7 +1,10 @@
-function createButton(x,y,img,func){
+function createButton(x,y,img,func,w){
   var start_tex = PIXI.Texture.fromImage(img);
   var button = new PIXI.Sprite(start_tex);
   button.width = tile_size*2;
+  if(w){
+    button.width = tile_size*w;
+  }
   button.height = tile_size;
   button.buttonMode = true;
   button.anchor.set(0.5);

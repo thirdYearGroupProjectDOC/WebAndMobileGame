@@ -1,4 +1,4 @@
-var renderer = PIXI.autoDetectRenderer(1200, 800,{backgroundColor : 0x1099bb});
+var renderer = PIXI.autoDetectRenderer(1400, 800,{backgroundColor : 0x1099bb});
 document.body.appendChild(renderer.view);
 
 
@@ -46,22 +46,22 @@ pieces = {corner:25, straight:25, t:25 };
 // create road part from image, can be dragged to fit on map,
 // for detail of each parameter, see createMapParts&&generator in MapParts.js
 if(create_level){
-  var road_monster = new MapPartsGenerator(selects_x,selects_y+tile_size*1.5 ,
+  var road_monster = new MapPartsGenerator(selects_x + tile_size*2,selects_y+tile_size*1.5 ,
     'assets/spt_monster.png','monster',0,25);
-  var road_tree = new MapPartsGenerator(selects_x,selects_y+tile_size*3,
+  var road_tree = new MapPartsGenerator(selects_x + tile_size*2,selects_y+tile_size*3,
     'assets/Newburg/rock.png','tree',0,25);
-  var road_end = new MapPartsGenerator(selects_x,selects_y+tile_size*4.5,
+  var road_end = new MapPartsGenerator(selects_x + tile_size*2,selects_y+tile_size*4.5,
     'assets/spt_road_end.png','end',0,25);
 
 }else{
   pieces = levelData.data.pieces;
 }
 
-var road_corner = new MapPartsGenerator(selects_x + tile_size*2 ,selects_y+tile_size*1.5,
+var road_corner = new MapPartsGenerator(selects_x ,selects_y+tile_size*1.5,
   'assets/Newburg/road_turn.png','corner',0,pieces.corner);
-var road_straight = new MapPartsGenerator(selects_x+ tile_size*2,selects_y+tile_size*3,
+var road_straight = new MapPartsGenerator(selects_x,selects_y+tile_size*3,
   'assets/Newburg/road_straight.png','straight',0,pieces.straight);
-var road_t = new MapPartsGenerator(selects_x+ tile_size*2,selects_y+tile_size*4.5,
+var road_t = new MapPartsGenerator(selects_x,selects_y+tile_size*4.5,
   'assets/Newburg/road_t.png','t',0,pieces.t);
 
 
@@ -85,21 +85,26 @@ player.odir = player.face_dir;
 //DIVIDE FUNCTIONALITIES
 if (create_level) {
   stage.removeChild(INST_BUTTON_STAGE);
-  clear_button = createButton(selects_x+tile_size*2,selects_y+tile_size*7,'assets/map_clear.png', map_clear);
+  clear_button = createButton(selects_x+tile_size*2,selects_y+tile_size*7,
+    'assets/map_clear.png', map_clear);
 } else {
+  var y = zero_y+tile_size*map_size;
+
   get_level_data(levelData.data);
   // STAGE TRANSFORM BUTTON
-  instruction_stage_button = createButton(180,460,'assets/next.png',to_instruction_part);
-  map_stage_button = createButton(180,460,'assets/previous.png',to_map_part);
+  instruction_stage_button = createButton(zero_x+tile_size,y,
+    'assets/next.png',to_instruction_part,1);
+  map_stage_button = createButton(zero_x+tile_size,y,
+    'assets/previous.png',to_map_part,1);
   stage.removeChild(map_stage_button);
   //RESET BUTTON 
-  reset_road_button = createButton(350,550,'assets/map_clear.png',road_reset);
-  reset_game_button = createButton(350,550,'assets/stop_button.png',game_reset);
+  reset_road_button = createButton(zero_x+tile_size*4,y,'assets/map_clear.png',road_reset);
+  reset_game_button = createButton(zero_x+tile_size*4.7,y,'assets/stop_button.png',game_reset,1);
   stage.removeChild(reset_game_button);
-  reset_inst_button = createButton(500,550,'assets/inst_clear.png',inst_reset);
+  reset_inst_button = createButton(zero_x+tile_size*6,y,'assets/inst_clear.png',inst_reset,1);
   stage.removeChild(reset_inst_button);
   //START BUTTON
-  start_button = createButton(200,550,'assets/spt_inst_start.png',start_function);
+  start_button = createButton(zero_x+tile_size*3,y,'assets/spt_inst_start.png',start_function);
   stage.removeChild(start_button);
   //START FRAME
   var start_frame_tex = PIXI.Texture.fromImage('assets/execute_frame.png');
@@ -132,27 +137,25 @@ INST_BUTTON_STAGE.addChild(INSTRUCT_STAGE);
 INST_INDICATOR_STAGE = new PIXI.Container();
 INST_BUTTON_STAGE.addChild(INST_INDICATOR_STAGE);
 
-// new
-var move_forward = new instructionGenerator(0, 50,'assets/spt_inst_forward.png', inst_dict.forward, 9 );
-var turn_right = new instructionGenerator(0, 130, 'assets/spt_inst_right.png', inst_dict.right, 9);
-var turn_left = new instructionGenerator(0, 210, 'assets/spt_inst_left.png', inst_dict.left, 9);
-var for_end = new instructionGenerator(0, 280, 'assets/spt_inst_repeat_end.png', inst_dict.for_end, 9);
-var for_loop = new instructionGenerator(0, 350, 'assets/spt_inst_repeat_time.png', inst_dict.for_loop, 9);
+// instructions
+var move_forward = new instructionGenerator(0, tile_size,'assets/spt_inst_forward.png', inst_dict.forward, 9 );
+var turn_right = new instructionGenerator(0, tile_size*2+5, 'assets/spt_inst_right.png', inst_dict.right, 9);
+var turn_left = new instructionGenerator(0, tile_size*3+5*2, 'assets/spt_inst_left.png', inst_dict.left, 9);
+var for_end = new instructionGenerator(0, tile_size*4+5*3, 'assets/spt_inst_repeat_end.png', inst_dict.for_end, 9);
+var for_loop = new instructionGenerator(0, tile_size*5+5*4, 'assets/spt_inst_repeat_time.png', inst_dict.for_loop, 9);
 
 
 stage.addChild(ERROR_STAGE);
 
 
-/*
-graphics = new PIXI.Graphics();
+nxt_pos = new PIXI.Graphics();
 
-graphics.lineStyle(2, 0xFF00FF, 1);
-graphics.beginFill(0xFF00BB, 0.25);
-graphics.drawRoundedRect(inst_x+tile_size*3, inst_y+tile_size/2, tile_size*2, tile_size, 15);
-//graphics.drawRoundedRect, 250, 200, 120, 5);
+nxt_pos.lineStyle(2, 0xFF00FF, 1);
+nxt_pos.beginFill(0xFF00BB, 0.25);
+nxt_pos.drawRoundedRect(0, 0, tile_size*2, tile_size, 15);
+nxt_pos.endFill();
+nxt_pos.x = 0;
 
-graphics.endFill();*/
-//stage.addChild(INST_BUTTON_STAGE);
 
 
 
@@ -206,24 +209,8 @@ function animate(){
     requestAnimationFrame(animate);
     renderer.render(stage);
 
-    //when one step is finished, read next instruction
-    // before merge to master
-/*
-    if (start && step != null && player.xmov == 0 && player.ymov == 0  && player.wait == 0 &&
-  //    instQueue.length != 0 &&
-       count - store>65) {
-      store = count;
-      player_start();
-      step = step.next;
-
-
-      // while executing instructions, can't move road pieces,
-      // can only be set back by reset button
-      for(var i = 0; i < MAP_STAGE.children.length; i++){
-        ROAD_STAGE.children[i].interactive = false;
-      }
-*/
-
+    //read instructions if player not moving and there are instructions to read,
+    // count- store can be used to set time intervels 
     if (execute && player.xmov == 0 && player.ymov == 0 && cur_inst != null
           && player.wait == 0 && instQueue.length != 0 && (count - store)>65) {
       store = count;

@@ -9,7 +9,7 @@ function check_inst_region(x,y,length){
 
      var res = (x > gap) && (x < gap+tile_size*2) &&
             (y > tile_size/2) &&
-            (y < tile_size/2+tile_size*(length+1));
+            (y < tile_size/2+(tile_size+instQueue.gap)*(length+1));
       if(res){
         //show_msg('x :' +x+ 'y: '+y);
       }
@@ -43,21 +43,23 @@ function onInstDragEnd(event){
     this.dragging = false;
     this.started = false;
     this.alpha = 1;
-  }
+  
+  INSTRUCT_STAGE.removeChild(nxt_pos);
 
   // this.fresh would prevent changing loop time after moved
-  if(!this.dragged&& this.fresh){
+  if(!this.dragged){
     // used only for loop and if instruction
     if (this.loop_txt!=null&&this.menuShown == false) {
       this.menuShown = true;
       for (var i = 0; i < 9; i++) {
         var txt = new PIXI.Text(i+1, {font: '20px bold'});
         txt.x = 0;
-        txt.y = 15+(i+1)*20;
+        txt.y = 25+(i+1)*20;
         txt.interactive = true;
         txt.value = i + 1;
         txt.on('mousedown', dropDownTxtClicked);
         txt.on('touchstart', dropDownTxtClicked);
+        txt.on('')
         txt.drop_parent = this.drop_down;
         this.drop_down.addChild(txt);
       }
@@ -84,6 +86,7 @@ function onInstDragEnd(event){
 
   cur_inst = instQueue.head;
 //  show_msg('get here: execute: '+execute);
+  }
 }
 
 
@@ -118,10 +121,21 @@ function onInstDragMove(){
 
         //update pixel position based on instQueue
         instQueue.update();
+        if(instQueue.length == 0){
 
+          INSTRUCT_STAGE.addChild(nxt_pos);
+          nxt_pos.x = gap;
+          // uncomment if need the indicater when instqueue longer than 1
+          nxt_pos.y = tile_size/2 ;//+ (tile_size+instQueue.gap)*(instQueue.length);
+ 
+        }else{
+          INSTRUCT_STAGE.removeChild(nxt_pos);
+        }
 
         // drop down menu and looptime text follow instructions
         if(this.loop_txt!=null){
+          this.drop_down.x = this.x;
+          this.drop_down.y = this.y;
           this.loop_txt.x = this.x;
           this.loop_txt.y = this.y;
         }
@@ -157,7 +171,7 @@ function instructionGenerator(x,y,img,inst,num){
 
 
   var countTxt = new PIXI.Text(':'+this.count);
-  countTxt.x = this.x + 60;
+  countTxt.x = this.x + tile_size+5;
   countTxt.y = this.y;
   INST_BUTTON_STAGE.addChild(countTxt);
 
@@ -267,155 +281,3 @@ function dropDownTxtClicked() {
   
   this.drop_parent.removeChildren();
 }
-
-/*
-<<<<<<< HEAD
-function instructionButtonUpOutside() {
-   this.down = false;
-} 
-
-function instructionButtonDown() {
-   this.down = true;
-}
-
-// text counter for drop_down_button
-function inst_drop_down_button(x,y,count) {
-  this.count = count;
-  this.max = count;
-  this.x = x;
-  this.y = y;
-
-  var countTxt = new PIXI.Text(':'+count);
-  countTxt.x = this.x + tile_size+ 45;
-  countTxt.y = this.y;
-  stage.addChild(countTxt);
-
-  this.update = function(){
-    countTxt.setText(':'+this.count);
-  }
-
-  this.reset = function(){
-    this.count = this.max;
-    this.update();
-  }
-
-  this.gen = function(img,inst){
-    var ib = createDropDownInstructions(this.x,this.y,img,inst);
-    ib.generator = this;
-  }
-}
-
-// create a button with drop-down menu, i.e. loop start button
-function createDropDownInstructions(x,y,img,inst) {
-  var instruct_tex = PIXI.Texture.fromImage(img);
-  var instruction = new PIXI.Sprite(instruct_tex);
-  var drop = new PIXI.Container();
-  drop.x = INST_BUTTON_STAGE.x;
-  drop.y = INST_BUTTON_STAGE.y;
-
-  instruction.menuShown = false;
-  instruction.dir = inst;
-
-  instruction.width = tile_size*2;
-  instruction.height = tile_size/2;
-  instruction.buttonMode = true;
-  instruction.interactive = true;
-  instruction.x = x;
-  instruction.y = y;
-
-  // default repeat time 
-  // this variable is used for executing instrructions.
-  instruction.repeat_time = 3;
-  var loopTimeText = new PIXI.Text(instruction.repeat_time);
-  loopTimeText.width *= 0.8;
-  loopTimeText.height *= 0.8;
-  loopTimeText.x = instruction.x + 55;
-  loopTimeText.y = instruction.y + 5;
-  
-  INST_BUTTON_STAGE.addChild(instruction); 
-  drop.addChild(loopTimeText);
-  
-  //used for update text value
-  instruction.loopTime = loopTimeText;
-  
-  drop.button_parent = instruction;
-  instruction.drop_down = drop;
-  stage.addChild(drop);
-  
-  instruction
-    .on('mousedown', instructionButtonDown)
-    .on('touchstart', instructionButtonDown)
-
-      // set the mouseup and touchend callback...
-    .on('mouseup', instructionDropDownButtonUp)
-    .on('touchend', instructionButtonUp)
-
-    .on('mouseupoutside', instructionButtonUpOutside)
-    .on('touchendoutside', instructionButtonUpOutside)
-
-      // set the mouseover callback...
-    .on('mouseover', instructionButtonOver)
-
-      // set the mouseout callback...
-    .on('mouseout', instructionButtonOut);
-
-
-  instruction.tap = null;
-  instruction.click = null; 
-   
-   return instruction;
-}
-
-
-function instructionDropDownButtonUp() {
-  if (this.menuShown == false) {
-    this.menuShown = true;
-    for (var i = 0; i < 9; i++) {
-      var txt = new PIXI.Text(i+1, {font: '20px bold'});
-      txt.x = this.x + 50;
-      txt.y = this.y + 30+ (i+1)*20;
-      txt.interactive = true;
-      txt.repeat_time = i + 1;
-      txt.on('mousedown', dropDownTxtClicked);
-      txt.on('touchstart', dropDownTxtClicked);
-      txt.drop_parent = this.drop_down;
-      this.drop_down.addChild(txt);
-    }
-  } else {
-    this.menuShown = false;
-  }
-}
-
-function dropDownTxtClicked() {
-  var b_parent = this.drop_parent.button_parent;
-  b_parent.menuShown = false;
-  b_parent.loopTime.setText(this.repeat_time);
-  this.drop_parent.removeChildren();
-  this.drop_parent.addChild(b_parent.loopTime);
-}
-
-
-function instruction_animation(){
-  var cur = instQueue[step-1];
-  var last = instQueue[step-2];
-
-  //move up and scale
-  cur.y -= 1;
-  cur.height += 1;
-  cur.x -= 0.5;
-  cur.width += 1;
-  
-  // random changing color, need better animation here
-  if(count % 5 == 0){
-    cur.tint = Math.random()* 0xF1FFFF;
-  }
-
-  // last instruction restore to original size
-  if(last){
-    last.height -= 1;
-    last.width -= 1;
-    last.x += 0.5;
-  }
-}
-
-*/

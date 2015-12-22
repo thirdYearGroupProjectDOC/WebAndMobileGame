@@ -4,6 +4,7 @@
 function LinkedList(){  
   this.head = null;
   this.length = 0;
+  this.gap = 2;
 }
 
 // push to back of the list
