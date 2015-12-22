@@ -52,18 +52,27 @@ function onInstDragEnd(event){
     if (this.loop_txt!=null&&this.menuShown == false) {
       this.menuShown = true;
 
+      var font = 20;
+      x0 = 0;
+      y0 = 45;
+      if(this.x != this.generator.x && this.y != this.generator.y){
+        x0 = tile_size+10;
+        y0 = 0;
+      }
+
       var box = new PIXI.Graphics();
 
       box.lineStyle(2, 0xFFFF0B, 1);
       box.beginFill(0xFFFF0B, 0.85);
-      box.drawRoundedRect(-5, 45, 25, 9*20, 5);
+      //                  x0,  y0,  width,  height, round)
+      box.drawRoundedRect(x0-5, y0, font+5, 9*font, 5);
       box.endFill();
       this.drop_down.addChild(box);
 
       for (var i = 0; i < 9; i++) {
         var txt = new PIXI.Text(i+1, {font: '20px bold'});
-        txt.x = 0;
-        txt.y = 25+(i+1)*20;
+        txt.x = x0;
+        txt.y = y0+ i * font;
         txt.interactive = true;
         txt.value = i + 1;
         txt.on('mousedown', dropDownTxtClicked);
@@ -72,10 +81,6 @@ function onInstDragEnd(event){
         this.drop_down.addChild(txt);
       }
 
-      // trying to make drop_down always draw at last, not working for now
-      /*console.log(INST_BUTTON_STAGE);
-      var l = INST_BUTTON_STAGE.children.length-1;
-      INST_BUTTON_STAGE.swapChildren(this,INST_BUTTON_STAGE.children[l]);*/
     } else {
       this.menuShown = false;
       this.drop_down.removeChildren();
@@ -148,8 +153,14 @@ function onInstDragMove(){
 
         // drop down menu and looptime text follow instructions
         if(this.loop_txt!=null){
+          // container moves with parent
           this.drop_down.x = this.x;
           this.drop_down.y = this.y;
+          // remove current drop down menu
+          this.drop_down.removeChildren();
+          this.menuShown = false;
+          
+          // loop time text follow instructions
           this.loop_txt.x = this.x;
           this.loop_txt.y = this.y;
         }
