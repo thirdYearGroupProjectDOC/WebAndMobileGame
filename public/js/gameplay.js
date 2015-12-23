@@ -1,4 +1,4 @@
-var renderer = PIXI.autoDetectRenderer(1400, 800,{backgroundColor : 0x1099bb});
+var renderer = PIXI.autoDetectRenderer(1600, 800,{backgroundColor : 0x1099bb});
 document.body.appendChild(renderer.view);
 
 verified = false;

@@ -1,25 +1,40 @@
 
 // defines distance bwtween generator ( pile of instructions)
 // and where the execution stack lives
-var gap = tile_size * 1.5;
+gap = tile_size * 1.5;
+// length of instructions on a single column 
+limit = 6; 
 
+inst_gap_h = 18;
 
 //check if it is in the instruction region
-function check_inst_region(x,y,length){
+function check_inst_region(x,y){
 
-     var res = (x > gap) && (x < gap+tile_size*2) &&
-            (y > tile_size/2) &&
-            (y < tile_size/2+(tile_size+instQueue.gap)*(length+1));
-      if(res){
-        //show_msg('x :' +x+ 'y: '+y);
-      }
-      return res;
+    // cauculate the region depends on queue length
+    var x_ = (Math.floor(instQueue.length/limit))*(tile_size + inst_gap_h) *2;
+    var y_ = instQueue.length ;
+    
+    var x_pos = Math.floor((x - gap + inst_gap_h)/(tile_size*2 + inst_gap_h));
+
+    if(x_pos > Math.floor(instQueue.length/limit) ){
+      y_ = Math.floor(instQueue.length%limit)+1;
+    }
+
+    var res = (x > gap) && (x < gap+tile_size*2 + x_ )&&
+          (y > tile_size/2) &&
+          (y < tile_size/2+(tile_size+instQueue.gap)*(y_+1));
+    if(res){
+      //show_msg('x :' +x+ 'y: '+y);
+    }
+    return res;
 }
 
 
-function to_Inst_pos(y){
+function to_Inst_pos(x,y){
 
-   return ( Math.floor((y + tile_size/2)/tile_size)-1);
+  var xp = Math.floor((x - gap + inst_gap_h) / (tile_size*2 + inst_gap_h));
+  //show_msg(Math.floor( x - gap));
+  return ( xp * limit +  Math.floor((y + tile_size/2 )/(tile_size + instQueue.gap) ) -1) ;
 }
 
 
@@ -53,8 +68,8 @@ function onInstDragEnd(event){
       this.menuShown = true;
 
       var font = 20;
-      x0 = 0;
-      y0 = 45;
+      var x0 = 0;
+      var y0 = 45;
       if(this.x != this.generator.x && this.y != this.generator.y){
         x0 = tile_size+10;
         y0 = 0;
@@ -88,8 +103,9 @@ function onInstDragEnd(event){
   }
 
   // drag instruction piece to outside will make it be returned to deck
-  if(!check_inst_region(this.x,this.y,instQueue.length)
-      && this.x!=this.generator.x && this.y != this.generator.y){
+  if((!check_inst_region(this.x,this.y)
+      && this.x!=this.generator.x && this.y != this.generator.y
+      )|| to_Inst_pos(this.x, this.y) > instQueue.length ){
     if (this.generator.count == 0) {
           this.generator.count = 2;
           this.generator.gen();
@@ -118,18 +134,24 @@ function onInstDragMove(){
           this.generator.gen();
         }
         var newPosition = this.data.getLocalPosition(this.parent);
-        if(check_inst_region(newPosition.x,this.y,instQueue.length)){
-          //show_msg('h');
-          this.x = gap+tile_size;//newPosition.x - newPosition.x % (tile_size) + tile_size;
+        if(check_inst_region(newPosition.x,this.y)){
+
+
+          var x_ = Math.floor((newPosition.x-gap+inst_gap_h)/((tile_size*2 + inst_gap_h))) ;
+
+          this.x = gap+ tile_size+ (tile_size*2+ inst_gap_h)*x_ ;//newPosition.x - newPosition.x % (tile_size) + tile_size;
           this.y = newPosition.y ;//- newPosition.y%tile_size + tile_size/2;
 
           // find position to insert in
-          var temp_pos = to_Inst_pos(this.y);
+          var temp_pos = to_Inst_pos(this.x,this.y);
           //remove and insert => update position
           if(instQueue.contain(this)){
             instQueue.remove(this);
           }
-          instQueue.insert(temp_pos,this);
+          if(temp_pos <= instQueue.length +1){
+            instQueue.insert(temp_pos,this);
+          }
+          
           
         }else{
           // remove, if not find , nothing happens
