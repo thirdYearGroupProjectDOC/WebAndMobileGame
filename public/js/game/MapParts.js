@@ -69,32 +69,41 @@ function onDragEnd(){
       // click on piece will simply turn
       if(this.dragged != true){
           this.turn();
+          if(!check_tiling_region(this.x,this.y,this.name)){
+            this.generator.indicater.turn();
+          }
       }
       this.pos_x = toTilePos(this.x);
       this.pos_y = toTilePos(this.y);
       this.dragged = false;
 
       var gen = this.generator;
-      // if the position is being possessed, go back
-      if(map[this.pos_y*map_size+this.pos_x]!=null
-        || (!check_tiling_region(this.x,this.y,this.name)
-              &&this.x != gen.x&&this.y!=gen.y )){
-          
-          //if there was no active pieces, put one on the pile,
-          // else just increase count and update;
-          if(gen.count == 0){
-            gen.count = 2;
-            gen.gen();
-          }else{
-            gen.count ++;
-            gen.update();
-          }
-          ROAD_STAGE.removeChild(this);
-          delete(this);
-      }else if(check_in_map(this.pos_x,this.pos_y,this.name)){
+
+      // update map if this tile is on map's region
+      // and not on existing tiles          
+      if(check_in_map(this.pos_x,this.pos_y,this.name) &&
+         map[this.pos_y*map_size+this.pos_x] == null){
+          //show_msg('not going back, ');
           map[this.pos_y*map_size+this.pos_x] = this.dir;
           ROAD_STAGE.removeChild(this);
           ROAD_ON_MAP_STAGE.addChild(this);
+      }else if (this.x == gen.x && this.y == gen.y){
+          ;
+      }else{
+          //if there was no active pieces, put one on the pile,
+          // else just increase count and update;
+          if(gen.count == 0){
+            //show_msg('0');
+            gen.count = 2;
+            gen.gen();
+          }else{
+            //show_msg('1');
+            gen.count ++;
+            gen.update();
+          }
+          //show_msg('here, go back');
+          ROAD_STAGE.removeChild(this);
+          delete(this);
       }
     }
 
@@ -114,7 +123,6 @@ function onDragMove(){
         var newPosition = this.data.getLocalPosition(this.parent);
         // enter tiling region ( MAP )
         if(check_tiling_region(newPosition.x,newPosition.y,this.name)){
-
           this.x = newPosition.x - newPosition.x%tile_size + tile_size/2;
           this.y = newPosition.y - newPosition.y%tile_size + tile_size/2;
 
@@ -138,6 +146,7 @@ function onDragMove(){
               this.rotation = Math.PI/2*2;
               this.turn = 2;
             }
+
           }
         // put it to where mouse is
         }else{
@@ -170,6 +179,7 @@ function MapPartsGenerator(x,y,img,name,turn,num){
 
   // add indicate to stage so it won't be activated by game_reset
   indicate = createMapParts(this.x,this.y,this.img,this.name,false,this.turn);
+  this.indicater = indicate;
   ROAD_STAGE.removeChild(indicate);
   ROAD_INDICATOR_STAGE.addChild(indicate);
 
@@ -178,7 +188,7 @@ function MapPartsGenerator(x,y,img,name,turn,num){
   
 
   var countTxt = new PIXI.Text(':'+this.count);
-  countTxt.x = this.x + 35;
+  countTxt.x = this.x + tile_size/2 + 5;
   countTxt.y = this.y;
   ROAD_STAGE.addChild(countTxt);
 
@@ -188,6 +198,9 @@ function MapPartsGenerator(x,y,img,name,turn,num){
     if(this.count > 1){
       var m = createMapParts(this.x,this.y,this.img,this.name,true,this.turn);
       m.generator = this;
+      while(m.rotation != this.indicater.rotation){
+        m.turn();
+      }
       this.count --;
     }else{
       this.count = 0;
