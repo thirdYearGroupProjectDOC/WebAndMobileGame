@@ -4,6 +4,7 @@
 function LinkedList(){  
   this.head = null;
   this.length = 0;
+  // used to define the tiny gap between instructions, so it looks nicer
   this.gap = 2;
 }
 

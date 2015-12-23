@@ -25,6 +25,7 @@ $("#verifyButton").click(function(event) { // when save button clicked
     verified = true;
     alert('The road is valid! \n you can now publish the level ');
   }else{
+    verified = false;
     alert('Can\'t find valid road :( ');   
   }
 });
