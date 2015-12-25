@@ -42,6 +42,8 @@ function Player(){
 	player.speed = tile_size/60;
 	player.wait = 0;
 
+  player.dragged = false;
+
 	MAP_STAGE.addChild(player);
 	return player;
 }
@@ -133,6 +135,12 @@ function playerDragEnd(){
       // set the interaction data to null
       this.data = null;
 
+      if(!this.dragged ){
+        this.face_dir = (this.face_dir + 1) % 4;
+        turn_animation(this,this.face_dir);
+      }
+      this.dragged = false;
+
       if(!check_tiling_region(this.x,this.y,this.name)){
         this.x = tile_size/2;
         this.y = tile_size/2;
@@ -150,7 +158,6 @@ function playerDragMove(){
   if (this.dragging)
     {
         this.dragged = true;
-        
         var newPosition = this.data.getLocalPosition(this.parent);
         // enter tiling region ( MAP )
         if(check_tiling_region(this.x,this.y,this.name)){

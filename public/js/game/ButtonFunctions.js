@@ -12,6 +12,9 @@ function start_function(){
     for(var i = 0; i < INST_BUTTON_STAGE.children.length; i++){
         INST_BUTTON_STAGE.children[i].interactive = false;
     }
+
+    // when executing instructions, can't go back and change road
+    map_stage_button.interactive = false;
 }
 
 
@@ -138,7 +141,7 @@ function game_reset(){
     turn_animation(player,player.face_dir);
 
     execute = false;
-
+    map_stage_button.interactive = true;
     cur_inst = instQueue.head;
 
     // road pieces can be moved again

@@ -142,8 +142,12 @@ LinkedList.prototype.update = function(){
   var i = 0;
   var cur = this.head;
 
+  var limit = 6;
+
+
   while(cur!=null&&cur.value!=null){
-    cur.value.y = (i+1)*(tile_size+2);
+    cur.value.x = gap + tile_size + (Math.floor(i/limit)) *(tile_size+inst_gap_h) *2 ;
+    cur.value.y = (i%limit+1)*(tile_size+this.gap);
     // drop down menu and looptime text follow instructions
     if(cur.value.loop_txt!=null){
       cur.value.loop_txt.x = cur.value.x;
