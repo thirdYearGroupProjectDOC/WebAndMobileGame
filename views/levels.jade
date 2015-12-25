@@ -5,7 +5,8 @@ block content
   p Welcome to #{title}
   h2 Welcome!  #{uname}
   h3 There are #{levelCount} levels
-  <a href="/createLevel" class="btn btn-primary">Create my own level</a>
+  if uname
+    <a href="/createLevel" class="btn btn-primary">Create my own level</a>
   <a href="/rank" class="btn btn-info">Go see the ranks</a>
   p ===
   input(type="text", class="form-control", placeholder="id of level to be deleted", name = 'deleteId', id = 'deleteId')

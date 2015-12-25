@@ -1,22 +1,24 @@
+// size of the actuall game size
+var map_size = 5;
+// for start and end point
+map_size +=2;
+
 // tile size , depends on screen later
-tile_size = 60;
+tile_size = 90;
 // where the first road begin
 zero_x = 80;
 zero_y = 60;
 
 // beginning point of selections of road pieces
-selects_x = 600;
+selects_x = zero_x + map_size*tile_size;
 selects_y = 0;
 
 // beginning point of instruction queue
-inst_x = selects_x+tile_size*3;
-inst_y = selects_y;
+inst_x = selects_x+tile_size/2;
+inst_y = selects_y+tile_size/2;
 
 
-// size of the actuall game size
-var map_size = 5;
-// for start and end point
-map_size +=2;
+
 var map = [];
 
 // setting directions of road pieces according to image's default direction
@@ -96,7 +98,7 @@ function execute_inst_queue() {
 function on_map_boarder(x,y){
     return (x == 0 || x == map_size-1 || y == 0 || y == map_size-1);
 }
-
+ 
 function on_map_corner(x,y){
     var check_x = (x==0 || x==map_size-1);
     var check_y = (y==0 || y==map_size-1);
@@ -109,56 +111,57 @@ function on_map_corner(x,y){
 // gather information and make it ready to sent to server
 function set_level_data(){
 
-  if(validation()==false){
-    alert('not valid road, can\'t save');
-    return -1;
+  if(!validation()){
+    verified = false;
+    alert('you changed the road didn\'t you? ');
   }else{
-    //show_msg('find');
-  }
 
-  map_to_pass = [];
-  pieces = {corner:0, straight:0, t:0 };
-  for(i = 0; i<ROAD_ON_MAP_STAGE.children.length; i++){
-    r = ROAD_ON_MAP_STAGE.children[i];
-    console.log(r);
-    if(r.name =='monster' || r.name =='tree' || r.name == 'end'){
+    map_to_pass = [];
+    pieces = {corner:0, straight:0, t:0 };
 
-      map_to_pass[r.pos_x+map_size*r.pos_y] = { x:r.x,
-                                                y:r.y,
-                                                turn:r.turn,
-                                                img:r.img,
-                                                name:r.name};
+    // pass road on map to server
+    for(i = 0; i<ROAD_ON_MAP_STAGE.children.length; i++){
+      r = ROAD_ON_MAP_STAGE.children[i];
+      console.log(r);
+      if(r.name =='monster' || r.name =='tree' || r.name == 'end'){
 
-    }else{
-      // this switch, mapParts.name and  dit_dict should be improved later 
-      // to make it more readable and maintainable
-      switch(r.name){
-        case 'straight':
-          pieces.straight++;
-          break;
-        case 'corner':
-          pieces.corner++;
-          break;
-        case 't':
-          pieces.t++;
-          break;
-        default:
-          break;
+        map_to_pass[r.pos_x+map_size*r.pos_y] = { x:r.x,
+                                                  y:r.y,
+                                                  turn:r.turn,
+                                                  img:r.img,
+                                                  name:r.name};
+
+      }else{
+        // this switch, mapParts.name and  dit_dict should be improved later 
+        // to make it more readable and maintainable
+        switch(r.name){
+          case 'straight':
+            pieces.straight++;
+            break;
+          case 'corner':
+            pieces.corner++;
+            break;
+          case 't':
+            pieces.t++;
+            break;
+          default:
+            break;
+        }
       }
     }
+
+      levelInfo = {
+        id: 1,
+        data: {
+        "author": "Sam",
+        "title": "Easy Level",
+        "description": "This is an entry level",
+      "player": {x:player.pos_x, y:player.pos_y, face_dir:player.face_dir},
+      "map":map_to_pass,
+      "pieces":pieces
+
+      }};
   }
-
-    levelInfo = {
-      id: 1,
-      data: {
-      "author": "Sam",
-      "title": "Easy Level",
-      "description": "This is an entry level",
-    "player": {x:player.pos_x, y:player.pos_y, face_dir:player.face_dir},
-    "map":map_to_pass,
-    "pieces":pieces
-
-    }};
 }
 
 // resolve data from server and construct the game board
