@@ -15,6 +15,7 @@ function start_function(){
 
     // when executing instructions, can't go back and change road
     map_stage_button.interactive = false;
+    reset_inst_button.interactive = false;
 }
 
 
@@ -39,6 +40,7 @@ function to_map_part(){
 
 function to_instruction_part() {
   stage.addChild(INST_BUTTON_STAGE);
+  stage.setChildIndex(INST_BUTTON_STAGE,1);
   MAP_STAGE.removeChild(ROAD_STAGE);
   for(i=0; i < ROAD_ON_MAP_STAGE.children.length;i++){
   	ROAD_ON_MAP_STAGE.children[i].interactive = false;
@@ -127,7 +129,8 @@ function inst_reset() {
 }
 
 
-
+// player going back to original position&direction, 
+// makes everyting interactive again
 function game_reset(){
 
     player.pos_x = player.ox;
@@ -142,6 +145,8 @@ function game_reset(){
 
     execute = false;
     map_stage_button.interactive = true;
+    reset_inst_button.interactive = true;
+
     cur_inst = instQueue.head;
 
     // road pieces can be moved again
@@ -156,11 +161,10 @@ function game_reset(){
         INST_BUTTON_STAGE.children[i].generator.reset();
       }*/
       var c = INST_BUTTON_STAGE.children[i];
-
-        c.interactive = true;
-
-
+      c.interactive = true;
     }
+
+    // reset the text& value of the loop instructions
     var temp_cur = instQueue.head;
     while(temp_cur!=null&&temp_cur.value!=null){
         //show_msg('hh');
@@ -174,6 +178,7 @@ function game_reset(){
         temp_cur = temp_cur.next;
     }
 
+    // remove all error messages
     ERROR_STAGE.removeChildren();
 
     start_button.interactive = true;

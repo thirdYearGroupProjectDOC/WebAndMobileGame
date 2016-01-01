@@ -46,15 +46,19 @@ map_bg_init();
 // setting map to reletive zero position
 MAP_STAGE.x = zero_x;
 MAP_STAGE.y = zero_y;
+
 // store map pieces to be selected
 ROAD_STAGE = new PIXI.Container();
 MAP_STAGE.addChild(ROAD_STAGE);
+
 // store map pieces on map
 ROAD_ON_MAP_STAGE = new PIXI.Container();
 MAP_STAGE.addChild(ROAD_ON_MAP_STAGE);
 
+//the road pieces underneath each generater, 
 ROAD_INDICATOR_STAGE = new PIXI.Container();
 ROAD_STAGE.addChild(ROAD_INDICATOR_STAGE);
+
 
 // for setting numbers of road pieces
 pieces = {corner:25, straight:25, t:25 };
@@ -79,22 +83,8 @@ var road_straight = new MapPartsGenerator(selects_x,selects_y+tile_size*3,
 var road_t = new MapPartsGenerator(selects_x,selects_y+tile_size*4.5,
   'assets/Newburg/road_t.png','t',0,pieces.t);
 
-
-
-
-//set_level_button = createButton(250,450,'assets/spt_inst_start.png',set_level_data);
-
-//show_msg(levelData.data.player);
-
-
-
-
 // create player
 var player = Player();
-// used in game reset
-player.ox = player.pos_x;
-player.oy = player.pos_y;
-player.odir = player.face_dir;
 
 
 //DIVIDE FUNCTIONALITIES
@@ -151,6 +141,12 @@ INST_BUTTON_STAGE.addChild(INSTRUCT_STAGE);
 
 INST_INDICATOR_STAGE = new PIXI.Container();
 INST_BUTTON_STAGE.addChild(INST_INDICATOR_STAGE);
+
+// message that has a button, click on button will destroy this msg board
+MSG_BOARD_STAGE = new PIXI.Container();
+MSG_BOARD_STAGE.x = 300;
+MSG_BOARD_STAGE.y = 300;
+stage.addChild(MSG_BOARD_STAGE);
 
 // instructions
 var move_forward = new instructionGenerator(0, tile_size,'assets/spt_inst_forward.png', inst_dict.forward, 9 );
@@ -245,6 +241,15 @@ function animate(){
       INST_BUTTON_STAGE.removeChild(inst_frame);
     }
 
+    //congratulation message
+    if(on_map_boarder(player.pos_x,player.pos_y) &&
+        player.pos_x!=player.ox &&
+        player.pos_y!=player.oy &&
+        player.xmov==0 &&
+        player.ymov==0 ){
+      show_msg_board('congratulations!');
+
+    }
 
 
     /*else{

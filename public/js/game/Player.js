@@ -35,6 +35,10 @@ function Player(){
 	player.pos_x = 0;
 	player.pos_y = 0;
 	player.face_dir = 1;
+  // used in game reset
+  player.ox = player.pos_x;
+  player.oy = player.pos_y;
+  player.odir = player.face_dir;
 
 	// used in main loop for moving on canvas
 	player.xmov = 0;
