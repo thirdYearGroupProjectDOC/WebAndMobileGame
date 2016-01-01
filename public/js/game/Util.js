@@ -267,3 +267,48 @@ function find_road(x,y,dir){
   //show_msg(dirs);
   return res;
 }
+
+
+// this boolean is used to prevent showing congradulation msg if there is already one
+congrats = false;
+
+function show_msg_board(msg){
+    if(congrats){
+      return;
+    }
+    congrats = true;
+    this.board = new PIXI.Container();
+    var width = 5;
+    var height = 2;
+
+    var text = new PIXI.Text(msg, { font: 'bold 25px Arial', align: 'center', stroke: '#FFFFFF', strokeThickness: 5 });
+    text.anchor.set(0.5);
+    text.x = tile_size*width/3;
+    text.y = tile_size*height/2;
+
+    var bg = new PIXI.Graphics();
+    bg.lineStyle(2, 0xF1510B, 1);
+    bg.beginFill(0xF1510B, 1);
+    bg.drawRoundedRect(0, 0, tile_size*width, tile_size*height, 15);
+    bg.endFill();
+
+    var f = function(){
+      MSG_BOARD_STAGE.removeChild(this.gen.board);
+      congrats = false;
+      reset_game_button.interactive = true;
+      game_reset();
+    }
+    var button = createButton(tile_size*width*4/5,tile_size*height/2,'assets/smile.jpg',f,1);
+    button.gen = this;
+
+
+    this.board.addChild(bg);
+    this.board.addChild(text);
+    this.board.addChild(button);
+
+    MSG_BOARD_STAGE.addChild(this.board);
+
+    //prevent user reest the game
+    reset_game_button.interactive = false;
+
+}
