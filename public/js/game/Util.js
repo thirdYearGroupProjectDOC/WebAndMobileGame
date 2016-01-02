@@ -14,7 +14,7 @@ selects_x = zero_x + map_size*tile_size;
 selects_y = 0;
 
 // beginning point of instruction queue
-inst_x = selects_x+tile_size/2;
+inst_x = selects_x+tile_size*3/2;
 inst_y = selects_y+tile_size/2;
 
 
