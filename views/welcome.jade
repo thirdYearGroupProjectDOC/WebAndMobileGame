@@ -295,7 +295,7 @@ html
               button(type="submit", class='button', style="float:initial; margin-left: 10px; display: table-column; width: 80px") Sign up
               button(href="/home", data-dismiss="modal", class='button', style="float:initial; margin-left: 10px; display: table-column; width: 80px") Cancel
         .jump_to_home
-          button(data-action="bea",onclick="redirect()") Jump To Homepage
+          button#jump_to_home(data-action="bea",onclick="redirect()") Jump To Homepage
           script.
             function redirect() {
               window.location.href = '/home'
