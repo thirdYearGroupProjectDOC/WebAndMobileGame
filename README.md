@@ -24,6 +24,17 @@ node app.js
 DEBUG=myapp npm start
 ```
 
+4. Running test:
+First make sure you have dalekjs installed by :
+```
+npm install dalek-cli -g
+npm install dalekjs --save-dev
+```
+then run:
+```
+dalek test/test.js
+```
+
 To start the website navigation, go to localhost:8080/home
 
 TIP:
