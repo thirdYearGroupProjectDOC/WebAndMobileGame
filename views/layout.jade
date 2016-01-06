@@ -136,12 +136,12 @@ html(lang='en')
                                             li
                                                 a(href='/delete-account') Delete Account
                             if !displayName
-                                a.button(style="margin-left: 10px; margin-top: 25px;", href='register')
+                                a.button#signup(style="margin-left: 10px; margin-top: 25px;", href='register')
                                   | Sign Up
-                                a.button(style="margin-top: 25px;",href='login')
+                                a.button#signin(style="margin-top: 25px;",href='login')
                                   | Sign In
                             else
-                                a.button(style="margin-top: 25px;",href='logout')
+                                a.button#logout(style="margin-top: 25px;",href='logout')
                                   | Log out
                                 .welcome-message(style="display: inline-block; margin-top: 30px; margin-right: 20px; float: right")
                                   | Welcome, #{displayName}
