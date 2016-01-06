@@ -3,6 +3,7 @@ module.exports = {
 	'Testing signup error checking, for local host': function (test){
 		test
 			.open('http://localhost:8080')
+			.wait(1000)
 			.assert.title().is('Welcome','title is right')
 			.assert.exists('#jump_to_home','exist home page')
 			.screenshot('screenshots/signup/welcome page.png')
@@ -17,6 +18,7 @@ module.exports = {
      		.click('#welcome_signup')
      		// since click on sign up on welcomepage should redirect to signup page
      		.screenshot('screenshots/signup/welcome unmatched password.png')
+			.wait(1000)
 			.assert.exists('#signup_signup','fails register, redirect to sign up page ')
      		
      		//existing username
@@ -27,6 +29,7 @@ module.exports = {
      		.type('#signup_pss', 'admin')
      		.type('#signup_pssconf', 'admin')
      		.click('#signup_signup')
+			.wait(1000)
      		.assert.exists('#signup_signup','fails register, redirect to sign up again')
      		.screenshot('screenshots/signup/register with existing username.png')
 
@@ -34,12 +37,12 @@ module.exports = {
      		//short password, for now only workes under chrome
      		.type('#displayName', 'displayname')
     		.assert.val('#displayName', 'displayname', 'displayText has been set')
-			.type('#signup_usr', 'whatever')
+			.type('#signup_usr', 'adfs')
      		.type('#signup_pss', 'ps')
      		.type('#signup_pssconf', 'ps')
      		.click('#signup_signup')
-     		.assert.exists('#signup_signup','fails register, redirect to sign up again')
      		.screenshot('screenshots/signup/register with short password.png')
+     		.assert.exists('#signup_signup','fails register, redirect to sign up again')
 
 
 
