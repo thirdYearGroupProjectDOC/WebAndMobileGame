@@ -287,15 +287,15 @@ html
             if errormsg
               div(class="alert alert-danger")
                 p #{errormsg}
-            input(type="text", class="form-control", placeholder="Display name", name ="displayName", required, autofocus)
-            input(type="text", class="form-control", placeholder="Username", name="username", required)
-            input(type="password", class="form-control", placeholder="Password (More than 4 characters)", name="password", pattern="\\S{4}\\S*",required)
-            input(type="password", class="form-control", placeholder="Confirm password", name="password2", required)
+            input#welcome_display(type="text", class="form-control", placeholder="Display name", name ="displayName", required, autofocus)
+            input#welcome_usr(type="text", class="form-control", placeholder="Username", name="username", required)
+            input#welcome_pss(type="password", class="form-control", placeholder="Password (More than 4 characters)", name="password", pattern="\\S{4}\\S*",required)
+            input#welcome_pssconf(type="password", class="form-control", placeholder="Confirm password", name="password2", required)
             div(style="margin: 0 auto; display: table; width: 200px")
-              button(type="submit", class='button', style="float:initial; margin-left: 10px; display: table-column; width: 80px") Sign up
-              button(href="/home", data-dismiss="modal", class='button', style="float:initial; margin-left: 10px; display: table-column; width: 80px") Cancel
+              button#welcome_signup(type="submit", class='button', style="float:initial; margin-left: 10px; display: table-column; width: 80px") Sign up
+              button#welcome_cancel(href="/home", data-dismiss="modal", class='button', style="float:initial; margin-left: 10px; display: table-column; width: 80px") Cancel
         .jump_to_home
-          button(data-action="bea",onclick="redirect()") Jump To Homepage
+          button#jump_to_home(data-action="bea",onclick="redirect()") Jump To Homepage
           script.
             function redirect() {
               window.location.href = '/home'

@@ -59,6 +59,7 @@
   },
   "devDependencies": {
     "dalekjs": "0.0.9",
-    "dalek-reporter-html": "0.0.4"
+    "dalek-reporter-html": "0.0.4",
+    "dalek-browser-chrome": "0.0.11"
   }
 }
