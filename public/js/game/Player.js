@@ -43,7 +43,7 @@ function Player(){
 	// used in main loop for moving on canvas
 	player.xmov = 0;
 	player.ymov = 0;
-	player.speed = tile_size/60;
+	player.speed = 2;
 	player.wait = 0;
 
 	MAP_STAGE.addChild(player);

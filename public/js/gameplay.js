@@ -111,6 +111,11 @@ if (create_level) {
   //START BUTTON
   start_button = createButton(zero_x+tile_size*3,y,'assets/spt_inst_start.png',start_function);
   stage.removeChild(start_button);
+  
+  // speed change button
+  speed_button = createButton(zero_x+tile_size*7.5,y,
+    'assets/spt_speed_button.png',speed_times_two,1,speed_reset);
+
   //START FRAME
   var start_frame_tex = PIXI.Texture.fromImage('assets/execute_frame.png');
   var start_frame = new PIXI.Sprite(start_frame_tex);

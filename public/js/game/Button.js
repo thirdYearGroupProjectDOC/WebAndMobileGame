@@ -1,4 +1,4 @@
-function createButton(x,y,img,func,w){
+function createButton(x, y, img, func, w, func2){
   var start_tex = PIXI.Texture.fromImage(img);
   var button = new PIXI.Sprite(start_tex);
   button.width = tile_size*2;
@@ -14,6 +14,8 @@ function createButton(x,y,img,func,w){
   button.interactive = true;
 
   button.func = func;
+  button.func2 = func2;
+  button.down = false;
 
   button
       // set the mousedown and touchstart callback...
@@ -50,8 +52,20 @@ function onButtonDown()
 
 function onButtonUp()
 {
-    this.isdown = false;
-   this.func();
+    if(!this.func2){
+      this.func();
+    }else{
+
+      if(!this.down){
+        this.alpha = 0.5;
+        this.down = true;
+        this.func();
+      }else{
+        this.alpha = 1;
+        this.down = false;
+        this.func2();
+      }
+    }
 }
 
 function onButtonOver()
