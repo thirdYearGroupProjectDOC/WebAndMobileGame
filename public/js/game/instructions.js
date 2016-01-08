@@ -3,7 +3,7 @@
 // and where the execution stack lives
 gap = tile_size * 1.5;
 // length of instructions on a single column 
-limit = 6; 
+limit = 12; 
 
 inst_gap_h = 18;
 
@@ -22,7 +22,7 @@ function check_inst_region(x,y){
 
     var res = (x > gap) && (x < gap+tile_size*2 + x_ )&&
           (y > tile_size/2) &&
-          (y < tile_size/2+(tile_size+instQueue.gap)*(y_+1));
+          (y < tile_size/4+(tile_size/2+instQueue.gap)*(y_+1));
     if(res){
       //show_msg('x :' +x+ 'y: '+y);
     }
@@ -32,9 +32,10 @@ function check_inst_region(x,y){
 
 function to_Inst_pos(x,y){
 
+  // calculate x displacement
   var xp = Math.floor((x - gap + inst_gap_h) / (tile_size*2 + inst_gap_h));
   //show_msg(Math.floor( x - gap));
-  return ( xp * limit +  Math.floor((y + tile_size/2 )/(tile_size + instQueue.gap) ) -1) ;
+  return ( xp * limit +  Math.floor((y + tile_size/4 )/(tile_size/2 + instQueue.gap) ) -1) ;
 }
 
 
@@ -167,7 +168,7 @@ function onInstDragMove(){
           INST_BUTTON_STAGE.addChild(nxt_pos);
           nxt_pos.x = gap;
           // uncomment if need the indicater when instqueue longer than 1
-          nxt_pos.y = tile_size/2 ;//+ (tile_size+instQueue.gap)*(instQueue.length);
+          nxt_pos.y = tile_size/4 ;//+ (tile_size+instQueue.gap)*(instQueue.length);
  
         }else{
           INST_BUTTON_STAGE.removeChild(nxt_pos);
@@ -184,7 +185,8 @@ function onInstDragMove(){
           
           // loop time text follow instructions
           this.loop_txt.x = this.x;
-          this.loop_txt.y = this.y;
+          // minus text' fonts size by half
+          this.loop_txt.y = this.y-10;
         }
 
     }
@@ -252,7 +254,7 @@ function createInstructionParts(x,y,img, inst, active){
   part.buttonMode = true;
   part.anchor.set(0.5);
   part.width = tile_size*2;
-  part.height = tile_size;
+  part.height = tile_size/2;
   part.position.x = x;
   part.position.y = y;
   // to distinguish between turning road and dragging road 
