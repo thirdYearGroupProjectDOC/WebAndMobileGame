@@ -190,7 +190,7 @@ count = 0;
 store = 0;
 // intervel between reading instructions
 // size/speed is the time each instruction takes
-var intervel = tile_size/player.speed + 5;
+intervel = tile_size/player.speed + 10;
 
 // current instruction, last instruction
 // cur_inst is currently updated at every instruction onInstEnd method
@@ -226,7 +226,7 @@ function animate(){
     //read instructions if player not moving and there are instructions to read,
     // count- store can be used to set time intervels 
     if (execute && player.xmov == 0 && player.ymov == 0 && cur_inst != null
-          && player.wait == 0 && instQueue.length != 0 && (count - store)>65) {
+          && player.wait == 0 && instQueue.length != 0 && (count - store)>intervel) {
       store = count;
 
       INST_BUTTON_STAGE.addChild(inst_frame);
