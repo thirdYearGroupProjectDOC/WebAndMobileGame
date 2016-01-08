@@ -273,7 +273,7 @@ function find_road(x,y,dir){
 congrats = false;
 
 function show_msg_board(msg){
-    if(congrats){
+    if(congrats || create_level){
       return;
     }
     congrats = true;

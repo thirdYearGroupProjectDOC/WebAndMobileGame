@@ -243,8 +243,8 @@ function animate(){
 
     //congratulation message
     if(on_map_boarder(player.pos_x,player.pos_y) &&
-        player.pos_x!=player.ox &&
-        player.pos_y!=player.oy &&
+        (player.pos_x!=player.ox ||
+        player.pos_y!=player.oy) &&
         player.xmov==0 &&
         player.ymov==0 ){
       show_msg_board('congratulations!');
