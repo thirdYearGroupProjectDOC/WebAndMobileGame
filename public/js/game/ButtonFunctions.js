@@ -191,10 +191,10 @@ function game_reset(){
 function speed_times_two(){
 
   player.speed = 5;
-
+  intervel = tile_size/player.speed + 5;
 }
 
 function speed_reset(){
   player.speed = 2;
-
+  intervel = tile_size/player.speed + 5;
 }
