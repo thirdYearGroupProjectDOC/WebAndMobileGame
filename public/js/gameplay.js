@@ -93,7 +93,7 @@ if (create_level) {
   clear_button = createButton(selects_x+tile_size*2,selects_y+tile_size*7,
     'assets/map_clear.png', map_clear);
 } else {
-  var y = zero_y+tile_size*map_size;
+  var y = zero_y+tile_size*map_size+tile_size*0.6;
 
   get_level_data(levelData.data);
   // STAGE TRANSFORM BUTTON
