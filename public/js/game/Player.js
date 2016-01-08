@@ -43,10 +43,8 @@ function Player(){
 	// used in main loop for moving on canvas
 	player.xmov = 0;
 	player.ymov = 0;
-	player.speed = tile_size/60;
+	player.speed = 2;
 	player.wait = 0;
-
-  player.dragged = false;
 
 	MAP_STAGE.addChild(player);
 	return player;
@@ -139,12 +137,6 @@ function playerDragEnd(){
       // set the interaction data to null
       this.data = null;
 
-      if(!this.dragged ){
-        this.face_dir = (this.face_dir + 1) % 4;
-        turn_animation(this,this.face_dir);
-      }
-      this.dragged = false;
-
       if(!check_tiling_region(this.x,this.y,this.name)){
         this.x = tile_size/2;
         this.y = tile_size/2;
@@ -161,7 +153,6 @@ function playerDragEnd(){
 function playerDragMove(){
   if (this.dragging)
     {
-        this.dragged = true;
         var newPosition = this.data.getLocalPosition(this.parent);
         // enter tiling region ( MAP )
         if(check_tiling_region(this.x,this.y,this.name)){
@@ -169,6 +160,17 @@ function playerDragMove(){
           this.x = newPosition.x - newPosition.x%tile_size + tile_size/2;
           this.y = newPosition.y - newPosition.y%tile_size + tile_size/2;
 
+          // automatically turn depends on position
+          if(toTilePos(this.x)==map_size-1){
+              this.face_dir = 3;
+            }else if(toTilePos(this.x)==0){
+              this.face_dir = 1;
+            }else if(toTilePos(this.y)==0){
+              this.face_dir = 2;
+            }else if(toTilePos(this.y)==map_size-1){
+              this.face_dir = 0;
+            }
+          turn_animation(this,this.face_dir);
         // put it to where mouse is
         }else{
           this.x = newPosition.x;

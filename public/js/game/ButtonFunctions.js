@@ -14,6 +14,7 @@ function start_function(){
     }
 
     // when executing instructions, can't go back and change road
+    speed_button.interactive = false;
     map_stage_button.interactive = false;
     reset_inst_button.interactive = false;
 }
@@ -146,6 +147,7 @@ function game_reset(){
     execute = false;
     map_stage_button.interactive = true;
     reset_inst_button.interactive = true;
+    speed_button.interactive = true;
 
     cur_inst = instQueue.head;
 
@@ -186,3 +188,13 @@ function game_reset(){
     step = 0;
 }
 
+function speed_times_two(){
+
+  player.speed = 5;
+
+}
+
+function speed_reset(){
+  player.speed = 2;
+
+}
