@@ -67,12 +67,15 @@ function onDragEnd(){
       this.data = null;
 
       // click on piece will simply turn
+      
+      if (this.name != 'monster' && this.name != 'tree'){
       if(this.dragged != true){
           this.turn();
           if(!check_tiling_region(this.x,this.y,this.name)){
             this.generator.indicater.turn();
           }
       }
+    }
       this.pos_x = toTilePos(this.x);
       this.pos_y = toTilePos(this.y);
       this.dragged = false;

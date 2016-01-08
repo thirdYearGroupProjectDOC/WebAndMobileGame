@@ -174,7 +174,7 @@ nxt_pos.endFill();
 
 // indicater of execution of instructions
 var inst_frame = new PIXI.Sprite(start_frame_tex);
-inst_frame.height = tile_size;
+inst_frame.height = tile_size/2;
 inst_frame.width = tile_size*2;;
 inst_frame.anchor.set(0.5);
 //stage.addChild(inst_frame);
