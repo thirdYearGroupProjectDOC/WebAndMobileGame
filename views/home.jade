@@ -2,6 +2,10 @@ extends layout
 
 block content
   h1= title
-  p Welcome to #{title}
+  p Welcome to our game! Here is a brief tutorial of how to play it.
+  p Level Creation:
+  img(src="assets/tutorial_create.png")
+  p 
+  p Level Solving:
+  img(src="assets/tutorial_play.png")
   canvas#map(width=500, height=400)
- 
