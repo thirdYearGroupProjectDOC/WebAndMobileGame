@@ -68,7 +68,7 @@ if(create_level){
   var road_monster = new MapPartsGenerator(selects_x + tile_size*2,selects_y+tile_size*1.5 ,
     'assets/spt_monster.png','monster',0,25);
   var road_tree = new MapPartsGenerator(selects_x + tile_size*2,selects_y+tile_size*3,
-    'assets/Newburg/rock.png','tree',0,25);
+    'assets/spt_tree.png','tree',0,25);
   var road_end = new MapPartsGenerator(selects_x + tile_size*2,selects_y+tile_size*4.5,
     'assets/spt_road_end.png','end',0,25);
 
@@ -77,11 +77,11 @@ if(create_level){
 }
 
 var road_corner = new MapPartsGenerator(selects_x ,selects_y+tile_size*1.5,
-  'assets/Newburg/road_turn.png','corner',0,pieces.corner);
+  'assets/spt_road_corner.png','corner',0,pieces.corner);
 var road_straight = new MapPartsGenerator(selects_x,selects_y+tile_size*3,
-  'assets/Newburg/road_straight.png','straight',0,pieces.straight);
+  'assets/spt_road_straight.png','straight',0,pieces.straight);
 var road_t = new MapPartsGenerator(selects_x,selects_y+tile_size*4.5,
-  'assets/Newburg/road_t.png','t',0,pieces.t);
+  'assets/spt_road_t.png','t',0,pieces.t);
 
 // create player
 var player = Player();
@@ -91,7 +91,7 @@ var player = Player();
 if (create_level) {
   stage.removeChild(INST_BUTTON_STAGE);
   clear_button = createButton(selects_x+tile_size*2,selects_y+tile_size*7,
-    'assets/map_clear.png', map_clear);
+    'assets/clear_button.png', map_clear);
 } else {
   var y = zero_y+tile_size*map_size+tile_size*0.6;
 
@@ -103,7 +103,7 @@ if (create_level) {
     'assets/previous.png',to_map_part,1);
   stage.removeChild(map_stage_button);
   //RESET BUTTON 
-  reset_road_button = createButton(zero_x+tile_size*4,y,'assets/map_clear.png',road_reset);
+  reset_road_button = createButton(zero_x+tile_size*4,y,'assets/clear_button.png',road_reset);
   reset_game_button = createButton(zero_x+tile_size*4.7,y,'assets/stop_button.png',game_reset,1);
   stage.removeChild(reset_game_button);
   reset_inst_button = createButton(zero_x+tile_size*6,y,'assets/inst_clear.png',inst_reset,1);
@@ -117,7 +117,7 @@ if (create_level) {
     'assets/spt_speed_button.png',speed_times_two,1,speed_reset);
 
   //START FRAME
-  var start_frame_tex = PIXI.Texture.fromImage('assets/execute_frame.png');
+  var start_frame_tex = PIXI.Texture.fromImage('assets/executing_frame.png');
   var start_frame = new PIXI.Sprite(start_frame_tex);
   start_frame.x = start_button.x;
   start_frame.y = start_button.y;
@@ -252,6 +252,7 @@ function animate(){
         player.pos_y!=player.oy) &&
         player.xmov==0 &&
         player.ymov==0 ){
+      execute = false;
       show_msg_board('congratulations!');
 
     }

@@ -287,7 +287,7 @@ function show_msg_board(msg){
     text.y = tile_size*height/2;
 
     var bg = new PIXI.Graphics();
-    bg.lineStyle(2, 0xF1510B, 1);
+    bg.lineStyle(2, 0x0066CC, 1);
     bg.beginFill(0xF1510B, 1);
     bg.drawRoundedRect(0, 0, tile_size*width, tile_size*height, 15);
     bg.endFill();

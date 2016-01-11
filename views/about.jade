@@ -25,6 +25,11 @@ block content
             border: 1px solid transparent;
             margin-top: 10px;
           }
+          p.introduction-text {
+            width: 320px;
+            height:180px;
+            border:hidden;
+          }
           .picture-box {
             display: inline-block;
           }
@@ -32,15 +37,15 @@ block content
            .about-box(style="width: 350px;")
              p 
                .title-text
-                 | Game Name
-             p XX is a fun and interactive web based game
-             p designed to teach you fundamental
-             p programming. The original board-like game
-             p named 'Labyrinth' is an initiative by
-             p TuringLab. It was formed by four Imperial
-             p College Graduates intending to teach
-             p children to code based on the national
-             p curriculum in computing, maths and science.
+                 | Introduction
+             p.introduction-text
+                |<strong>Labyrinth</strong> is a fun and interactive web based game <br>
+                |designed to teach you fundamental programming. <br>
+                |The original board-like game named 'Labyrinth' is an  <br>
+                |initiative by TuringLab. It was formed by four Imperial  <br>
+                |College Graduates intending to teach children to  <br>
+                |code based on the national curriculum in  <br>
+                |computing, maths and science.
              p 
                a.title-text
                  | > More about TuringLab
