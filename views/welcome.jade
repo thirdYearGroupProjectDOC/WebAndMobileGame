@@ -42,17 +42,21 @@ html
         margin-top: 50px;
         float: left;
       }
-      .logo_pic img {
-        width: 40%;
-        border-radius: 50%;
+      .logo_pic#monkey {
+        margin-left:120px;
+        width: 20%;
         float: left;
         margin-top: 5%;
       }
-      .right-panel {
-        float: right;
-        width: 320px;
-        /*border: 3px solid green;*/
-        height: 500px;
+      .middle-panel {
+        float: left;
+        width: 40%;
+        height: 600px;
+      }
+      .logo_pic#rabbit {
+        float: left;
+        width: 30%;
+        margin-top: 5%;
       }
       .toggle-buttons {
         margin-left: auto;
@@ -178,12 +182,18 @@ html
         -moz-user-select: none;
         background-image: none;
         border: 1px solid transparent;
-        margin-top: 10px;
+        margin-top: 20px;
       }
       button:hover {
         background-color: #a06002;
         border-color: #a06002;
         text-decoration: none;
+      }
+      input {
+        height: 30px;
+      }
+      input#welcome_display {
+        margin-top: 20px;
       }
       .form-signup input[type=password],
       .form-signup input[type=text],
@@ -259,9 +269,9 @@ html
         padding-left: 13px;
       }
     .body-content
-      .logo_pic
-        img(src="http://canineplanet.net/wp-content/uploads/2014/08/cute-dog-2014-08-22.jpg")
-      .right-panel
+      .logo_pic#monkey
+        img(src="assets/Newburg/monkey/right.png")
+      .middle-panel
         .toggle-buttons
           button.toggle#signin_toggle(data-action="bea", onclick="toggleSignin()") Sign In
           script.
@@ -283,7 +293,7 @@ html
           img.profile-img-card(src="//ssl.gstatic.com/accounts/ui/avatar_2x.png")
           form(class="form-signin", name="login", action="/login", method="post")
             input(type="text", class="form-control", name="username", placeholder="Username")
-            input(type="password", class="form-control", name="password", placeholder="password")
+            input(type="password", class="form-control", name="password", placeholder="Password")
             div(style="margin: 0 auto; display: table;")
               button(type="submit", class='button', style="float:initial; width: 80px") Log In
         .card-container#sign_up_board
@@ -305,6 +315,8 @@ html
             function redirect() {
               window.location.href = '/home'
             }
+      .logo_pic#rabbit
+        img(src="assets/Newburg/rabbit/rabbit_left.png")
     .footer-container
       .footer_inner_wrapper
         p
