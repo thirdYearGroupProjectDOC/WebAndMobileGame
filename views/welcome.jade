@@ -1,5 +1,9 @@
 doctype html
 html
+  style.
+    html {
+      height: 100%;
+    }
   head
     title= title
     link(rel='stylesheet', href='/stylesheets/style.css')
@@ -15,6 +19,7 @@ html
   body
     style.
       body {
+        height:100%;
         padding: 0;
         margin-left: 0;
         background-color: #ff9a03;
@@ -300,10 +305,10 @@ html
             function redirect() {
               window.location.href = '/home'
             }
-  footer
     .footer-container
+      .footer_inner_wrapper
         p
-        | © Some Project @ Imperial College London 2015
+        | © Labyrinth @ Imperial College London 2015
         | ·
         a(href='/about') Group 4
     

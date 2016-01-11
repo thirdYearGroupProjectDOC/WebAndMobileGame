@@ -1,11 +1,29 @@
 extends layout
 
 block content
+  style.
+    #left-section {
+      width: 40%;
+      float:left;
+    }
+    #right-section {
+      width:40%;
+      float:right;
+    }
+    p.section-title {
+        font-size: 16px;
+        font-weight: bold;
+        text-align: center;
+        margin: 10px 0 10;
+        min-height: 1em;
+    }
   h1= title
   p Welcome to our game! Here is a brief tutorial of how to play it.
-  p Level Creation:
-  img(src="assets/tutorial_create.png")
-  p 
-  p Level Solving:
-  img(src="assets/tutorial_play.png")
-  canvas#map(width=500, height=400)
+  section#left-section
+    p.section-title Level Creation:
+    img(src="assets/tutorial_create.png")
+
+  section#right-section
+    p.section-title Level Solving:
+    img(src="assets/tutorial_play.png")
+  canvas#map(width=500, height=200)
