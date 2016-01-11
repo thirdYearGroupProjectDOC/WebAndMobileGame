@@ -21,43 +21,58 @@ html
       body {
         height:100%;
         padding: 0;
-        margin-left: 0;
-        background-color: #ff9a03;
+        margin: 0;
+        background-color: #fa9a03;
         overflow-x: hidden;
       }
       .body-content {
-        padding: 80px;
+        width: 100%;
+        min-height: 100%;
+        height: auto !important;
+        height: 100%;
+        margin: 0px 0px -41px 0px;
       }
-      section {
-        width: 80%;
-        height: 700px;
-        margin: auto;
-        padding: 30px;
+       .title-text {
+        height: 40px;
+        color: #D1F619;
+        font-weight: 600;
+        horizontal-align: center;
+        font-size: 130px;
+        text-align: center;
+        margin-top: 5%;
       }
       .footer-container {
+        width: 100%;
+        height: 41px;
         background-color: #d68000;
         border-width: 0;
-        width: 100%;
-        padding: 20px 50px;
-        margin-top: 50px;
         float: left;
       }
       .logo_pic#monkey {
-        margin-left:120px;
-        width: 20%;
+        width: 30%;
         float: left;
-        margin-top: 5%;
+        margin-top: 15%;
+      }
+      .logo_pic#monkey img {
+        float: right;
       }
       .middle-panel {
         float: left;
         width: 40%;
-        height: 600px;
+        margin-top: 10%;
       }
       .logo_pic#rabbit {
         float: left;
         width: 30%;
-        margin-top: 5%;
+        margin-top: 15%;
       }
+      .content_wrapper {
+        width: 100%;
+        padding: 0px 0px 41px 0px;
+       }
+      .footer-container, .content-wrapper {
+             min-width: 942px;
+       }
       .toggle-buttons {
         margin-left: auto;
         margin-right: auto;
@@ -269,58 +284,60 @@ html
         padding-left: 13px;
       }
     .body-content
-      .logo_pic#monkey
-        img(src="assets/Newburg/monkey/right.png")
-      .middle-panel
-        .toggle-buttons
-          button.toggle#signin_toggle(data-action="bea", onclick="toggleSignin()") Sign In
-          script.
-            function toggleSignin() {
-              document.getElementById("sign_in_board").style.display = 'block';
-              document.getElementById("signin_toggle").style.backgroundColor = '#a06002';
-              document.getElementById("sign_up_board").style.display = 'none';
-              document.getElementById("signup_toggle").style.backgroundColor = '#d68000';
-            }
-          button.toggle#signup_toggle(data-action="bea", onclick="toggleSignup()") Sign Up
-          script.
-            function toggleSignup() {
-              document.getElementById("sign_up_board").style.display = 'block';
-              document.getElementById("signup_toggle").style.backgroundColor = '#a06002';
-              document.getElementById("sign_in_board").style.display = 'none';
-              document.getElementById("signin_toggle").style.backgroundColor = '#d68000';
-            }
-        .card-container#sign_in_board
-          img.profile-img-card(src="//ssl.gstatic.com/accounts/ui/avatar_2x.png")
-          form(class="form-signin", name="login", action="/login", method="post")
-            input(type="text", class="form-control", name="username", placeholder="Username")
-            input(type="password", class="form-control", name="password", placeholder="Password")
-            div(style="margin: 0 auto; display: table;")
-              button(type="submit", class='button', style="float:initial; width: 80px") Log In
-        .card-container#sign_up_board
-          p.profile-name-card#profile-name
-          form(class="form-signin", role="form", method="post", action="/register")
-            if errormsg
-              div(class="alert alert-danger")
-                p #{errormsg}
-            input#welcome_display(type="text", class="form-control", placeholder="Display name", name ="displayName", required, autofocus)
-            input#welcome_usr(type="text", class="form-control", placeholder="Username", name="username", required)
-            input#welcome_pss(type="password", class="form-control", placeholder="Password (More than 4 characters)", name="password", pattern="\\S{4}\\S*",required)
-            input#welcome_pssconf(type="password", class="form-control", placeholder="Confirm password", name="password2", required)
-            div(style="margin: 0 auto; display: table; width: 200px")
-              button#welcome_signup(type="submit", class='button', style="float:initial; margin-left: 10px; display: table-column; width: 80px") Sign up
-              button#welcome_cancel(href="/home", data-dismiss="modal", class='button', style="float:initial; margin-left: 10px; display: table-column; width: 80px") Cancel
-        .jump_to_home
-          button#jump_to_home(data-action="bea",onclick="redirect()") Jump To Homepage
-          script.
-            function redirect() {
-              window.location.href = '/home'
-            }
-      .logo_pic#rabbit
-        img(src="assets/Newburg/rabbit/rabbit_left.png")
+      .content-wrapper
+        .title-text Labyrinth
+        .logo_pic#monkey
+          img(src="assets/Newburg/monkey/right.png")
+        .middle-panel
+          .toggle-buttons
+            button.toggle#signin_toggle(data-action="bea", onclick="toggleSignin()") Sign In
+            script.
+              function toggleSignin() {
+                document.getElementById("sign_in_board").style.display = 'block';
+                document.getElementById("signin_toggle").style.backgroundColor = '#a06002';
+                document.getElementById("sign_up_board").style.display = 'none';
+                document.getElementById("signup_toggle").style.backgroundColor = '#d68000';
+              }
+            button.toggle#signup_toggle(data-action="bea", onclick="toggleSignup()") Sign Up
+            script.
+              function toggleSignup() {
+                document.getElementById("sign_up_board").style.display = 'block';
+                document.getElementById("signup_toggle").style.backgroundColor = '#a06002';
+                document.getElementById("sign_in_board").style.display = 'none';
+                document.getElementById("signin_toggle").style.backgroundColor = '#d68000';
+              }
+          .card-container#sign_in_board
+            img.profile-img-card(src="//ssl.gstatic.com/accounts/ui/avatar_2x.png")
+            form(class="form-signin", name="login", action="/login", method="post")
+              input(type="text", class="form-control", name="username", placeholder="Username")
+              input(type="password", class="form-control", name="password", placeholder="Password")
+              div(style="margin: 0 auto; display: table;")
+                button(type="submit", class='button', style="float:initial; width: 80px") Log In
+          .card-container#sign_up_board
+            p.profile-name-card#profile-name
+            form(class="form-signin", role="form", method="post", action="/register")
+              if errormsg
+                div(class="alert alert-danger")
+                  p #{errormsg}
+              input#welcome_display(type="text", class="form-control", placeholder="Display name", name ="displayName", required, autofocus)
+              input#welcome_usr(type="text", class="form-control", placeholder="Username", name="username", required)
+              input#welcome_pss(type="password", class="form-control", placeholder="Password (More than 4 characters)", name="password", pattern="\\S{4}\\S*",required)
+              input#welcome_pssconf(type="password", class="form-control", placeholder="Confirm password", name="password2", required)
+              div(style="margin: 0 auto; display: table; width: 200px")
+                button#welcome_signup(type="submit", class='button', style="float:initial; margin-left: 10px; display: table-column; width: 80px") Sign up
+                button#welcome_cancel(href="/home", data-dismiss="modal", class='button', style="float:initial; margin-left: 10px; display: table-column; width: 80px") Cancel
+          .jump_to_home
+            button#jump_to_home(data-action="bea",onclick="redirect()") Jump To Homepage
+            script.
+              function redirect() {
+                window.location.href = '/home'
+              }
+        .logo_pic#rabbit
+          img(src="assets/Newburg/rabbit/rabbit_left.png")
     .footer-container
       .footer_inner_wrapper
-        p
+        p.footer-content
         | © Labyrinth @ Imperial College London 2015
         | ·
-        a(href='/about') Group 4
+        a(href='/about')  Group 4
     
