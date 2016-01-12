@@ -283,13 +283,13 @@ function show_msg_board(msg){
 
     var text = new PIXI.Text(msg, { font: 'bold 25px Arial', align: 'center', stroke: '#FFFFFF', strokeThickness: 5 });
     text.anchor.set(0.5);
-    text.x = tile_size*width/3;
+    text.x = tile_size*width/2;
     text.y = tile_size*height/2;
 
     var bg = new PIXI.Graphics();
     bg.lineStyle(2, 0x0066CC, 1);
-    bg.beginFill(0xF1510B, 1);
-    bg.drawRoundedRect(0, 0, tile_size*width, tile_size*height, 15);
+    bg.beginFill(0xFF8000, 1);
+    bg.drawRoundedRect(0, 0, tile_size*(width+2), tile_size*height, 15);
     bg.endFill();
 
     var f = function(){
@@ -298,7 +298,7 @@ function show_msg_board(msg){
       reset_game_button.interactive = true;
       game_reset();
     }
-    var button = createButton(tile_size*width*4/5,tile_size*height/2,'assets/smile.jpg',f,1);
+    var button = createButton(tile_size*(width+1),tile_size*height/2,'assets/smile.jpg',f,1);
     button.gen = this;
 
 

@@ -253,7 +253,7 @@ function animate(){
         player.xmov==0 &&
         player.ymov==0 ){
       execute = false;
-      show_msg_board('congratulations!');
+      show_msg_board('You succeed! Congratulations!');
 
     }
 
