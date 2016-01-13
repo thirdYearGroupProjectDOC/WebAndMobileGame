@@ -105,7 +105,7 @@ function onInstDragEnd(event){
 
   // drag instruction piece to outside will make it be returned to deck
   if((!check_inst_region(this.x,this.y)
-      && this.x!=this.generator.x && this.y != this.generator.y
+      && (this.x!=this.generator.x || this.y != this.generator.y)
       )|| to_Inst_pos(this.x, this.y) > instQueue.length ){
     if (this.generator.count == 0) {
           this.generator.count = 2;
@@ -135,7 +135,7 @@ function onInstDragMove(){
           this.generator.gen();
         }
         var newPosition = this.data.getLocalPosition(this.parent);
-        if(check_inst_region(newPosition.x,this.y)){
+        if(check_inst_region(newPosition.x,newPosition.y)){
 
 
           var x_ = Math.floor((newPosition.x-gap+inst_gap_h)/((tile_size*2 + inst_gap_h))) ;
