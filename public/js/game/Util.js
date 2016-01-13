@@ -110,7 +110,7 @@ function set_level_data(){
 
   if(!validation()){
     verified = false;
-    alert('you changed the road didn\'t you? ');
+    show_msg_board('You changed the road didn\'t you? ', 0x40E0D0, 'assets/suspicious_face.png');
   }else{
 
     map_to_pass = [];
@@ -255,7 +255,7 @@ function find_road(x,y,dir){
 congrats = false;
 
 function show_msg_board(msg, backgroundColor, buttonImg){
-    if(congrats || create_level){
+    if(congrats){
       return;
     }
     congrats = true;

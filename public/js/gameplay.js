@@ -9,8 +9,11 @@ $("#saveButton").click(function(event) { // when save button clicked
   if(verified){
     set_level_data();
     console.log(levelInfo);
-    $.post( '/test',{author:'Sam',LevelInfo:JSON.stringify(levelInfo)}, function(data) { // post the parameter a2 to test.js
-      alert('succesfully created level!'); //alert the data after getting reply
+    $.post( '/test',{author:'Sam',LevelInfo:JSON.stringify(levelInfo)}, function(data) {
+        // post the parameter a2 to test.js
+        show_msg_board('Successfully created level!\n Goto level selection to begin playing!',
+            0x48D1CC, 'assets/smile_face.png');
+
     });
     // prevent game board becomes invalid again
     LevelInfo = null;
@@ -23,10 +26,12 @@ $("#saveButton").click(function(event) { // when save button clicked
 $("#verifyButton").click(function(event) { // when save button clicked
   if(validation()){
     verified = true;
-    alert('The road is valid! \n you can now publish the level ');
+
+    show_msg_board('The road is valid! \nYou can now publish this level.', 0x87CEFA, 'assets/tick.png');
   }else{
     verified = false;
-    alert('Can\'t find valid road :( ');   
+      show_msg_board('The road is not valid! \n Try again!', 0x008080, 'assets/ok_button.png');
+
   }
 });
 
@@ -246,8 +251,9 @@ function animate(){
         player.xmov==0 &&
         player.ymov==0 ){
       execute = false;
-      show_msg_board('You succeed! Congratulations!', 0xFF8000, 'assets/smile_face.png');
-
+        if(!createLevel) {
+            show_msg_board('You succeed! Congratulations!', 0xFF8000, 'assets/smile_face.png');
+        }
     }
 
     count += 1;
