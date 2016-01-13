@@ -251,7 +251,7 @@ function animate(){
         player.xmov==0 &&
         player.ymov==0 ){
       execute = false;
-        if(!createLevel) {
+        if(!create_level) {
             show_msg_board('You succeed! Congratulations!', 0xFF8000, 'assets/smile_face.png');
         }
     }
