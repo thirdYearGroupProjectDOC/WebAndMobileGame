@@ -23,9 +23,6 @@ function check_inst_region(x,y){
     var res = (x > gap) && (x < gap+tile_size*2 + x_ )&&
           (y > tile_size/2) &&
           (y < tile_size/4+(tile_size/2+instQueue.gap)*(y_+1));
-    if(res){
-      //show_msg('x :' +x+ 'y: '+y);
-    }
     return res;
 }
 
@@ -47,10 +44,6 @@ function onInstDragStart(event){
     this.dragging = true;
 
     this.dragged = false;
-    /*
-    INSTRUCT_STAGE.addChild(this);
-    INST_BUTTON_STAGE.remove(this);
-*/
 }
 
 function onInstDragEnd(event){
@@ -121,7 +114,6 @@ function onInstDragEnd(event){
   }
 
   cur_inst = instQueue.head;
-//  show_msg('get here: execute: '+execute);
   }
 }
 
@@ -168,7 +160,7 @@ function onInstDragMove(){
           INST_BUTTON_STAGE.addChild(nxt_pos);
           nxt_pos.x = gap;
           // uncomment if need the indicater when instqueue longer than 1
-          nxt_pos.y = tile_size/4 ;//+ (tile_size+instQueue.gap)*(instQueue.length);
+          nxt_pos.y = tile_size/4 ;
  
         }else{
           INST_BUTTON_STAGE.removeChild(nxt_pos);
@@ -191,10 +183,6 @@ function onInstDragMove(){
 
     }
 }
-
-
-
-
 
 
 //create instruction button
@@ -303,13 +291,11 @@ function createInstructionParts(x,y,img, inst, active){
     countTxt.y = part.y - 5;
     part.loop_txt = countTxt;
     INST_BUTTON_STAGE.addChild(countTxt);
-    //INST_BUTTON_STAGE.swapChildren(countTxt,part);
     part.dec = function(){
       if(this.loop_count>0){
         this.loop_count--;
         this.loop_txt.setText(''+this.loop_count); 
 
-//        show_msg('in dec:'+this.loop_count)
         return 0;
       }else{
         return -1;

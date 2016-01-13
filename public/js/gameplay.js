@@ -129,9 +129,7 @@ if (create_level) {
 // executing instructions from this list
 var instQueue = new LinkedList();
 
-
 var step = null;
-
 
 var INST_BUTTON_STAGE = new PIXI.Container();
 var INST_BUTTON_TXT_STAGE = new PIXI.Container();
@@ -206,9 +204,6 @@ text.y= 100;
 stage.addChild(text);
 
 
-
-
-
 animate();
 function animate(){
     player.x += player.speed*Math.sign(player.xmov);
@@ -232,8 +227,6 @@ function animate(){
       INST_BUTTON_STAGE.addChild(inst_frame);
       inst_frame.x = cur_inst.value.x;
       inst_frame.y = cur_inst.value.y;
-      /*text.text = cur_inst.value.inst + ', queue: ' + instQueue.length
-             +' player.xmov '+ player.xmov +' player.ymov ' + player.ymov;*/
       execute_inst_queue();
 
     }
@@ -253,15 +246,9 @@ function animate(){
         player.xmov==0 &&
         player.ymov==0 ){
       execute = false;
-      show_msg_board('You succeed! Congratulations!');
+      show_msg_board('You succeed! Congratulations!', 0xFF8000, 'assets/smile_face.png');
 
     }
-
-
-    /*else{
-      show_msg(start);
-      show_msg(instQueue.length);
-    }*/
 
     count += 1;
 }
