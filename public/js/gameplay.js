@@ -9,8 +9,11 @@ $("#saveButton").click(function(event) { // when save button clicked
   if(verified){
     set_level_data();
     console.log(levelInfo);
-    $.post( '/test',{author:'Sam',LevelInfo:JSON.stringify(levelInfo)}, function(data) { // post the parameter a2 to test.js
-      alert('succesfully created level!'); //alert the data after getting reply
+    $.post( '/test',{author:'Sam',LevelInfo:JSON.stringify(levelInfo)}, function(data) {
+        // post the parameter a2 to test.js
+        show_msg_board('Successfully created level!\n Goto level selection to begin playing!',
+            0x48D1CC, 'assets/smile_face.png');
+
     });
     // prevent game board becomes invalid again
     LevelInfo = null;
@@ -23,10 +26,12 @@ $("#saveButton").click(function(event) { // when save button clicked
 $("#verifyButton").click(function(event) { // when save button clicked
   if(validation()){
     verified = true;
-    alert('The road is valid! \n you can now publish the level ');
+
+    show_msg_board('The road is valid! \nYou can now publish this level.', 0x87CEFA, 'assets/tick.png');
   }else{
     verified = false;
-    alert('Can\'t find valid road :( ');   
+      show_msg_board('The road is not valid! \n Try again!', 0x008080, 'assets/ok_button.png');
+
   }
 });
 
@@ -130,9 +135,7 @@ if (create_level) {
 // executing instructions from this list
 var instQueue = new LinkedList();
 
-
 var step = null;
-
 
 var INST_BUTTON_STAGE = new PIXI.Container();
 var INST_BUTTON_TXT_STAGE = new PIXI.Container();
@@ -207,9 +210,6 @@ text.y= 100;
 stage.addChild(text);
 
 
-
-
-
 animate();
 function animate(){
     player.x += player.speed*Math.sign(player.xmov);
@@ -233,8 +233,6 @@ function animate(){
       INST_BUTTON_STAGE.addChild(inst_frame);
       inst_frame.x = cur_inst.value.x;
       inst_frame.y = cur_inst.value.y;
-      /*text.text = cur_inst.value.inst + ', queue: ' + instQueue.length
-             +' player.xmov '+ player.xmov +' player.ymov ' + player.ymov;*/
       execute_inst_queue();
 
     }
@@ -254,15 +252,10 @@ function animate(){
         player.xmov==0 &&
         player.ymov==0 ){
       execute = false;
-      show_msg_board('congratulations!');
-
+        if(!createLevel) {
+            show_msg_board('You succeed! Congratulations!', 0xFF8000, 'assets/smile_face.png');
+        }
     }
-
-
-    /*else{
-      show_msg(start);
-      show_msg(instQueue.length);
-    }*/
 
     count += 1;
 }

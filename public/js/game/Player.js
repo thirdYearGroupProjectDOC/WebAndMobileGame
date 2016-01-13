@@ -63,7 +63,7 @@ function player_move(dir){
 
   var cur = player.pos_y*map_size+player.pos_x;
   var dst = (player.pos_y+ymov)*map_size + player.pos_x+xmov;
-  //opsite direction
+  //opposite direction
   var op = (dir+2)%4;
 
   var on_road = false;
@@ -86,14 +86,15 @@ function player_move(dir){
     player.pos_y += ymov;
 
   }else{
-    show_msg('wrong direction!!');
+      var msg = 'Wrong direction. \n';
     if(!on_road){
-      show_msg('wrong direction on current road');
+        msg += 'Wrong direction on current road.\n';
     }
     if(!has_path){
-      show_msg('no road to your destination');
+        msg += 'No road to your destination.';
     }
-    
+      show_msg_board(msg, 0x00994C, 'assets/sad_face.png');
+
     // pause the game!
     execute = false;
     start_button.interactive = false;
@@ -147,7 +148,6 @@ function playerDragEnd(){
     }
 
     this.started = false;
-        
 }
 
 function playerDragMove(){

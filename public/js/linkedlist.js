@@ -65,13 +65,6 @@ LinkedList.prototype.remove = function(val){
 
 LinkedList.prototype.clear = function(){
     // not sure how to collect garbages in js
-    /*var h = this.head;
-
-    while (h) {
-      h = h.next;
-      var t = h;
-      delete t;
-    }*/
     this.head = null;
     this.length = 0;
     return 0;

@@ -42,7 +42,8 @@ var msg_rec = 0;
 var msg_rec_x = 200;
 // used for printing message on screen
 function show_msg(msg){
-    var spinningText = new PIXI.Text(msg, { font: 'bold 25px Arial', align: 'center', stroke: '#FFFFFF', strokeThickness: 5 });
+    var spinningText = new PIXI.Text(msg,
+        { font: 'bold 25px Arial', align: 'center', stroke: '#FFFFFF', strokeThickness: 5 });
 
     spinningText.anchor.set(0.5);
     spinningText.x = msg_rec_x;
@@ -90,7 +91,6 @@ function execute_inst_queue() {
 	        break;
 	    }
 
-//    last_inst = cur_inst;
     cur_inst = cur_inst.next;
 
 }
@@ -103,17 +103,14 @@ function on_map_corner(x,y){
     var check_x = (x==0 || x==map_size-1);
     var check_y = (y==0 || y==map_size-1);
     return check_y&&check_x;
-
 }
-
-
 
 // gather information and make it ready to sent to server
 function set_level_data(){
 
   if(!validation()){
     verified = false;
-    alert('you changed the road didn\'t you? ');
+    show_msg_board('You changed the road didn\'t you? ', 0x40E0D0, 'assets/suspicious_face.png');
   }else{
 
     map_to_pass = [];
@@ -175,7 +172,6 @@ function get_level_data(data){
   player.x = player.pos_x *tile_size+tile_size/2;
   player.y = player.pos_y *tile_size+tile_size/2;
   turn_animation(player,player.face_dir);
-  //show_msg('get_level_data: ' + data.map.length);
   for(i = 0; i < data.map.length; i++){
     if(m = data.map[i]){
       var a = createMapParts(m.x, m.y, m.img, m.name, false, m.turn);
@@ -201,7 +197,6 @@ function validation(){
 
   //player not on any map position
   if(dir==null){
-    //show_msg('not on map pieces');
     return false;
   }
 
@@ -215,7 +210,6 @@ function validation(){
 // recursive function to validate road conditions
 function find_road(x,y,dir){
 
-//  show_msg('calling ' + x + ' '+y);
   var xmov = (2-dir)*dir%2;
   var ymov = (dir-1)*(1-dir%2);
 
@@ -228,43 +222,31 @@ function find_road(x,y,dir){
   var op = (dir+2)%4;
   //player not on a road
   if(dirs_t==undefined || dirs_t==[]){
-    //show_msg('not on road');
     return false;
   }
 
   var dirs = (dirs_t.slice());
 
   if(on_map_boarder(x,y)){
-    //show_msg('x: ' + x + 'y: ' + y + 'dir'+dir);
-    //show_msg('reach boarder');
     return true;
   }
   // remove the dir just come from
   var index = dirs.indexOf(op);
   if(index > -1){
-    //show_msg('dirs before splice' + dirs);
     var removed = dirs.splice(index,1);
-    //show_msg('dirs remain:'+ dirs);
   }else{
-   //show_msg('pos: '+ x+y +'coming road: '+op + 'cur road: '+dirs);
-    //show_msg('not valid comming road');
-    // comming road is not valid
+    // coming road is not valid
     return false;
   }
 
   var res = false;
-  //show_msg('in recursion: dir length:'+dirs.length);
   for(var i = 0; i < dirs.length; i++){
-    //show_msg('i: ' + i +'length'+  dirs.length);
-    //show_msg(dirs.push(removed);
     res = res || arguments.callee(x,y,dirs[i]);
 
   }
 
   // may find a better way to solve splice modify map ,
   // idea: use slice, but this leads to other bugs.. check types next time
-  //
-  //show_msg(dirs);
   return res;
 }
 
@@ -272,8 +254,8 @@ function find_road(x,y,dir){
 // this boolean is used to prevent showing congradulation msg if there is already one
 congrats = false;
 
-function show_msg_board(msg){
-    if(congrats || create_level){
+function show_msg_board(msg, backgroundColor, buttonImg){
+    if(congrats){
       return;
     }
     congrats = true;
@@ -283,13 +265,13 @@ function show_msg_board(msg){
 
     var text = new PIXI.Text(msg, { font: 'bold 25px Arial', align: 'center', stroke: '#FFFFFF', strokeThickness: 5 });
     text.anchor.set(0.5);
-    text.x = tile_size*width/3;
+    text.x = tile_size*width/2;
     text.y = tile_size*height/2;
 
     var bg = new PIXI.Graphics();
     bg.lineStyle(2, 0x0066CC, 1);
-    bg.beginFill(0xF1510B, 1);
-    bg.drawRoundedRect(0, 0, tile_size*width, tile_size*height, 15);
+    bg.beginFill(backgroundColor, 1);
+    bg.drawRoundedRect(0, 0, tile_size*(width+2), tile_size*height, 15);
     bg.endFill();
 
     var f = function(){
@@ -298,7 +280,7 @@ function show_msg_board(msg){
       reset_game_button.interactive = true;
       game_reset();
     }
-    var button = createButton(tile_size*width*4/5,tile_size*height/2,'assets/smile.jpg',f,1);
+    var button = createButton(tile_size*(width+1),tile_size*height/2, buttonImg,f,1);
     button.gen = this;
 
 
@@ -308,7 +290,7 @@ function show_msg_board(msg){
 
     MSG_BOARD_STAGE.addChild(this.board);
 
-    //prevent user reest the game
+    //prevent user reset the game
     reset_game_button.interactive = false;
 
 }

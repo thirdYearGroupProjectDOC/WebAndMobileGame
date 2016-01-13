@@ -96,15 +96,12 @@ function onDragEnd(){
           //if there was no active pieces, put one on the pile,
           // else just increase count and update;
           if(gen.count == 0){
-            //show_msg('0');
             gen.count = 2;
             gen.gen();
           }else{
-            //show_msg('1');
             gen.count ++;
             gen.update();
           }
-          //show_msg('here, go back');
           ROAD_STAGE.removeChild(this);
           delete(this);
       }

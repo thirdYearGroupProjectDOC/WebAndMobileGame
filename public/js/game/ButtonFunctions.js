@@ -160,10 +160,6 @@ function game_reset(){
 
     // restore instructions buttons's count
     for(var i = 0; i < INST_BUTTON_STAGE.children.length; i++){
-      /*if(INST_BUTTON_STAGE.children[i].generator){
-
-        INST_BUTTON_STAGE.children[i].generator.reset();
-      }*/
       var c = INST_BUTTON_STAGE.children[i];
       c.interactive = true;
     }
@@ -174,8 +170,6 @@ function game_reset(){
         //show_msg('hh');
         var inst = temp_cur.value;
         if(inst.loop_count!=null){
-            //show_msg('h')
-            //show_msg('has loop count'+temp_cur.value.o_loop_count);
             inst.loop_count = inst.o_loop_count;
             inst.loop_txt.setText(inst.loop_count);
         }
