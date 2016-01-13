@@ -28,7 +28,7 @@ inst_dict = {forward: 0, right: 1, left: 2, for_loop: 3, if_stmt: 4, for_end:5};
 function map_bg_init(){
 	for (var j = 1; j < map_size-1; j++) {
 	    for (var i = 1; i < map_size-1; i++) {
-	        var bg = PIXI.Sprite.fromImage('assets/Newburg/floor1.png');
+	        var bg = PIXI.Sprite.fromImage('assets/floor.png');
 	        bg.x = tile_size * i;
 	        bg.y = tile_size * j;
 	        bg.height = tile_size;
