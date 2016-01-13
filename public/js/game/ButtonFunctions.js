@@ -29,6 +29,7 @@ function to_map_part(){
       p.interactive = true;
     }
   }
+  stage.removeChild(speed_button);
   stage.addChild(reset_road_button);
   stage.removeChild(reset_inst_button);
   stage.removeChild(reset_game_button);
@@ -46,6 +47,7 @@ function to_instruction_part() {
   for(i=0; i < ROAD_ON_MAP_STAGE.children.length;i++){
   	ROAD_ON_MAP_STAGE.children[i].interactive = false;
   }
+  stage.addChild(speed_button);
   stage.addChild(reset_inst_button);
   stage.addChild(reset_game_button);
   stage.removeChild(reset_road_button);

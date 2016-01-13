@@ -115,6 +115,7 @@ if (create_level) {
   // speed change button
   speed_button = createButton(zero_x+tile_size*7.5,y,
     'assets/spt_speed_button.png',speed_times_two,1,speed_reset);
+  stage.removeChild(speed_button);
 
   //START FRAME
   var start_frame_tex = PIXI.Texture.fromImage('assets/executing_frame.png');
